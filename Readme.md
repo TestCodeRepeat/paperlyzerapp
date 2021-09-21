@@ -1,6 +1,7 @@
 ### Bibliographic Analysis of Semantic Scholar & Web of Science papers *(work-in-progress)*
 
-A Ktor/JVM application for long-running processes in the cloud, querying & processing large datasets against the APIs of academic research paper stores.
+A Ktor/JVM application for managing long-running processes in the cloud. Query & process large 
+datasets against the APIs of major academic research paper stores: **Web of Science** & **Semantic Scholar**.
 
 This deployed application can be controlled via websocket commands.
 
