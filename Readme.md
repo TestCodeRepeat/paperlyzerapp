@@ -8,9 +8,9 @@ This deployed application can be controlled via websocket commands.
 ### Required to run:
 
 - a MongoDB database (local/cloud)
-  - a developer API key from Semantic Scholar
-  - a developer API key from [https://gender-api.com/][https://gender-api.com/]
-  - an initial batch of papers from Web of Science as a `.tsv` file.
+- a developer API key from Semantic Scholar
+- a developer API key from [https://gender-api.com/][https://gender-api.com/]
+- an initial batch of papers from Web of Science as a `.tsv` file.
 
 ### Websocket Commands
 `ws://localhost:8080/allthethings`
