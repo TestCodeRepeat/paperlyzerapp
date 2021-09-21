@@ -1,0 +1,34 @@
+
+- extract most common names
+  - affiliate institutions
+  - double check doi failures are legit
+  - code topic by Social Science or Stem
+
+========================
+
+?? Wrong Years for published paper?
+   	- only goes back to 2014, looks like parsing issue
+
+========================
+- take all authors w/ OrcId
+    - run against api to see how many have listed "other names"
+    - keep gender associated w/ orcid
+    - add Other Name column to Author table
+    - add count to First Names - each time author first name is added, increment the count
+    - add Most Common First Names, Most Common Last Names table
+        - add count for top 100 first names, top 100 last names
+        - code 1 for someone who has both top 100 first & top 100 last name
+    - variable for most common first / last name combinations
+    - 5% of papers had affiliation on original dataset
+
+    - add cross-checks using
+        email,
+        orchid,
+        institutional affiliation
+    -
+    - add Topic to gendered paper tables
+
+- Semantic API
+    - citations per paper - # of times
+    - references coming out - # of times
+    -

@@ -1,0 +1,377 @@
+topic	topic_cluster	topic_frequency	discipline
+Acoustics	Acoustics	83	STEM
+Agricultural Economics & Policy	Agricultural Economics & Policy	1042	SSH
+Agricultural Engineering	Agricultural Engineering	2503	STEM
+"Agriculture, Dairy & Animal Science"	"Agriculture, Dairy & Animal Science"	2182	STEM
+"Agriculture, Multidisciplinary"	"Agriculture, Multidisciplinary"	5266	STEM
+Agronomy	Agronomy	9194	STEM
+Allergy	Allergy	175	STEM
+Anatomy & Morphology	Anatomy & Morphology	17	STEM
+Andrology	Andrology	3	STEM
+Anesthesiology	Anesthesiology	46	STEM
+Anthropology	Anthropology	1261	SSH
+Archaeology	Archaeology	965	SSH
+Architecture	Architecture	674	M
+Area Studies	Area Studies	457	SSH
+Art	Art	139	SSH
+Asian Studies	Asian Studies	40	SSH
+Astronomy & Astrophysics	Astronomy & Astrophysics	1683	STEM
+Audiology & Speech-Language Pathology	Audiology & Speech-Language Pathology	17	STEM
+Automation & Control Systems	Automation & Control Systems	956	STEM
+Behavioral Sciences	Behavioral Sciences	235	SSH
+Biochemical Research Methods	Biochemical Research Methods	483	STEM
+Biochemistry & Molecular	Biochemistry & Molecular	1	STEM
+Biochemistry & Molecular Biology	Biochemistry & Molecular Biology	2618	STEM
+Biodiversity Conservation	Biodiversity Conservation	12062	STEM
+Biology	Biology	4182	STEM
+Biophysics	Biophysics	867	STEM
+Biotechnology & Applied	Biotechnology & Applied Microbiology	5	STEM
+Biotechnology & Applied Microbiology	Biotechnology & Applied Microbiology	4396	STEM
+Business	Business	1793	SSH
+"Business, Finance"	"Business, Finance"	590	SSH
+Cardiac & Cardiovascular Systems	Cardiac & Cardiovascular Systems	29	STEM
+Cell Biology	Cell Biology	374	STEM
+"Chemistry,"	"Chemistry, Analytical"	42	STEM
+"Chemistry, Analytical"	"Chemistry, Analytical"	1276	STEM
+"Chemistry, Applied"	"Chemistry, Applied"	2053	STEM
+"Chemistry, Inorganic & Nuclear"	"Chemistry, Inorganic & Nuclear"	609	STEM
+"Chemistry, Medicinal"	"Chemistry, Medicinal"	84	STEM
+"Chemistry, Multidisciplinary"	"Chemistry, Multidisciplinary"	5470	STEM
+"Chemistry, Organic"	"Chemistry, Organic"	238	STEM
+"Chemistry, Physical"	"Chemistry, Physical"	5430	STEM
+Classics	Classics	1	SSH
+Clinical Neurology	Clinical Neurology	43	STEM
+Communication	Communication	772	SSH
+Computer	"Computer Science, Artificial Intelligence"	24	STEM
+"Computer Science,"	"Computer Science, Artificial Intelligence"	579	STEM
+"Computer Science, Artificial"	"Computer Science, Artificial Intelligence"	4	STEM
+"Computer Science, Artificial Intelligence"	"Computer Science, Artificial Intelligence"	1224	STEM
+"Computer Science, Cybernetics"	"Computer Science, Cybernetics"	109	STEM
+"Computer Science, Hardware &"	"Computer Science, Hardware & Architecture"	42	STEM
+"Computer Science, Hardware & Architecture"	"Computer Science, Hardware & Architecture"	499	STEM
+"Computer Science, Information"	"Computer Science, Information Systems"	415	M
+"Computer Science, Information Systems"	"Computer Science, Information Systems"	1359	M
+"Computer Science, Interdisciplinary"	"Computer Science, Interdisciplinary Applications"	194	M?
+"Computer Science, Interdisciplinary Applications"	"Computer Science, Interdisciplinary Applications"	2444	M?
+"Computer Science, Software"	"Computer Science, Software Engineering"	143	STEM
+"Computer Science, Software Engineering"	"Computer Science, Software Engineering"	137	STEM
+"Computer Science, Theory &"	"Computer Science, Theory & Methods"	452	STEM
+"Computer Science, Theory & Methods"	"Computer Science, Theory & Methods"	691	STEM
+Construction &	Construction & Building Technology	17	STEM
+Construction & Building	Construction & Building Technology	10	STEM
+Construction & Building Technology	Construction & Building Technology	4631	STEM
+Criminology & Penology	Criminology & Penology	53	SSH
+Critical Care Medicine	Critical Care Medicine	44	STEM
+Crystallography	Crystallography	225	STEM
+Cultural Studies	Cultural Studies	130	SSH
+Dance	Dance	5	SSH
+Demography	Demography	235	SSH
+"Dentistry, Oral Surgery & Medicine"	"Dentistry, Oral Surgery & Medicine"	16	STEM
+Dermatology	Dermatology	72	STEM
+Development Studies	Development Studies	1576	SSH
+Developmental Biology	Developmental Biology	45	STEM
+Ecology	Ecology	41462	STEM
+Economics	Economics	12803	SSH
+Education &	Education & Educational Research	19	SSH
+Education & Educational	Education & Educational Research	40	SSH
+Education & Educational Research	Education & Educational Research	1026	SSH
+"Education,"	"Education, Scientific Disciplines"	1	SSH
+"Education, Scientific"	"Education, Scientific Disciplines"	26	SSH
+"Education, Scientific Disciplines"	"Education, Scientific Disciplines"	392	SSH
+"Education, Special"	"Education, Special"	5	SSH
+Electrochemistry	Electrochemistry	1690	STEM
+Emergency Medicine	Emergency Medicine	36	STEM
+Endocrinology &	Endocrinology & Metabolism	1	STEM
+Endocrinology & Metabolism	Endocrinology & Metabolism	117	STEM
+Energy &	Energy & Fuels	1339	STEM
+Energy & Fuels	Energy & Fuels	37381	STEM
+"Engineering,"	"Engineering, Chemical"	4957	STEM
+"Engineering, Aerospace"	"Engineering, Aerospace"	660	STEM
+"Engineering, Biomedical"	"Engineering, Biomedical"	167	STEM
+"Engineering, Chemical"	"Engineering, Chemical"	13773	STEM
+"Engineering, Civil"	"Engineering, Civil"	8743	STEM
+"Engineering, Electrical"	"Engineering, Electrical & Electronic"	13	STEM
+"Engineering, Electrical &"	"Engineering, Electrical & Electronic"	754	STEM
+"Engineering, Electrical & Electronic"	"Engineering, Electrical & Electronic"	6022	STEM
+"Engineering, Environmental"	"Engineering, Environmental"	17451	STEM
+"Engineering, Geological"	"Engineering, Geological"	864	STEM
+"Engineering, Industrial"	"Engineering, Industrial"	1185	STEM
+"Engineering, Manufacturing"	"Engineering, Manufacturing"	828	STEM
+"Engineering, Marine"	"Engineering, Marine"	481	STEM
+"Engineering, Mechanical"	"Engineering, Mechanical"	3984	STEM
+"Engineering, Multidisciplinary"	"Engineering, Multidisciplinary"	2277	STEM
+"Engineering, Ocean"	"Engineering, Ocean"	723	STEM
+"Engineering, Petroleum"	"Engineering, Petroleum"	1061	STEM
+Entomology	Entomology	1841	STEM
+Environmental	Environmental	819	STEM
+Environmental Sciences	Environmental Sciences	78998	STEM
+Environmental Studies	Environmental Studies	22428	M
+Ergonomics	Ergonomics	41	STEM
+Ethics	Ethics	534	SSH
+Ethnic Studies	Ethnic Studies	19	SSH
+Evolutionary Biology	Evolutionary Biology	5216	STEM
+Family Studies	Family Studies	22	SSH
+"Film, Radio, Television"	"Film, Radio, Television"	19	SSH
+Fisheries	Fisheries	2731	STEM
+Folklore	Folklore	3	SSH
+Food	Food	44	M?
+Food Science &	Food Science & Technology	184	STEM
+Food Science & Technology	Food Science & Technology	1838	STEM
+Forestry	Forestry	12072	STEM
+Gastroenterology & Hepatology	Gastroenterology & Hepatology	13	STEM
+Genetics	Genetics	1	STEM
+Genetics &	Genetics &	290	STEM
+Genetics & Heredity	Genetics & Heredity	1943	STEM
+Geochemistry &	Geochemistry & Geophysics	4	STEM
+Geochemistry & Geophysics	Geochemistry & Geophysics	7002	STEM
+Geography	Geography	4994	STEM
+"Geography,"	"Geography, Physical"	9	STEM
+"Geography, Physical"	"Geography, Physical"	20769	STEM
+Geology	Geology	3474	STEM
+"Geosciences,"	"Geosciences,"	1634	M
+"Geosciences, Multidisciplinary"	"Geosciences, Multidisciplinary"	46211	M
+Geriatrics & Gerontology	Geriatrics & Gerontology	28	STEM
+Gerontology	Gerontology	22	STEM
+Green &	Green & Sustainable Science & Technology	8	STEM
+GREEN & SUSTAINABLE	Green & Sustainable Science & Technology	12	STEM
+Green & Sustainable	Green & Sustainable Science & Technology	12	STEM
+Green & Sustainable Science &	Green & Sustainable Science & Technology	363	STEM
+GREEN & SUSTAINABLE SCIENCE &	Green & Sustainable Science & Technology	120	STEM
+Green & Sustainable Science & Technology	Green & Sustainable Science & Technology	14669	STEM
+GREEN & SUSTAINABLE SCIENCE & TECHNOLOGY	Green & Sustainable Science & Technology	2809	STEM
+Health Care Sciences &	Health Care Sciences & Services	1	SSH
+Health Care Sciences & Services	Health Care Sciences & Services	184	SSH
+Health Policy &	Health Policy & Services	1	SSH
+Health Policy & Services	Health Policy & Services	148	SSH
+Hematology	Hematology	11	STEM
+History	History	420	SSH
+History &	History & Philosophy Of Science	6	SSH
+History & Philosophy	History & Philosophy Of Science	1	SSH
+History & Philosophy Of Science	History & Philosophy Of Science	518	SSH
+History Of Social Sciences	History Of Social Sciences	70	SSH
+Horticulture	Horticulture	1737	STEM
+"Hospitality, Leisure, Sport"	"Hospitality, Leisure, Sport & Tourism"	2	SSH
+"Hospitality, Leisure, Sport &"	"Hospitality, Leisure, Sport & Tourism"	166	SSH
+"Hospitality, Leisure, Sport & Tourism"	"Hospitality, Leisure, Sport & Tourism"	502	SSH
+"Humanities, Multidisciplinary"	"Humanities, Multidisciplinary"	408	SSH
+Imaging	Imaging Science & Photographic Technology	40	M?
+Imaging Science &	Imaging Science & Photographic Technology	91	M?
+Imaging Science & Photographic	Imaging Science & Photographic Technology	1084	M?
+Imaging Science & Photographic Technology	Imaging Science & Photographic Technology	673	M?
+Immunology	Immunology	328	STEM
+Industrial Relations & Labor	Industrial Relations & Labor	36	SSH
+Infectious	Infectious Diseases	3	STEM
+Infectious Diseases	Infectious Diseases	687	STEM
+Information	Information Science & Library Science	1	SSH
+Information Science &	Information Science & Library Science	32	SSH
+Information Science & Library	Information Science & Library Science	30	SSH
+Information Science & Library Science	Information Science & Library Science	212	SSH
+Instruments &	Instruments & Instrumentation	23	STEM
+Instruments & Instrumentation	Instruments & Instrumentation	853	STEM
+Integrative & Complementary	Integrative & Complementary Medicine	4	STEM
+Integrative & Complementary Medicine	Integrative & Complementary Medicine	22	STEM
+International Relations	International Relations	1996	SSH
+Language & Linguistics	Language & Linguistics	45	SSH
+Law	Law	1510	SSH
+Limnology	Limnology	3834	STEM
+Linguistics	Linguistics	38	SSH
+Literary Reviews	Literary Reviews	47	SSH
+Literary Theory &	Literary Theory & Criticism	1	SSH
+Literary Theory & Criticism	Literary Theory & Criticism	27	SSH
+Literature	Literature	116	SSH
+"Literature, African, Australian, Canadian"	"Literature, African, Australian, Canadian"	3	SSH
+"Literature, American"	"Literature, American"	8	SSH
+"Literature, British Isles"	"Literature, British Isles"	1	SSH
+"Literature, German, Dutch, Scandinavian"	"Literature, German, Dutch, Scandinavian"	4	SSH
+"Literature, Romance"	"Literature, Romance"	1	SSH
+"Literature, Slavic"	"Literature, Slavic"	6	SSH
+Logic	Logic	1	M?
+Management	Management	2038	SSH
+Marine	Marine	91	STEM
+Marine &	Marine & Freshwater Biology	1	STEM
+Marine & Freshwater	Marine & Freshwater Biology	119	STEM
+Marine & Freshwater Biology	Marine & Freshwater Biology	10886	STEM
+Materials	Materials	940	STEM
+"Materials Science,"	"Materials Science,"	1553	STEM
+"Materials Science, Biomaterials"	"Materials Science, Biomaterials"	74	STEM
+"Materials Science, Ceramics"	"Materials Science, Ceramics"	215	STEM
+"Materials Science, Characterization"	"Materials Science, Characterization & Testing"	3	STEM
+"Materials Science, Characterization &"	"Materials Science, Characterization & Testing"	4	STEM
+"Materials Science, Characterization & Testing"	"Materials Science, Characterization & Testing"	59	STEM
+"Materials Science, Coatings &"	"Materials Science, Coatings & Films"	22	STEM
+"Materials Science, Coatings & Films"	"Materials Science, Coatings & Films"	208	STEM
+"Materials Science, Composites"	"Materials Science, Composites"	164	STEM
+"Materials Science, Multidisciplinary"	"Materials Science, Multidisciplinary"	3987	STEM
+"Materials Science, Paper & Wood"	"Materials Science, Paper & Wood"	387	STEM
+"Materials Science, Textiles"	"Materials Science, Textiles"	90	STEM
+Mathematical &	Mathematical & Computational Biology	22	STEM
+Mathematical & Computational	Mathematical & Computational Biology	3	STEM
+Mathematical & Computational Biology	Mathematical & Computational Biology	260	STEM
+Mathematics	Mathematics	66	STEM
+"Mathematics,"	"Mathematics, Applied"	227	STEM
+"Mathematics, Applied"	"Mathematics, Applied"	456	STEM
+"Mathematics, Interdisciplinary"	"Mathematics, Interdisciplinary Applications"	260	M?
+"Mathematics, Interdisciplinary Applications"	"Mathematics, Interdisciplinary Applications"	448	M?
+Mechanics	Mechanics	2293	STEM
+Medical	Medical	1	STEM
+Medical Ethics	Medical Ethics	51	SSH
+Medical Informatics	Medical Informatics	14	STEM
+Medical Laboratory Technology	Medical Laboratory Technology	11	STEM
+"Medicine,"	"Medicine, General & Internal"	1	STEM
+"Medicine, General"	"Medicine, General & Internal"	2	STEM
+"Medicine, General &"	"Medicine, General & Internal"	54	STEM
+"Medicine, General & Internal"	"Medicine, General & Internal"	788	STEM
+"Medicine, Legal"	"Medicine, Legal"	28	SSH
+"Medicine, Research &"	"Medicine, Research & Experimental"	16	STEM
+"Medicine, Research & Experimental"	"Medicine, Research & Experimental"	127	STEM
+Medieval & Renaissance Studies	Medieval & Renaissance Studies	16	SSH
+Metallurgy	Metallurgy	8	STEM
+Metallurgy &	Metallurgy & Metallurgical Engineering	55	STEM
+Metallurgy & Metallurgical	Metallurgy & Metallurgical Engineering	334	STEM
+Metallurgy & Metallurgical Engineering	Metallurgy & Metallurgical Engineering	811	STEM
+Meteorology &	Meteorology & Atmospheric Sciences	2477	STEM
+Meteorology & Atmospheric	Meteorology & Atmospheric Sciences	1415	STEM
+Meteorology & Atmospheric Sciences	Meteorology & Atmospheric Sciences	42066	STEM
+Microbiology	Microbiology	2533	STEM
+Microscopy	Microscopy	28	STEM
+Mineralogy	Mineralogy	491	STEM
+Mining &	Mining & Mineral Processing	15	STEM
+Mining & Mineral	Mining & Mineral Processing	20	STEM
+Mining & Mineral Processing	Mining & Mineral Processing	572	STEM
+Multidisciplinary	Multidisciplinary Sciences	82	M
+Multidisciplinary Sciences	Multidisciplinary Sciences	18091	M
+Music	Music	16	SSH
+Mycology	Mycology	214	STEM
+Nanoscience	Nanoscience & Nanotechnology	15	STEM
+Nanoscience &	Nanoscience & Nanotechnology	176	STEM
+Nanoscience & Nanotechnology	Nanoscience & Nanotechnology	1179	STEM
+Neurosciences	Neurosciences	92	STEM
+Nuclear	Nuclear Science & Technology	4	STEM
+Nuclear Science &	Nuclear Science & Technology	48	STEM
+Nuclear Science & Technology	Nuclear Science & Technology	926	STEM
+Nursing	Nursing	95	M?
+Nutrition &	Nutrition & Dietetics	9	STEM
+Nutrition & Dietetics	Nutrition & Dietetics	319	STEM
+Obstetrics & Gynecology	Obstetrics & Gynecology	22	STEM
+Oceanography	Oceanography	10873	STEM
+Oncology	Oncology	29	STEM
+Operations	Operations	31	SSH
+Operations Research	Operations Research & Management Science	190	SSH
+Operations Research &	Operations Research & Management Science	517	SSH
+Operations Research & Management	Operations Research & Management Science	107	SSH
+Operations Research & Management Science	Operations Research & Management Science	904	SSH
+Ophthalmology	Ophthalmology	23	STEM
+Optics	Optics	1761	STEM
+Ornithology	Ornithology	1039	STEM
+Orthopedics	Orthopedics	7	STEM
+Otorhinolaryngology	Otorhinolaryngology	14	STEM
+Paleontology	Paleontology	5275	SSH
+Parasitology	Parasitology	898	STEM
+Pathology	Pathology	13	STEM
+Pediatrics	Pediatrics	67	M?
+Peripheral Vascular	Peripheral Vascular Disease	1	STEM
+Peripheral Vascular Disease	Peripheral Vascular Disease	15	STEM
+Pharmacology &	Pharmacology & Pharmacy	3	STEM
+Pharmacology & Pharmacy	Pharmacology & Pharmacy	160	STEM
+Philosophy	Philosophy	268	SSH
+"Physics,"	"Physics, Applied"	287	STEM
+"Physics, Applied"	"Physics, Applied"	1649	STEM
+"Physics, Atomic,"	"Physics, Atomic, Molecular & Chemical"	13	STEM
+"Physics, Atomic, Molecular"	"Physics, Atomic, Molecular & Chemical"	17	STEM
+"Physics, Atomic, Molecular &"	"Physics, Atomic, Molecular & Chemical"	1	STEM
+"Physics, Atomic, Molecular & Chemical"	"Physics, Atomic, Molecular & Chemical"	698	STEM
+"Physics, Condensed"	"Physics, Condensed Matter"	7	STEM
+"Physics, Condensed Matter"	"Physics, Condensed Matter"	155	STEM
+"Physics, Fluids"	"Physics, Fluids & Plasmas"	2	STEM
+"Physics, Fluids &"	"Physics, Fluids & Plasmas"	4	STEM
+"Physics, Fluids & Plasmas"	"Physics, Fluids & Plasmas"	311	STEM
+"Physics, Mathematical"	"Physics, Mathematical"	198	STEM
+"Physics, Multidisciplinary"	"Physics, Multidisciplinary"	861	STEM
+"Physics, Nuclear"	"Physics, Nuclear"	38	STEM
+"Physics, Particles &"	"Physics, Particles & Fields"	1	STEM
+"Physics, Particles & Fields"	"Physics, Particles & Fields"	8	STEM
+Physiology	Physiology	589	STEM
+Plant Sciences	Plant Sciences	14387	STEM
+Poetry	Poetry	7	SSH
+Political	Political	4	SSH
+Political Science	Political Science	2344	SSH
+Polymer	Polymer	11	STEM
+Polymer Science	Polymer Science	808	STEM
+Primary	Primary Health Care	7	M?
+Primary Health Care	Primary Health Care	40	M?
+Psychiatry	Psychiatry	84	SSH?
+Psychology	Psychology	33	SSH
+"Psychology,"	"Psychology, Applied"	19	SSH
+"Psychology, Applied"	"Psychology, Applied"	79	SSH
+"Psychology, Biological"	"Psychology, Biological"	49	SSH
+"Psychology, Clinical"	"Psychology, Clinical"	51	SSH
+"Psychology, Developmental"	"Psychology, Developmental"	12	SSH
+"Psychology, Educational"	"Psychology, Educational"	44	SSH
+"Psychology, Experimental"	"Psychology, Experimental"	51	SSH
+"Psychology, Mathematical"	"Psychology, Mathematical"	2	SSH
+"Psychology, Multidisciplinary"	"Psychology, Multidisciplinary"	356	SSH
+"Psychology, Psychoanalysis"	"Psychology, Psychoanalysis"	9	SSH
+"Psychology, Social"	"Psychology, Social"	153	SSH
+Public	Public Administration	38	SSH
+Public Administration	Public Administration	1845	SSH
+"Public,"	"Public, Environmental & Occupational Health"	138	SSH
+"Public, Environmental &"	"Public, Environmental & Occupational Health"	12	SSH
+"Public, Environmental & Occupational"	"Public, Environmental & Occupational Health"	84	SSH
+"Public, Environmental & Occupational Health"	"Public, Environmental & Occupational Health"	3428	SSH
+Quantum Science & Technology	Quantum Science & Technology	13	STEM
+"Radiology,"	"Radiology, Nuclear Medicine & Medical Imaging"	13	STEM
+"Radiology, Nuclear"	"Radiology, Nuclear Medicine & Medical Imaging"	2	STEM
+"Radiology, Nuclear Medicine &"	"Radiology, Nuclear Medicine & Medical Imaging"	1	STEM
+"Radiology, Nuclear Medicine & Medical"	"Radiology, Nuclear Medicine & Medical Imaging"	1	STEM
+"Radiology, Nuclear Medicine & Medical Imaging"	"Radiology, Nuclear Medicine & Medical Imaging"	31	STEM
+Regional	Regional	301	M
+Regional &	Regional & Urban Planning	22	M
+Regional & Urban	Regional & Urban Planning	67	M
+Regional & Urban Planning	Regional & Urban Planning	1812	M
+Rehabilitation	Rehabilitation	29	SSH
+Religion	Religion	268	SSH
+Remote	Remote	493	STEM
+Remote Sensing	Remote Sensing	4860	STEM
+Reproductive Biology	Reproductive Biology	47	STEM
+Respiratory System	Respiratory System	123	STEM
+Rheumatology	Rheumatology	7	STEM
+Robotics	Robotics	72	STEM
+Social	Social	62	SSH
+Social Issues	Social Issues	390	SSH
+"Social Sciences,"	"Social Sciences,"	119	SSH
+"Social Sciences, Biomedical"	"Social Sciences, Biomedical"	89	SSH
+"Social Sciences, Interdisciplinary"	"Social Sciences, Interdisciplinary"	1309	M?
+"Social Sciences, Mathematical"	"Social Sciences, Mathematical"	1	M?
+"Social Sciences, Mathematical Methods"	"Social Sciences, Mathematical Methods"	120	M?
+Social Work	Social Work	66	SSH
+Sociology	Sociology	856	SSH
+Soil	Soil Science	21	STEM
+Soil Science	Soil Science	10443	STEM
+Spectroscopy	Spectroscopy	578	STEM
+Sport Sciences	Sport Sciences	45	STEM
+Statistics &	Statistics & Probability	28	STEM
+Statistics & Probability	Statistics & Probability	320	STEM
+Substance Abuse	Substance Abuse	6	SSH?
+Surgery	Surgery	45	STEM
+Telecommunications	Telecommunications	748	STEM
+Theater	Theater	23	SSH
+Thermodynamics	Thermodynamics	6442	STEM
+Toxicology	Toxicology	769	STEM
+Transplantation	Transplantation	6	STEM
+Transportation	Transportation	2184	M
+Transportation Science	Transportation Science & Technology	1	M
+Transportation Science &	Transportation Science & Technology	766	M
+Transportation Science & Technology	Transportation Science & Technology	1514	M
+Tropical	Tropical Medicine	19	STEM
+Tropical Medicine	Tropical Medicine	579	STEM
+Urban	Urban	169	SSH
+Urban Studies	Urban Studies	1078	SSH
+Urology & Nephrology	Urology & Nephrology	41	STEM
+Veterinary	Veterinary Sciences	8	STEM
+Veterinary Sciences	Veterinary Sciences	1109	STEM
+Virology	Virology	110	STEM
+Water	Water	1129	STEM
+Water Resources	Water Resources	17002	STEM
+Women's Studies	Women's Studies	63	SSH
+Zoology	Zoology	3391	STEM
+		281	

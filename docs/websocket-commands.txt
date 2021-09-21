@@ -1,0 +1,9 @@
+ws://localhost:8080/allthethings
+
+===== Web Socket Commands ======
+stats
+start
+stop
+reset
+
+http://localhost:8080/static/topics.tsv

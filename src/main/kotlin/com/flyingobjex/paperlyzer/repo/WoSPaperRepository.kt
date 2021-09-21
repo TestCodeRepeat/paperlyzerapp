@@ -1,0 +1,345 @@
+package com.flyingobjex.paperlyzer.repo
+
+import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.entity.*
+import com.flyingobjex.paperlyzer.parser.DisciplineType
+import com.flyingobjex.paperlyzer.parser.MatchingCriteria
+import com.flyingobjex.paperlyzer.process.DisciplineProcessStats
+import com.flyingobjex.paperlyzer.process.ReportStats
+import com.flyingobjex.paperlyzer.process.WosCitationStats
+import com.mongodb.client.result.UpdateResult
+import java.util.logging.Logger
+import kotlinx.serialization.Serializable
+import org.litote.kmongo.*
+
+data class AuthorResult(val _id: String, val shortTitle: String, val authors: List<Author>)
+
+@Serializable
+data class WosPaperId(val doi: String, val _id: String? = null)
+
+fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
+    genderDetails.firstOrNull { it.firstName == name }
+
+
+class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) -> Unit)? = null) {
+
+    val log: Logger = Logger.getAnonymousLogger()
+
+    /** Reports */
+    fun resetReportLines() {
+        mongo.reports.drop()
+        mongo.genderedPapers.updateMany(
+            WosPaper::reported ne false,
+            setValue(WosPaper::reported, false)
+        )
+    }
+
+    fun getReportStats(): ReportStats {
+        return ReportStats(
+            totalReportsProcessed = mongo.genderedPapers.countDocuments(WosPaper::reported eq true).toInt(),
+            totalUnprocessed = mongo.genderedPapers.countDocuments(WosPaper::reported ne true).toInt(),
+        )
+    }
+
+    /** Discipline & Topics  */
+    fun resetDisciplineProcessed() {
+        mongo.genderedPapers.updateMany(
+            WosPaper::_id ne null,
+            listOf(
+                setValue(WosPaper::discipline, null),
+                setValue(WosPaper::score, null),
+                setValue(WosPaper::matchingCriteria, null),
+                setValue(WosPaper::topSSH, null),
+                setValue(WosPaper::topStem, null),
+            )
+        )
+
+    }
+
+    fun quickResetDisciplineProcessed() {
+        mongo.genderedPapers.updateMany(
+            WosPaper::discipline ne null,
+            listOf(
+                setValue(WosPaper::discipline, null),
+                setValue(WosPaper::score, null),
+                setValue(WosPaper::matchingCriteria, null),
+                setValue(WosPaper::topSSH, null),
+                setValue(WosPaper::topStem, null),
+            )
+        )
+
+    }
+
+    fun getDisciplineStats(): DisciplineProcessStats {
+        return DisciplineProcessStats(
+            totalProcessedWithDiscipline = mongo.genderedPapers.countDocuments(WosPaper::discipline ne null).toInt(),
+            totalUnprocessed = mongo.genderedPapers.countDocuments(WosPaper::discipline eq null).toInt(),
+            totalStem = mongo.genderedPapers.countDocuments(WosPaper::discipline eq DisciplineType.STEM).toInt(),
+            totalSSH = mongo.genderedPapers.countDocuments(WosPaper::discipline eq DisciplineType.SSH).toInt(),
+            totalMaybe = mongo.genderedPapers.countDocuments(WosPaper::discipline eq DisciplineType.M).toInt(),
+            totalUnidentified = mongo.genderedPapers.countDocuments(WosPaper::discipline eq DisciplineType.NA).toInt(),
+            totalWosPapers = mongo.genderedPapers.countDocuments().toInt(),
+        )
+    }
+
+    fun applyMatchingCriteria(paper: WosPaper, allCriteria: List<MatchingCriteria>): WosPaper {
+        val topCriteria = allCriteria.sortedByDescending { it.score }.firstOrNull()
+
+        val discipline = topCriteria?.topic?.disciplineType ?: DisciplineType.NA
+
+        val topSTEM = allCriteria.filter { it.topic.disciplineType == DisciplineType.STEM }
+            .sortedByDescending { it.score }
+
+        val topSSH = allCriteria.filter { it.topic.disciplineType == DisciplineType.SSH }
+            .sortedByDescending { it.score }
+
+        return paper.copy(
+            matchingCriteria = allCriteria,
+            discipline = discipline,
+            score = topCriteria?.score ?: 0,
+            topStem = topSTEM.firstOrNull(),
+            topSSH = topSSH.firstOrNull(),
+        )
+    }
+
+    fun getUnprocessedPapersByDiscipline(batchSize: Int): List<WosPaper> =
+        mongo.genderedPapers.aggregate<WosPaper>(
+            match(WosPaper::discipline eq null),
+            limit(batchSize),
+        ).toList()
+
+    fun updatePaperDiscipline(updated: WosPaper) {
+        mongo.genderedPapers.updateOne(
+            WosPaper::_id eq updated._id,
+            listOf(
+                setValue(WosPaper::discipline, updated.discipline),
+                setValue(WosPaper::score, updated.score),
+                setValue(WosPaper::matchingCriteria, updated.matchingCriteria),
+                setValue(WosPaper::topStem, updated.topStem),
+                setValue(WosPaper::topSSH, updated.topSSH),
+            )
+        )
+    }
+
+    fun unprocessedDisciplinesCount(): Long =
+        mongo.genderedPapers.countDocuments(WosPaper::discipline eq null)
+
+
+    /** Citations */
+    fun updateCitationsCount(wosPaperId: WosPaperId, count: Int, influentialCount: Int): UpdateResult =
+        mongo.genderedPapers.updateOne(
+            WosPaper::_id eq wosPaperId._id,
+            listOf(
+                setValue(WosPaper::citationsCount, count),
+                setValue(WosPaper::influentialCitationsCount, influentialCount),
+                setValue(WosPaper::citationsProcessed, true),
+            )
+        )
+
+    fun getUnprocessedByCitations(batchSize: Int): List<WosPaperId> =
+        mongo.genderedPapers.aggregate<WosPaperId>(
+            match(WosPaper::citationsProcessed eq false),
+            project(WosPaperId::doi from WosPaper::doi),
+            limit(batchSize),
+        ).toList()
+
+    fun getUnprocessedPapersAsPaperIds(batchSize: Int): List<WosPaperId> {
+        val res = mongo.genderedPapers.aggregate<WosPaperId>(
+            match(
+                or(
+                    WosPaper::ssProcessed eq null,
+                    WosPaper::ssProcessed ne true,
+                ),
+                and(
+                    WosPaper::ssFailed ne true,
+                    WosPaper::doi ne "NA"
+                )
+            ),
+            project(WosPaperId::doi from WosPaper::doi),
+            limit(batchSize)
+        ).toList()
+
+        return res
+    }
+
+    fun unprocessedCitationsCount(): Int =
+        mongo.genderedPapers.countDocuments(
+            WosPaper::citationsProcessed eq false
+        ).toInt()
+
+    fun processedCitationsCount(): Int =
+        mongo.genderedPapers.countDocuments(
+            WosPaper::citationsProcessed eq true
+        ).toInt()
+
+    fun resetCitationProcessed(): String {
+        log.info("WoSPaperRepository.resetCitationProcessed()  ")
+        logMessage?.let { it("WoSPaperRepository.resetCitationProcessed()  ") }
+        mongo.genderedPapers.updateMany(
+            WosPaper::citationsProcessed ne false,
+            listOf(
+                setValue(WosPaper::citationsProcessed, false),
+                setValue(WosPaper::influentialCitationsCount, 0),
+                setValue(WosPaper::citationsCount, 0),
+            )
+        )
+
+        logMessage?.let { it("WoSPaperRepository.resetCitationProcessed()  complete") }
+        return "done"
+
+    }
+
+    /** Semantic Scholar  */
+
+    fun resetSsProcessed() {
+        log.info("WoSPaperRepository.resetSsProcessed()  ")
+        mongo.genderedPapers.updateMany(
+            WosPaper::ssProcessed eq true,
+            listOf(
+                setValue(WosPaper::ssProcessed, false),
+                setValue(WosPaper::ssFailed, null)
+            )
+        )
+
+        mongo.genderedPapers.updateMany(
+            WosPaper::ssFailed ne null,
+            setValue(WosPaper::ssFailed, null)
+        )
+    }
+
+    fun markSsAsFailedById(paperId: WosPaperId): UpdateResult {
+        return mongo.genderedPapers.updateOne(
+            WosPaper::_id eq paperId._id,
+            listOf(setValue(WosPaper::ssFailed, true), setValue(WosPaper::ssProcessed, true)),
+        )
+    }
+
+    fun markSsAsProcessedById(wosPaper: WosPaperId): UpdateResult {
+        return mongo.genderedPapers.updateOne(
+            WosPaper::_id eq wosPaper._id,
+            setValue(WosPaper::ssProcessed, true)
+        )
+    }
+
+    fun applyGenderToPaperAuthors(papers: List<WosPaper>) {
+        papers.parallelStream().forEach { paper ->
+            val viableAuthors = paper.authors.filter { it.gender.gender == GenderIdentitiy.UNASSIGNED }
+
+            if (viableAuthors.isNotEmpty()) {
+                val matches = mongo.genderTable.find(
+                    GenderDetails::firstName `in` paper.authors.mapNotNull { it.firstName },
+                ).toList()
+
+                paper.authors.forEach { author ->
+                    val match = matchGender(author.firstName, matches)
+                    author.genderIdt = match?.genderIdentity
+                    author.gender = Gender(match?.genderIdentity ?: GenderIdentitiy.NA, match?.probability ?: 0.0)
+                }
+                paper.authorGendersShortKey = paper.authors
+                    .map { it.genderIdt?.toShortKey() ?: "X" }
+                    .joinToString("")
+
+                paper.firstAuthorGender = paper.authors.firstOrNull()?.gender?.gender?.toShortKey()
+                paper.lastAuthorGender = paper.authors.lastOrNull()?.gender?.gender?.toShortKey()
+                val totalAuthors = paper.authors.size
+                paper.totalAuthors = totalAuthors
+                val identifiableAuthors = paper.authors
+                    .filter {
+                        it.gender.gender == GenderIdentitiy.MALE || it.gender.gender == GenderIdentitiy.FEMALE
+                    }
+                    .size
+                paper.totalIdentifiableAuthors = identifiableAuthors
+                paper.genderCompletenessScore = identifiableAuthors.toDouble() / totalAuthors.toDouble()
+
+                mongo.genderedPapers.insertOne(paper)
+                mongo.rawPaperFullDetails.updateOne(
+                    WosPaper::_id eq paper._id,
+                    setValue(WosPaper::processed, true)
+                )
+            } else {
+                mongo.genderedPapers.insertOne(paper)
+                mongo.rawPaperFullDetails.updateOne(
+                    WosPaper::_id eq paper._id,
+                    setValue(WosPaper::processed, true)
+                )
+            }
+        }
+
+
+    }
+
+    fun getPapersWithAuthors(batchSize: Int): List<WosPaper> {
+        return mongo.rawPaperFullDetails.aggregate<WosPaper>(
+            match(
+                or(
+                    WosPaper::processed eq false,
+                    WosPaper::processed eq null
+                )
+            )
+        ).take(batchSize).toList()
+    }
+
+    fun resetPaperTableGenderInfo() {
+        mongo.genderedPapers.drop()
+
+        mongo.rawPaperFullDetails.updateMany(
+            WosPaper::processed ne false,
+            listOf(
+                setValue(WosPaper::processed, false),
+            )
+        )
+
+        mongo.resetIndexes()
+    }
+
+    fun getAllRawAuthors(): List<Author> {
+        val res = mongo.rawPaperFullDetails.aggregate<AuthorResult>(
+            match(WosPaper::shortTitle ne null),
+            project(
+                WosPaper::shortTitle from WosPaper::shortTitle,
+                WosPaper::authors from WosPaper::authors
+            )
+        ).toList()
+
+        return res.map { it.authors }.flatten()
+    }
+
+    fun insertRawCsvPapers(rawCsvPapers: List<WosPaper>) {
+        mongo.rawPaperFullDetails.insertMany(rawCsvPapers)
+    }
+
+    fun getAllRawPapers(): List<WosPaper> {
+        return mongo.rawPaperFullDetails.find().toList()
+    }
+
+    fun clearPapers() {
+        mongo.clearPapers()
+    }
+
+
+    fun getCitationStats(): WosCitationStats {
+        return WosCitationStats(
+            totalProcessedWosPapers = mongo.genderedPapers.countDocuments(
+                and(
+                    WosPaper::citationsProcessed eq true,
+                    WosPaper::citationsCount gte 0
+                )
+            ).toInt(),
+            totalUnprocessedWosPapers = mongo.genderedPapers.countDocuments(WosPaper::citationsProcessed eq false)
+                .toInt(),
+            totalFailedWosPapers = mongo.genderedPapers.countDocuments(
+                and(
+                    WosPaper::citationsCount eq -5,
+                    WosPaper::citationsProcessed eq true
+                )
+            ).toInt(),
+            totalSsPapers = mongo.ssPapers.countDocuments().toInt(),
+            totalWosPapers = mongo.genderedPapers.countDocuments().toInt(),
+        )
+    }
+
+    fun getPaper(id: String): WosPaper? =
+        mongo.genderedPapers.findOne(WosPaper::_id eq id)
+
+
+}

@@ -1,0 +1,17 @@
+{
+  "details": {
+    "country": null,
+    "credits_used": 1,
+    "duration": "72ms",
+    "first_name_sanitized": "xinyu",
+    "samples": 157
+  },
+  "first_name": "Xinyu",
+  "gender": "male",
+  "input": {
+    "full_name": "Chang Xinyu"
+  },
+  "last_name": "Chang",
+  "probability": 0.55,
+  "result_found": true
+}
