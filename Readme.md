@@ -2,14 +2,23 @@
 
 A Ktor/JVM application for long-running processes in the cloud, querying & processing large datasets against the APIs of academic research paper stores.
 
-This deployed application can be controlled via websocket commands.  
+This deployed application can be controlled via websocket commands.
 
-Required to run: 
-  - a MongoDB database (local/cloud)
+### Required to run:
+
+- a MongoDB database (local/cloud)
   - a developer API key from Semantic Scholar
   - a developer API key from [https://gender-api.com/][https://gender-api.com/]
   - an initial batch of papers from Web of Science as a `.tsv` file.
 
-(See `PaperlyzerApp.kt`, `Sockets.kt` & `/tests` for initial implementations)
+### Websocket Commands
+`ws://localhost:8080/allthethings`
+
+`stats` `start` `stop` `reset`
+
+Once running either locally or in the cloud, trigger processes by connecting via Web
+socket and send plain text commands from a basic websocket client.
+ 
+See `PaperlyzerApp.kt`, `Sockets.kt` & `/tests` for initial implementations
 
 [https://gender-api.com/]: https://gender-api.com/
