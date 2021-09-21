@@ -10,6 +10,6 @@ Required to run:
   - a developer API key from [https://gender-api.com/][https://gender-api.com/]
   - an initial batch of papers from Web of Science as a `.tsv` file.
 
-(See `Application.kt` & `/tests` for initial implementations)
+(See `PaperlyzerApp.kt`, `Sockets.kt` & `/tests` for initial implementations)
 
 [https://gender-api.com/]: https://gender-api.com/
