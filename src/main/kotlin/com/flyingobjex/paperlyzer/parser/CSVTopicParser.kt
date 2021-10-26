@@ -120,8 +120,6 @@ data class MatchingCriteria(
     fun hasOneTrue(): Boolean = exactMatch || oneKeyword || allKeywords || leadKeyword || secondaryKeyword
 }
 
-
-
 object CSVTopicParser {
 
     fun csvFileToTopicList(path: String): List<PLTopic> {

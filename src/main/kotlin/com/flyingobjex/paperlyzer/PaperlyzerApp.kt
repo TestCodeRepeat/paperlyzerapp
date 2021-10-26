@@ -168,7 +168,6 @@ class PaperlyzerApp(val mongo: Mongo) {
     private fun logMessage(message: String) {
         _logReadout.value = "$message \n ${_logReadout.value}"
         print(logReadout.value)
-        print(logReadout.value)
     }
 
 }

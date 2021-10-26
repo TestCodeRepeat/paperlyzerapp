@@ -10,22 +10,22 @@ import com.flyingobjex.paperlyzer.process.DisciplineProcess
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import data.testPaper
+import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.junit.Before
-import org.junit.Test
 import org.litote.kmongo.eq
 import org.litote.kmongo.ne
+import kotlin.test.Test
 
 class DisciplineTest {
 
     private val mongo = Mongo(false)
     private val wosRepo = WoSPaperRepository(mongo)
 
-    private val samplePath = "../../topics.tsv"
-    private val topics = CSVTopicParser.csvFileToTopicList(samplePath)
+    private val samplePath = "./ignore/topics.tsv"
+    private val topics:List<PLTopic> = emptyList() // CSVTopicParser.csvFileToTopicList(samplePath)
     private val testTopicA = "Metallurgy & Metallurgical Engineering"
     private val testTopicB = "Geochemistry & Geophysics"
 
@@ -41,7 +41,7 @@ class DisciplineTest {
         app.process.printStats()
     }
 
-    @Before
+//    @Before
     fun before() {
         setMongoDbLogsToErrorOnly()
     }
@@ -51,7 +51,7 @@ class DisciplineTest {
     }
 
 
-    @Test
+//    @Test
     fun `app should start Discipline process`() {
         wosRepo.quickResetDisciplineProcessed()
         setMongoDbLogsToErrorOnly()
@@ -110,7 +110,7 @@ class DisciplineTest {
         println("DisciplineTest.kt :: should map a paper to a list of PLTopics :: ")
     }
 
-    //    @Test
+    @Test
     fun `should import topic csv`() {
         val topics = CSVTopicParser.csvFileToTopicList(samplePath)
         assertEquals(topics.size, 374)

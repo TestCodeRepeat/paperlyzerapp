@@ -3,11 +3,13 @@ val kotlin_version: String by project
 val logback_version: String by project
 val prometeus_version: String by project
 val kermit_version: String by project
+val kotest_version: String by project
 
 plugins {
     application
     kotlin("jvm") version "1.5.21"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.21"
+    id("io.kotest") version "0.3.8"
 }
 
 group = "com.flyingobjex"
@@ -30,6 +32,10 @@ tasks.register("stage") {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -57,7 +63,10 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
 
-//    implementation(kotlin("stdlib-common"))
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotest_version")
+    testImplementation("io.kotest:kotest-framework-engine-jvm:$kotest_version")
+    testImplementation ("io.kotest:kotest-runner-junit5:$kotest_version")
+
     implementation("co.touchlab:kermit:$kermit_version")
 
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.2")
@@ -67,7 +76,4 @@ dependencies {
 
     implementation("org.litote.kmongo:kmongo:4.2.7")
 
-//    testImplementation(kotlin("test-junit5"))
-//    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
 }
