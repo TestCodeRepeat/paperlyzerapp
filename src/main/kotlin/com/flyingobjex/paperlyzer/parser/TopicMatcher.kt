@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.parser
 
 class TopicMatcher(val plTopics: List<PLTopic>) {
 
+
     fun matchToTopic(term: String, topic: PLTopic, index: Int): MatchingCriteria {
         val trimmedTerm = term.trim().toLowerCase()
         val trimmedTopic = topic.name.trim().toLowerCase()

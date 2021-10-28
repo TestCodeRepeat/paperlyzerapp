@@ -134,9 +134,9 @@ object CSVTopicParser {
                 if (index > 1) {
                     val csvLine = RawTopicLine(
                         row[0],
-                        row[1],
+                        row[0],
                         row[2],
-                        row[3],
+                        row[1],
                     )
                     val topic = rawCsvTopicLineToTopic(csvLine)
                     res.add(topic)

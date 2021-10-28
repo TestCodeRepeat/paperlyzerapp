@@ -24,7 +24,7 @@ class DisciplineTest {
     private val mongo = Mongo(false)
     private val wosRepo = WoSPaperRepository(mongo)
 
-    private val samplePath = "./ignore/topics.tsv"
+    private val samplePath = "./ignore/topics-new.tsv"
     private val topics:List<PLTopic> = emptyList() // CSVTopicParser.csvFileToTopicList(samplePath)
     private val testTopicA = "Metallurgy & Metallurgical Engineering"
     private val testTopicB = "Geochemistry & Geophysics"
@@ -113,6 +113,6 @@ class DisciplineTest {
     @Test
     fun `should import topic csv`() {
         val topics = CSVTopicParser.csvFileToTopicList(samplePath)
-        assertEquals(topics.size, 374)
+        assertEquals(topics.size, 373)
     }
 }
