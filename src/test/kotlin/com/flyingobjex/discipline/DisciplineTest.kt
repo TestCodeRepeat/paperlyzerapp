@@ -18,18 +18,19 @@ import kotlinx.serialization.json.Json
 import org.litote.kmongo.eq
 import org.litote.kmongo.ne
 import kotlin.test.Test
+import kotlinx.serialization.encodeToString
 
 class DisciplineTest {
 
     private val mongo = Mongo(false)
     private val wosRepo = WoSPaperRepository(mongo)
 
-    private val samplePath = "./ignore/topics-new.tsv"
-    private val topics:List<PLTopic> = emptyList() // CSVTopicParser.csvFileToTopicList(samplePath)
+    private val samplePath = "./ignore/topics.tsv"
+    private val topics: List<PLTopic> = CSVTopicParser.csvFileToTopicList(samplePath)
     private val testTopicA = "Metallurgy & Metallurgical Engineering"
     private val testTopicB = "Geochemistry & Geophysics"
 
-    private val format = Json { prettyPrint = true }
+    private val format = Json { prettyPrint = false }
     private val matcher = TopicMatcher(topics)
 
     private val app = PaperlyzerApp(mongo)
@@ -41,7 +42,7 @@ class DisciplineTest {
         app.process.printStats()
     }
 
-//    @Before
+    //    @Before
     fun before() {
         setMongoDbLogsToErrorOnly()
     }
@@ -51,7 +52,7 @@ class DisciplineTest {
     }
 
 
-//    @Test
+    //    @Test
     fun `app should start Discipline process`() {
         wosRepo.quickResetDisciplineProcessed()
         setMongoDbLogsToErrorOnly()
@@ -60,7 +61,7 @@ class DisciplineTest {
         println("DisciplineTest.kt :: app should start Discipline process :: DONE!")
     }
 
-    //        @Test
+    //            @Test
     fun `should start process to apply disciplines to all papers`() {
         wosRepo.resetDisciplineProcessed()
 
@@ -72,18 +73,18 @@ class DisciplineTest {
         println("DisciplineTest.kt :: should start process to apply disciplines to all papers :: ")
     }
 
-    //        @Test
+//    @Test
     fun `process should print stats`() {
         app.process.printStats()
     }
 
-    //    @Test
+//    @Test
     fun `should count unprocessed papers`() {
         val res = mongo.genderedPapers.countDocuments(WosPaper::discipline eq null).toInt()
         assertTrue(res > 300000)
     }
 
-    //        @Test
+//    @Test
     fun `should apply disciplines and matching criteria to WoSPaper`() {
         wosRepo.resetDisciplineProcessed()
         setMongoDbLogsToErrorOnly()
@@ -95,7 +96,7 @@ class DisciplineTest {
 
     }
 
-    //    @Test
+    @Test
     fun `should map a paper to a list of PLTopics`() {
         val paper = format.decodeFromString<WosPaper>(testPaper)
         val matchingCriteriaForTopics = matcher.criteriaForTopics(paper.topics)
@@ -103,7 +104,7 @@ class DisciplineTest {
         println("DisciplineTest.kt :: should map a paper to a list of PLTopics :: ")
     }
 
-    //    @Test
+    @Test
     fun `it should return matching criteria for two terms`() {
         val res = matcher.matchToTopic(testTopicA, PLTopic.blank().copy(name = "Metallurgy"), 0)
         assertTrue(res.oneKeyword)
@@ -113,6 +114,7 @@ class DisciplineTest {
     @Test
     fun `should import topic csv`() {
         val topics = CSVTopicParser.csvFileToTopicList(samplePath)
-        assertEquals(topics.size, 373)
+        File("topics.json").writeText(format.encodeToString(topics))
+        assertEquals(374, topics.size)
     }
 }

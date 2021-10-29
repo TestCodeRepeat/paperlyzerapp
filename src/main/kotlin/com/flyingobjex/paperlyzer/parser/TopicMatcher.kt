@@ -49,7 +49,7 @@ class TopicMatcher(val plTopics: List<PLTopic>) {
     }
 
     private fun secondaryKeywordMatch(term: String, targetValue: String): Boolean {
-        val secondary = CSVTopicParser.toSecondarKeyword(term) ?: return false
+        val secondary = CSVTopicParser.toSecondaryKeyword(term) ?: return false
         return StringMatching.matchAnyN(secondary, targetValue, 1)
     }
 

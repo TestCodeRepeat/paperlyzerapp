@@ -134,9 +134,9 @@ object CSVTopicParser {
                 if (index > 1) {
                     val csvLine = RawTopicLine(
                         row[0],
-                        row[0],
-                        row[2],
                         row[1],
+                        row[3],
+                        row[2],
                     )
                     val topic = rawCsvTopicLineToTopic(csvLine)
                     res.add(topic)
@@ -144,7 +144,6 @@ object CSVTopicParser {
             }
         }
         val filtered = res.toList().filter { it.name != "" }
-
         return filtered
     }
 
@@ -157,13 +156,13 @@ object CSVTopicParser {
             isQuestionable(line.discipline),
             toKeywords(line.topic),
             toLeadKeyword(line.topic),
-            toSecondarKeyword(line.topic),
+            toSecondaryKeyword(line.topic),
         )
 
         return paperMetaData
     }
 
-    fun toSecondarKeyword(topic: String): String? {
+    fun toSecondaryKeyword(topic: String): String? {
         if (!topic.contains(",")) return null
         return topic.split(",").getOrNull(1)
     }

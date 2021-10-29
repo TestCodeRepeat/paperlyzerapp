@@ -55,6 +55,8 @@ class PaperlyzerApp(val mongo: Mongo) {
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
+
+        File("test.json").writeText("hello json")
     }
 
     fun initProcess(type: ProcessType) {
