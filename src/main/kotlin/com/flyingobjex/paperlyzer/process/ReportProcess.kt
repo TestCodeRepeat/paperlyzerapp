@@ -2,7 +2,7 @@ package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.PROCESSED_RECORDS_GOAL
+import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
@@ -26,7 +26,7 @@ data class ReportStats(
             "\n\n" +
             "totalReportsProcessed: $totalReportsProcessed \n" +
             "totalUnprocessed: $totalUnprocessed \n" +
-            "PROCESSED_RECORDS_GOAL: $PROCESSED_RECORDS_GOAL \n" +
+            "PROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
             "API_BATCH_SIZE: $API_BATCH_SIZE \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
@@ -56,7 +56,7 @@ class ReportProcess(
     }
 
     override fun shouldContinueProcess(): Boolean =
-        (mongo.genderedPapers.countDocuments(WosPaper::reported ne true) > PROCESSED_RECORDS_GOAL)
+        (mongo.genderedPapers.countDocuments(WosPaper::reported ne true) > UNPROCESSED_RECORDS_GOAL)
 
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {

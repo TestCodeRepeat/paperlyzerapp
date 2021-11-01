@@ -8,7 +8,7 @@ This deployed application can be controlled via websocket commands.
 ### Required to run:
 
 - a MongoDB database (local/cloud)
-- a developer API key from Semantic Scholar
+- a developer API key from Seman tic Scholar
 - a developer API key from [https://gender-api.com/][https://gender-api.com/]
 - an initial batch of papers from Web of Science as a `.tsv` file.
 
@@ -21,5 +21,20 @@ Once running either locally or in the cloud, trigger processes by connecting via
 socket and send plain text commands from a basic websocket client.
  
 See `PaperlyzerApp.kt`, `Sockets.kt` & `/tests` for initial implementations
+
+### Environmental Variables
+`API_BATCH_SIZE` - # of records processed per API call
+`PROCESSED_RECORDS_GOAL` - # of remaining unprocessed records which causes the process to stop.
+e.g. given a batch of 50 papers, and a `UNPROCESSED_RECORDS_GOAL` of 40, the process will stop running after 10 papers
+when the number of `UNPROCESSED_RECORDS_GOAL` is below 40.  If set to 0, it will run process until all target records
+have been marked as 'processed'.
+
+### Processes
+DisciplineProcess.kt
+- It takes papers with a null `discipline` value and matches it to a value
+of STEM, SSH (social sciences), or NA, along with a weighted score.
+  
+
+
 
 [https://gender-api.com/]: https://gender-api.com/

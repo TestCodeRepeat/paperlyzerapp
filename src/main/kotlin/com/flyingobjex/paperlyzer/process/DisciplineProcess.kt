@@ -2,7 +2,7 @@ package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.PROCESSED_RECORDS_GOAL
+import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
@@ -32,7 +32,7 @@ data class DisciplineProcessStats(
             "totalSSH: $totalSSH \n" +
             "totalMaybe: $totalMaybe \n" +
             "totalUnidentified: $totalUnidentified \n" +
-            "PROCESSED_RECORDS_GOAL: $PROCESSED_RECORDS_GOAL \n" +
+            "PROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n"
@@ -57,7 +57,7 @@ class DisciplineProcess(
     }
 
     override fun shouldContinueProcess(): Boolean =
-        wosRepo.unprocessedDisciplinesCount() > PROCESSED_RECORDS_GOAL
+        wosRepo.unprocessedDisciplinesCount() > UNPROCESSED_RECORDS_GOAL
 
 
     override fun runProcess() {

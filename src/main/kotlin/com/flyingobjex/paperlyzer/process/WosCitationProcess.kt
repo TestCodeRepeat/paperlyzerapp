@@ -1,7 +1,7 @@
 package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
-import com.flyingobjex.paperlyzer.PROCESSED_RECORDS_GOAL
+import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
@@ -58,8 +58,8 @@ class WosCitationProcess(val mongo: Mongo, logMessage: (value: String) -> Unit) 
 
     override fun shouldContinueProcess(): Boolean {
         val count = wosRepo.unprocessedCitationsCount()
-        log.info("WosCitationProcess.shouldContinueProcess()  count/Goal = $count / $PROCESSED_RECORDS_GOAL")
-        return count > PROCESSED_RECORDS_GOAL
+        log.info("WosCitationProcess.shouldContinueProcess()  count/Goal = $count / $UNPROCESSED_RECORDS_GOAL")
+        return count > UNPROCESSED_RECORDS_GOAL
     }
 
     override fun cancelJobs() {

@@ -61,7 +61,7 @@ class DisciplineTest {
         println("DisciplineTest.kt :: app should start Discipline process :: DONE!")
     }
 
-    //            @Test
+    @Test
     fun `should start process to apply disciplines to all papers`() {
         wosRepo.resetDisciplineProcessed()
 

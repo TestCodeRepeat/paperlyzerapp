@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 val API_BATCH_SIZE = System.getenv("API_BATCH_SIZE").toString().toInt()
-val PROCESSED_RECORDS_GOAL = System.getenv("PROCESSED_RECORDS_GOAL").toString().toInt()
+val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toString().toInt()
 
 enum class ProcessType {
     citation, discipline, wostoss, report
@@ -45,7 +45,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         println("PaperlyzerApp.kt :: PaperlyzerApp :: init()")
         println("PaperlyzerApp.kt :: API() :: sysApiSize = $sysApiSize")
         println("PaperlyzerApp.kt :: API() :: API_BATCH_SIZE = $API_BATCH_SIZE")
-        println("PaperlyzerApp.kt :: API() :: PROCESSED_RECORDS_GOAL = $PROCESSED_RECORDS_GOAL")
+        println("PaperlyzerApp.kt :: API() :: PROCESSED_RECORDS_GOAL = $UNPROCESSED_RECORDS_GOAL")
 
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
@@ -154,9 +154,9 @@ class PaperlyzerApp(val mongo: Mongo) {
         println(":::::::::::::::::::::::::::::::::::: ")
         println(":::::::::::::::::::::::::::::::::::: ")
         println(":::::::::::::::::::::::::::::::::::: ")
-        println("processedWosPaperGoal: $PROCESSED_RECORDS_GOAL ")
+        println("processedWosPaperGoal: $UNPROCESSED_RECORDS_GOAL ")
         GlobalScope.launch {
-            outgoing.send(Frame.Text("processedWosPaperGoal: $PROCESSED_RECORDS_GOAL "))
+            outgoing.send(Frame.Text("processedWosPaperGoal: $UNPROCESSED_RECORDS_GOAL "))
             outgoing.send(Frame.Text("batchSize: $numConcurrentApiCalls "))
         }
         println("batchSize: $numConcurrentApiCalls ")
