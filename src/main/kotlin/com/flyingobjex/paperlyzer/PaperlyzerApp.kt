@@ -23,7 +23,7 @@ enum class ProcessType {
     citation, discipline, wostoss, report
 }
 
-const val BUILD_VERSION = 1
+const val BUILD_VERSION = 2
 class PaperlyzerApp(val mongo: Mongo) {
 
     val log: Logger = Logger.getAnonymousLogger()
@@ -51,7 +51,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
 
-        initProcess(ProcessType.report)
+        initProcess(ProcessType.discipline)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")
