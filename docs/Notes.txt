@@ -1,0 +1,362 @@
+Gender API
+* Line Up Labels to old csv
+* make 2 columns - one for the Earliest year, one for the Latest year
+
+!! - names that were in the paper as only initial can be inferred from OrcIDs
+
+- run SsPapers against Semantic Schlar API
+
+- remove batched process
+
+heroku link:
+
+10.1016/S0140-6736(18)32594-7
+
+- Wrong Years for published paper
+	- only goes back to 2014, looks like parsing issue
+
+The API key needs to be sent in the header of the request as x-api-key directed at https://api.semanticscholar.org
+Max requests - 100/sec
+
+Nov 2
+  :: Discipline process (apply STEM/SSM/NA to WoS Papers by topics)
+    - re-running Discpline process, optimized by resetting 'score' to -5 for shouldContinueProcess() and reduced
+      execution time by 90%.
+        - Previously shouldContinue() was checking for null (approx. 50 seconds)
+        - when using -5 as default value, shouldConinue() took less than 4 seconds
+    - API Batch of 10,000 takes approx. 30 seconds to process
+
+
+
+Oct 21
+  - getting everyone to open reports.csv
+  - get definitions for topic keys - which is from where (WoS & Semantic Scholar)
+  - categories to re-apply discipline
+    - BekesiLenkey2018SubsurfacetemperaturemodeloftheHungarianpartoft
+    - "Multidisciplinary" is not the same for our use, stem/ssh, remove as keyword
+    - perhaps use "Both" as a label when matching on both SSH & STEM
+  - key definitions for column names?
+
+  == H index ==
+  https://www.scimagojr.com/journalrank.php
+  - downloaded csv file with journal name & H index
+  - match name of journal and apply H index, SJR score
+  - check & see if we can run authors from SSPaper table to get their country code
+    - Maybe run against it, do last
+
+  Steps
+  - re-apply stem/ssh topics
+  - import Journal & Country rank csv file to mongo table apply H index & SJR score to all the papers on a new column
+  - ? check & see if we can run authors from SSPaper table to get their country code
+  - ? check & see if we can match code the author country by email
+
+  Paper Co-Authors - Gendered Authors Table
+  - number of co-authors per paper combined (total authors - target author) / total number of papers
+
+
+
+
+Sept 1
+  - doi matching
+  WoS : 10.1016/j.baae.2017.07.002
+  SS :  10.1016/J.BAAE.2017.07.002
+
+Aug 31
+  !? re-running SsPapers to match Wos paper doi, doi's are not same case & not matching when should be
+
+Aug 5
+  - extract most common names
+  - affiliate institutions
+  - double check doi failures are legit
+  - code topic by Social Science or Stem
+    - Nils/Cory
+
+July 15
+    - take all authors w/ OrcId
+        - run against api to see how many have listed "other names"
+        - keep gender associated w/ orcid
+        - add Other Name column to Author table
+        - add count to First Names - each time author first name is added, increment the count
+        - add Most Common First Names, Most Common Last Names table
+            - add count for top 100 first names, top 100 last names
+            - code 1 for someone who has both top 100 first & top 100 last name
+        - variable for most common first / last name combinations
+        - 5% of papers had affiliation on original dataset
+
+        - add cross-checks using
+            email,
+            orchid,
+            institutional affiliation
+        -
+        - add Topic to gendered paper tables
+
+    - Semantic API
+        - citations per paper - # of times
+        - references coming out - # of times
+        -
+
+
+June 24, 2021
+    ~ Gendered Paper Table :: ~2m 50sec to parse from Raw Papers Table and apply gender identity
+        ~ 400,000 total papers
+        ~ 218,000 papers with 100% of authors with identifiable gender identity
+        ~ 63,000 papers with one or more identifiable authors
+        ~ 173,000 papers with null? identifiable authors?
+
+
+- Journal Table - CE_Journals_Review
+	- includes "review type" column
+	- Social Science or STEM
+	- only start w/ ones with policy
+	- add Impact score
+	- ranked journals for Andrew
+		- Most cited journals in dataset
+		- he'll check against other table for review policy
+
+- Paper table fields:
+	- apply gender info to papers as well
+	- score of applicable genders
+	- Gender of First Author
+	- Number of co-authors total
+		- Gender Ratio of additional authors (not including the first author)
+		- Gender ratio w/o first
+		- Gender ratio w/o last
+	- Last Author column
+		- Gender ratio of everyone excluding the last author
+
+
+June 23, 2021
+    Gender API - processed 14,000 addtional names
+        - had skipped 14,000 hyphenated names in original batch b/c regex expression did not include - as allowed char
+
+    Gendered Authors Table :: 1m 23sec to parse from Gender Table & First Names Table
+        ~
+
+    Stats Report :: ~25sec to compile
+
+    Gender Table :: approx. 5-10 mins to run 14k batched API requests to gender-api.com
+        - 92,000 total responses
+        - 80,000 identifiable first names (12,000 unidentifiable names) - 86% names recognized in gender-api database
+        - 53,000 MALE names
+        - 24,000 FEMALE names
+        -  1,500 AMBIGUOUS names (50% probability of m/f)
+
+June 22, 2021
+    Journals Table :: 1m 40sec to parse from Raw Papers table
+        ~ 22,000 journals
+
+
+
+June 21 2021
+    Raw Papers Table :: 1m 14sec to parse from csv
+        ~ 399,893 papers
+
+    Raw Authors table :: 1m 50sec to extract from Raw Papers table
+        ~ 1,700,000 raw authors citations
+
+    Authors Table :: 4m 30sec, 6m 49 after year parsing
+        ~ 445,000 -> seven batches of 150,000 rawAuthor records
+
+    Query Tests
+        ~ earliest/latest year - 1921, 1909
+
+    First Names Table :: 41sec to build from Author table
+        ~ 77,000 unique first names
+
+    Gendered Authors Table :: 1m 10sec to parse from Author & Gender tables
+        :: 1m 38sec after parse first/last year
+        ~ 405,000 unique authors
+
+
+June 1, 2021
+
+    Gendered Authors Table :: 38sec to parse from Gender API & Authors Tables
+        ~ 252,000 unique authors
+        ~ 230,000 authors with distinguishable m/f names
+        - 155,000 MALE authors
+        - 75,000 FEMALE authors
+
+    Gender API Table :: approx. 30 mins to run batched API requests to gender-api.com
+        * 77,000 unique first names extracted from Author Table
+        ~ 42,000 results with MALE names
+        ~ 21,000 results with FEMALE names
+        ~ 14,000 results with UNASSIGNED names (probably was 50% or less)
+
+        ~~ 1,500 Gender API HTTP requests (77,000 names in batches of 50 per API call)
+        ~~ Build CSV report from db :: 10sec
+
+    Authors Table :: ~13min to parse from raw author citations table
+        * Check for matching OrcIds, applies papers accordingly
+        * consists only of authors with a distinguishable first name
+        ~ 250,000 authors in total from 1,700,000 author citations in ~400,000 papers
+            ! previous results weren't combing papers properly,
+        ~ 22,000 authors with + OrcIds
+        ~ 230,000 authors without - OrcIds
+
+May 30, 2021
+    Raw Author Data :: ~70sec to parse from full csv file
+    ~ 1,700,000 total author citations
+    ~ 1,200,000 author first & last names (across all papers, duplicates included)
+    ~ 507,000 authors with first initials only
+    OrcIds
+    ~ 248,000 author citation with distinguishable orcids
+
+    ?!?! Found that matching orcids by last name only created errors, now only assigning if first & last name match
+    OrcIds :: when matching first & last name together
+    ~ 166,00
+
+    First Names Table ::
+
+
+May 28, 2021
+Stats:: data from orcIDs now applied
+* orcId first name replaces entries that only have first Initials
+
+    Raw Author Data :: ~70sec to parse from full csv file
+    ~ 1,204,000 total author first & last names (across all papers, duplicates included)
+    ~ 507,000 authors with only first initials (instead of first name)
+    ~ 22,000 authors with no first name or initials
+    OrcIds
+    ~ 248,000 authors with distinguishable orcIDs
+    ~ 62,000 additional first names extracted from the orcID of authors with only Initials for first name
+
+    Author Table :: ~5min to parse from raw author table
+    * Each paper parsed and assigned to authors with matching First & Last name
+    * consists only of authors with a distinguishable first name
+    ~ 447,000 authors with first & last names
+    ~ 105,000 authors with > 3 papers
+    ~ 20,000 authors with > 10 papers
+    ~ 10,000 authors with > 15 papers
+    ~ 6,300 authors with > 20 papers
+
+    First Names Table :: ~45sec to build from Authors table
+    ~ 64,000 unique first names
+
+
+
+Stats for raw author table - CLEAN DATA (after fix)
+    ~ 1,204,000 "unassigned" first names, i.e. names that could be run against gender API
+        - this will decrease when rules for capitalization are applied
+    ~ 507,000 "no first name", only last name provided
+    ~ 22,000 "initials only", first name field only has distinct initials with ".", e.g. "C. S. Lewis", "T. Roosevelt"
+
+
+Stats for raw author table (BAD DATA)
+    ~ 943,000 "unassigned" first names, i.e. names that could be run against gender API
+        - this will decrease when rules for capitalization are applied
+    ~ 792,000 "no first name", only last name provided
+    ~ 378,000 "initials only", first name field only has distinct initials with ".", e.g. "C. S. Lewis", "T. Roosevelt"
+
+Old Stats
+    ~ 1.1M "unassigned" first names, i.e. names that could be run against gender API
+        - this will decrease when rules for capitalization are applied
+    ~ 790,000 "no first name", only last name provided
+    ~ 195,000 "initials", first name field only has distinct initials with ".", e.g. "C. S. Lewis", "T. Roosevelt"
+        - this will increase when rules for capitalization applied
+
+- logins
+    - orchid sandbox api
+    - andrew login for gender api $$
+    -
+
+Orchid ID
+    - strongly correlated to age
+    - max out use of orchid ids
+    - name change frequency from 10,000 names
+    - run on sample to see how many have changed after marriage
+    - get an estimate on frequency
+    - look for orchid clashes
+    - more prolific authors?
+    - use to check if more that one person
+    - people in academia longer
+    - max 10% of people has orchid id
+    - can be used to distinguish if someone w/ same name is multiple people
+
+Capitalization
+:: 3 letters or less
+? - Can we assume a first name with only Capital letters are initials? e.g. "EC Tajima"
+    ? - can we assume a first name in "normal-case" is an actual first name?
+
+Years published in author table
+? - should we include the years of the papers published in the author table?
+    ? - what other data from the paper should be included in the author table?
+
+Author exact name match
+? - when there is an exact name match, can we assume this is the same author?
+? - if no, should we match on topics?
+
+Author Table
+- include all related papers & topics?
+- mapping initials + topics or lastname + topics to try & identify
+    - "D. smith" & "Dan Smith"
+-  Years published
+- number of times a first name appears
+- women changing their last names when married
+- registry of women w/ changed names?
+- match first names within topics?
+? - published under alias?
+? - Indian example where first/last name switched
+? - check if gender api returns country
+
+? - name similarity / colloquial names
+? - match on first letter, % of letters
+? - matching on last name, first initial & topic
+
+
+Topics
+? group by topic?
+genie coefficient for names
+    - muhammad
+    - cultural aspect
+
+Gender API - batch runs
+-
+
+Author Firstname Table - build from Author table
+1,000,000 Author table -> ~70,000 Firstname Table
+
+Processing times @ build author table, full database, queries run in Parallel
+1,000,000 - 2mins 24sec
+
+
+Processing times @ full database of ~ 1,300,000 names, indexed first & last name
+25,000 - 62sec
+25,000 - 202sec     (2nd run) + 140 secs
+25,000 - 280sec     (3rd run) + 80 secs
+25,000 - 366sec     (4th run) + 80 secs
+25,000 - 402sec     (5th run) + 36 secs
+25,000 - 640sec     (6th run) +
+25,000 - 790sec     (7th run)
+25,000 -                (8th run)
+
+
+Processing times @ full database of ~ 1,300,000 names, indexed first & last name
+
+10,000 -  14sec     (1min 19sec non-indexed)
+10,000 -  30sec     (1st additional run)
+10,000 -  55sec     (2nd additional run)
+10,000 -  80sec     (3rd additional run)
+10,000 -  96sec     (4th additional run)
+10,000 -  105sec    (5th additional run)
+20,000 -  280sec    (6th additional run)
+
+Processing times @ full database of > 2,000,000 names
+1,0000 - 5secs
+10,000 - 1mins 47sec
+10,000 -  (1st additional run)
+20,000 - 7mins 46sec
+
+
+
+Next Steps:
+    - local database
+	- share csv on MS
+	- free version of names API
+	- author gender, probability
+		- run with first & last name
+	- Last Names -
+	   - potential code to country
+	   - mapping to country
+	   - data set: Karen Van
+
+	- university name

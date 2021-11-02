@@ -42,7 +42,7 @@ data class DisciplineProcessStats(
 }
 
 /**
- * Optimal API Batch Size: 5000
+ * Optimal API Batch Size: 10000
  *
  * */
 class DisciplineProcess(
