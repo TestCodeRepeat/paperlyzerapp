@@ -30,6 +30,27 @@ when the number of `UNPROCESSED_RECORDS_GOAL` is below 40.  If set to 0, it will
 have been marked as 'processed'.
 
 ### Processes
+Each process follow this convention:
+```
+interface IProcess {
+    fun init()
+    fun name():String
+    fun runProcess()
+    fun shouldContinueProcess(): Boolean
+    fun printStats(outgoing: SendChannel<Frame>? = null): String
+    fun cancelJobs()
+    fun reset()
+}
+```
+Where once a process is started, it continually checks for a condition to if it should continue or terminate.
+These primary functions can be triggered via Websocket connection & text commands.
+
+
+
+
+
+
+
 DisciplineProcess.kt
 - It takes papers with a null `discipline` value and matches it to a value
 of STEM, SSH (social sciences), or NA, along with a weighted score.

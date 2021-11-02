@@ -23,6 +23,7 @@ enum class ProcessType {
     citation, discipline, wostoss, report
 }
 
+const val BUILD_VERSION = 1
 class PaperlyzerApp(val mongo: Mongo) {
 
     val log: Logger = Logger.getAnonymousLogger()
@@ -57,6 +58,8 @@ class PaperlyzerApp(val mongo: Mongo) {
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
 
         File("test.json").writeText("hello json")
+
+        log.info("\n\n build version: $BUILD_VERSION \n\n ")
     }
 
     fun initProcess(type: ProcessType) {
@@ -154,6 +157,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         println(":::::::::::::::::::::::::::::::::::: ")
         println(":::::::::::::::::::::::::::::::::::: ")
         println(":::::::::::::::::::::::::::::::::::: ")
+        println(":::::::: build version: $BUILD_VERSION")
         println("processedWosPaperGoal: $UNPROCESSED_RECORDS_GOAL ")
         GlobalScope.launch {
             outgoing.send(Frame.Text("processedWosPaperGoal: $UNPROCESSED_RECORDS_GOAL "))
