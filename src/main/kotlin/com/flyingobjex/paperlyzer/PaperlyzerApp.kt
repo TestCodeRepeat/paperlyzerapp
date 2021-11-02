@@ -89,7 +89,7 @@ class PaperlyzerApp(val mongo: Mongo) {
     }
 
     fun runProcess() {
-        println("PaperlyzerApp.runWosProcess()  -- start -- ")
+        println("PaperlyzerApp.runWosProcess()  -- runProcess -- ")
         val time = measureTimeMillis {
             process.runProcess()
         }

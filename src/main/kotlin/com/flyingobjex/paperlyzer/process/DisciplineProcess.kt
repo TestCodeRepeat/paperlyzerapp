@@ -7,6 +7,7 @@ import com.flyingobjex.paperlyzer.parser.TopicMatcher
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
+import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
@@ -39,6 +40,10 @@ data class DisciplineProcessStats(
     }
 }
 
+/**
+ * Optimal API Batch Size: 100
+ *
+ * */
 class DisciplineProcess(
     val mongo: Mongo,
     private val matcher: TopicMatcher,
@@ -56,8 +61,14 @@ class DisciplineProcess(
 
     }
 
-    override fun shouldContinueProcess(): Boolean =
-        wosRepo.unprocessedDisciplinesCount() > UNPROCESSED_RECORDS_GOAL
+    override fun shouldContinueProcess(): Boolean {
+        var shouldContinue = false
+        val time = measureTimeMillis {
+            shouldContinue = wosRepo.unprocessedDisciplinesCount() > UNPROCESSED_RECORDS_GOAL
+        }
+        println("DisciplineProcess.shouldContinue() time == $time")
+        return shouldContinue
+    }
 
 
     override fun runProcess() {
