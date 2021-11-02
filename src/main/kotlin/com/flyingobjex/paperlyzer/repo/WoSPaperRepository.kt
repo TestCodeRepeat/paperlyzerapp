@@ -47,7 +47,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
             WosPaper::_id ne null,
             listOf(
                 setValue(WosPaper::discipline, null),
-                setValue(WosPaper::score, null),
+                setValue(WosPaper::score, -5),
                 setValue(WosPaper::matchingCriteria, null),
                 setValue(WosPaper::topSSH, null),
                 setValue(WosPaper::topStem, null),
@@ -122,7 +122,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
     }
 
     fun unprocessedDisciplinesCount(): Long =
-        mongo.genderedPapers.countDocuments(WosPaper::discipline eq null)
+        mongo.genderedPapers.countDocuments(WosPaper::score eq -5)
 
 
     /** Citations */

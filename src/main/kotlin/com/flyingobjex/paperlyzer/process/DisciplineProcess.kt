@@ -3,6 +3,7 @@ package com.flyingobjex.paperlyzer.process
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
+import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
@@ -41,7 +42,7 @@ data class DisciplineProcessStats(
 }
 
 /**
- * Optimal API Batch Size: 100
+ * Optimal API Batch Size: 5000
  *
  * */
 class DisciplineProcess(
@@ -74,7 +75,12 @@ class DisciplineProcess(
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
         log.info("WosCitationProcess.runProcess()  0000 :: batchSize = $batchSize")
-        val unprocessed = wosRepo.getUnprocessedPapersByDiscipline(batchSize)
+        var unprocessed = emptyList<WosPaper>()
+        val time = measureTimeMillis {
+            unprocessed = wosRepo.getUnprocessedPapersByDiscipline(batchSize)
+        }
+
+        println("getUnprocessedPapersByDiscipline($batchSize):  $time ms")
 
         unprocessed.parallelStream().forEach { paper ->
             val matchingCriteriaForTopics = matcher.criteriaForTopics(paper.topics)
