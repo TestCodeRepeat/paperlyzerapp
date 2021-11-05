@@ -17,7 +17,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module(testing: Boolean = false) {
 
-    (LoggerFactory.getLogger("org.mongodb.driver") as Logger).setLevel(ch.qos.logback.classic.Level.OFF)
+    (LoggerFactory.getLogger("org.mongodb.driver") as Logger).level = ch.qos.logback.classic.Level.OFF
 
     (environment as ApplicationEngineEnvironment).connectors.forEach { connector ->
         println("${connector.host}:${connector.port}")

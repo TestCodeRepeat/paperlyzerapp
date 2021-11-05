@@ -35,6 +35,10 @@ fun Application.configureRouting() {
             }
         }
 
+        get("/url"){
+            call.respondText { app.serverUrl }
+        }
+
         get("/") {
             call.respondText { "hello" }
         }
