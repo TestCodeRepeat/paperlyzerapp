@@ -35,7 +35,7 @@ fun Application.configureRouting() {
         }
 
         get("/url"){
-            call.respondText { app.port }
+            call.respondText { app.url() }
         }
 
         get("/") {
