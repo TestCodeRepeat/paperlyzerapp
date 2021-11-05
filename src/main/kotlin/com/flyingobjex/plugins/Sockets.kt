@@ -1,5 +1,6 @@
 package com.flyingobjex.plugins
 
+import com.flyingobjex.app
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
 import io.ktor.application.*
@@ -26,8 +27,6 @@ enum class SocketAction {
         }
     }
 }
-
-val app = PaperlyzerApp(Mongo(true))
 
 fun Application.configureSockets() {
     install(WebSockets) {

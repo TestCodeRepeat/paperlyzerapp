@@ -26,6 +26,8 @@ enum class ProcessType {
 const val BUILD_VERSION = 2
 class PaperlyzerApp(val mongo: Mongo) {
 
+    private var serverUrl: String = "na"
+
     val log: Logger = Logger.getAnonymousLogger()
 
     var matcher = TopicMatcher(topics)
@@ -174,6 +176,10 @@ class PaperlyzerApp(val mongo: Mongo) {
     private fun logMessage(message: String) {
         _logReadout.value = "$message \n ${_logReadout.value}"
         print(logReadout.value)
+    }
+
+    fun setServerUrl(url: String) {
+        serverUrl = url
     }
 
 }

@@ -4,7 +4,7 @@ Gender API
 
 !! - names that were in the paper as only initial can be inferred from OrcIDs
 
-- run SsPapers against Semantic Schlar API
+- run SsPapers against Semantic Scholar API
 
 - remove batched process
 
@@ -20,7 +20,7 @@ Max requests - 100/sec
 
 Nov 2
   :: Discipline process (apply STEM/SSM/NA to WoS Papers by topics)
-    - re-running Discpline process, optimized by resetting 'score' to -5 for shouldContinueProcess() and reduced
+    - re-running Discipline process, optimized by resetting 'score' to -5 for shouldContinueProcess() and reduced
       execution time by 90%.
         - Previously shouldContinue() was checking for null (approx. 50 seconds)
         - when using -5 as default value, shouldConinue() took less than 4 seconds

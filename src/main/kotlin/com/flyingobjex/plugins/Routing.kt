@@ -1,5 +1,6 @@
 package com.flyingobjex.plugins
 
+import com.flyingobjex.app
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.html.*
@@ -35,16 +36,7 @@ fun Application.configureRouting() {
         }
 
         get("/") {
-            call.respondHtml {
-                body {
-                    h5 { +"===================" }
-                    h5 { +"===================" }
-
-                    a("/report") {
-                        +"Download Report"
-                    }
-                }
-            }
+            call.respondText { "hello" }
         }
 
         // Static feature. Try to access `/static/index.html`

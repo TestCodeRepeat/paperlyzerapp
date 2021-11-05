@@ -23,6 +23,11 @@ object StringMatching {
         return matchAnyN(term, targetText, numOfKeywords)
     }
 
+    fun matchingWordPercent(term: String, targetText: String): Double {
+
+        return .99
+    }
+
     fun matchAnyN(term: String, targetText: String, n: Int): Boolean {
         val t = targetText.toLowerCase().split(" ")
         var total = 0
