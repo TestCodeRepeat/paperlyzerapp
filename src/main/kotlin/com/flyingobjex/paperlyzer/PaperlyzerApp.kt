@@ -71,7 +71,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         log.info("PaperlyzerApp.()  url = ${url()}")
     }
 
-    fun url():String = "$BASE_URL:$port/"
+    fun url():String = "$BASE_URL/"
 
     fun initProcess(type: ProcessType) {
         matcher = TopicMatcher(topics)
