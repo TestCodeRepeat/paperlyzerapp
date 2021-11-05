@@ -178,7 +178,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         print(logReadout.value)
     }
 
-    fun setServerUrl(url: String) {
+    fun updateServerUrl(url: String) {
         serverUrl = url
     }
 
