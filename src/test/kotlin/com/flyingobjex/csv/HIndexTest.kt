@@ -1,7 +1,6 @@
 package com.flyingobjex.csv
 
-import com.flyingobjex.paperlyzer.parser.HIndexParser
-import com.flyingobjex.paperlyzer.parser.SJRJournal
+import com.flyingobjex.paperlyzer.parser.SJRank
 import com.flyingobjex.paperlyzer.util.JsonUtils
 import com.flyingobjex.paperlyzer.util.JsonUtils.json
 import io.kotest.matchers.ints.shouldBeGreaterThan
@@ -17,7 +16,7 @@ class HIndexTest {
     val bioTitle = "Magnetic Resonance Materials in Physics, Biology, and Medicine"
     val transpoTitle = "Journal of Transportation Engineering Part A: Systems"
 
-    val path = "docs/sjrscore.json"
+    val path = "src/main/resources/sjrscore.json"
 
 //    fun `should load h-index csv`(){
 ////        val file =
@@ -28,14 +27,23 @@ class HIndexTest {
 //    }
 
     @Test
+    fun `should match journal name from sjr rankings`(){
+
+    }
+
+    @Test
     fun `should hello world`(){
         println("hello world :: should hello worl :: ")
+        val fileContent = this::class.java.classLoader.getResource("sjrscore.json").readText()
+        val res = json.decodeFromString<ArrayList<SJRank>>(fileContent)
+        res shouldNotBe null
+        res.size shouldBeGreaterThan 30000
     }
 
     @Test
     fun `should convert h-index csv file from to json file`(){
         val file = JsonUtils.loadFile(path)
-        val res = json.decodeFromString<ArrayList<SJRJournal>>(file)
+        val res = json.decodeFromString<ArrayList<SJRank>>(file)
         res shouldNotBe null
         res.size shouldBeGreaterThan 30000
     }

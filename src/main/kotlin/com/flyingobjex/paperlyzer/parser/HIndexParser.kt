@@ -1,6 +1,7 @@
 package com.flyingobjex.paperlyzer.parser
 
 import com.flyingobjex.paperlyzer.BASE_URL
+import com.flyingobjex.paperlyzer.util.JsonUtils
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -9,12 +10,13 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import java.io.File
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
-data class HIndexLine(val title:String, val sjr: Int, val hIndex:Int )
+data class HIndexLine(val title: String, val sjr: Int, val hIndex: Int)
 
-fun cleanTitle(title:String):String{
+fun cleanTitle(title: String): String {
     return title
         .lowercase()
         .replace("&amp;", "")
@@ -23,33 +25,26 @@ fun cleanTitle(title:String):String{
         .trim()
 }
 
+data class SJRScore(val sjrRank: SJRank, val score: Int)
 
-class HIndexModel(){
+class HIndexModel() {
 
-    var hIndexData:List<HIndexLine> = emptyList()
+    private val sjrRankings: List<SJRank>
 
-    suspend fun loadHindexData(): Any {
-        val url = "$BASE_URL/static/hindex.csv"
-        return client.request<Any>(url)
+    init {
+        val contents = JsonUtils.loadResourceFile("sjrscore.json")
+        sjrRankings = JsonUtils.json.decodeFromString<ArrayList<SJRank>>(contents)
     }
 
-    private val client = HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
-        }
+    fun matchJournalTitleToSJRank(title: String): SJRank {
+
     }
-
-
 
 }
 
 
 @Serializable
-data class SJRJournal(
+data class SJRank(
     val country: String,
     val hIndex: Long,
     val issn: String,
@@ -64,11 +59,7 @@ data class SJRJournal(
 
 object HIndexParser {
 
-    fun mapRawToLine(path:String){
-
-    }
-
-    fun csfToHIndex(path:String): List<HIndexLine> {
+    fun csfToHIndex(path: String): List<HIndexLine> {
         val res = mutableListOf<HIndexLine>()
         csvReader() {
             delimiter = '\t'
