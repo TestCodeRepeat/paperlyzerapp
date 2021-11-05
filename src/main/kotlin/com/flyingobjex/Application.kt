@@ -28,5 +28,7 @@ fun Application.module(testing: Boolean = false) {
     configureSerialization()
     configureSockets()
 
+    app.initData()
+
 }
 

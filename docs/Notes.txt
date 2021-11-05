@@ -45,7 +45,7 @@ Oct 21
     - Maybe run against it, do last
 
   Steps
-  - re-apply stem/ssh topics
+  * re-apply stem/ssh topics
   - import Journal & Country rank csv file to mongo table apply H index & SJR score to all the papers on a new column
   - ? check & see if we can run authors from SSPaper table to get their country code
   - ? check & see if we can match code the author country by email

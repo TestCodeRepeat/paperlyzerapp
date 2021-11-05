@@ -1,14 +1,8 @@
 package com.flyingobjex.csv
 
-import com.flyingobjex.module
-import com.flyingobjex.paperlyzer.parser.CSVTopicParser
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlinx.serialization.encodeToString
+import java.io.File
+import org.junit.Test
+
 
 class HIndexTest {
 
@@ -17,37 +11,52 @@ class HIndexTest {
     val bioTitle = "Magnetic Resonance Materials in Physics, Biology, and Medicine"
     val transpoTitle = "Journal of Transportation Engineering Part A: Systems"
 
-    fun `should load h-index csv`(){
-//        val file =
-    }
+//    fun `should load h-index csv`(){
+////        val file =
+//    }
+//
+//    fun `should handle title separated by comma`(){
+//
+//    }
 
-    fun `should handle title separated by comma`(){
-
-    }
-
-    fun `should load h-index csv file from static resource`(){
-
+    @Test
+    fun `should hello worl`(){
+        println("hello world :: should hello worl :: ")
     }
 
     @Test
-    fun `should download hindex csv file`() {
-        withTestApplication(Application::module) {
-            handleRequest(HttpMethod.Get, "/static/hindex.csv").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals(HttpStatusCode.OK, response.status())
-
-            }
-        }
+    fun `should convert h-index csv file from to json file`(){
+        File("testfile.json").writeText("thing")
+//        val res = CSVHIndexParser.csfToHIndex("")
     }
 
-//    @Test
-    fun testRoot() {
-        withTestApplication(Application::module) {
-            handleRequest(HttpMethod.Get, "/").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("hello", response.content)
-            }
-        }
-    }
+////    @Test
+//    fun `should init hindex model by loading csv file`(){
+//        withTestApplication(Application::module) {
+//            handleRequest(HttpMethod.Get, "/init").apply {
+//
+//            }
+//        }
+//    }
+//
+////    @Test
+//    fun `should download hindex csv file`() {
+//        withTestApplication(Application::module) {
+//            handleRequest(HttpMethod.Get, "/docs/hindex.csv").apply {
+//                assertEquals(HttpStatusCode.OK, response.status())
+//                assertEquals(HttpStatusCode.OK, response.status())
+//            }
+//        }
+//    }
+//
+////    @Test
+//    fun testRoot() {
+//        withTestApplication(Application::module) {
+//            handleRequest(HttpMethod.Get, "/").apply {
+//                assertEquals(HttpStatusCode.OK, response.status())
+//                assertEquals("hello", response.content)
+//            }
+//        }
+//    }
 }
 

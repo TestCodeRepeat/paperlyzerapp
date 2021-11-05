@@ -1,6 +1,14 @@
 package com.flyingobjex.paperlyzer.parser
 
+import com.flyingobjex.paperlyzer.BASE_URL
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import io.ktor.client.request.*
+import java.io.File
+import kotlinx.serialization.json.Json
 
 
 data class HIndexLine(val title:String, val sjr: Int, val hIndex:Int )
@@ -14,9 +22,33 @@ fun cleanTitle(title:String):String{
         .trim()
 }
 
+
+class HIndexModel(){
+
+    var hIndexData:List<HIndexLine> = emptyList()
+
+    suspend fun loadHindexData(): Any {
+        val url = "$BASE_URL/static/hindex.csv"
+        return client.request<Any>(url)
+    }
+
+    private val client = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            })
+        }
+    }
+
+
+
+}
+
 object CSVHIndexParser {
 
-    fun csfToHIndex(path:String){
+    fun csfToHIndex(path:String): List<HIndexLine> {
         val res = mutableListOf<HIndexLine>()
         csvReader() {
             delimiter = '\t'
@@ -32,12 +64,11 @@ object CSVHIndexParser {
                         row[7].toInt()
                     )
 
-//                    val topic = CSVTopicParser.rawCsvTopicLineToTopic(csvLine)
-//                    res.add(topic)
+                    res.add(csvLine)
                 }
             }
         }
-//        val filtered = res.toList().filter { it.name != "" }
-//        return filtered
+
+        return res.toList()
     }
 }

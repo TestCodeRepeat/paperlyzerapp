@@ -34,6 +34,10 @@ fun Application.configureRouting() {
             }
         }
 
+        get("/init"){
+            app.initData()
+        }
+
         get("/url"){
             call.respondText { app.url() }
         }

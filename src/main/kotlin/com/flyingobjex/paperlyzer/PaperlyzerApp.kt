@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer
 
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.domain.topics
+import com.flyingobjex.paperlyzer.parser.HIndexModel
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
 import com.flyingobjex.paperlyzer.process.*
 import com.flyingobjex.plugins.SocketAction
@@ -15,16 +16,18 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 val API_BATCH_SIZE = System.getenv("API_BATCH_SIZE").toString().toInt()
 val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toString().toInt()
-var BASE_URL = "localhost"
+var BASE_URL = "localhost:8080"
 
 enum class ProcessType {
     citation, discipline, wostoss, report
 }
 
 const val BUILD_VERSION = 2
+
 class PaperlyzerApp(val mongo: Mongo) {
 
     var port: String = "na"
@@ -32,6 +35,8 @@ class PaperlyzerApp(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
 
     var matcher = TopicMatcher(topics)
+
+    var hIndexModel = HIndexModel()
 
     lateinit var process: IProcess
 
@@ -47,7 +52,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         val sysApiSize = System.getenv("API_BATCH_SIZE").toString().toInt()
         try {
             BASE_URL = System.getenv("BASE_URL").toString()
-        } catch(e:Exception){
+        } catch (e: Exception) {
             log.info("PaperlyzerApp () BASE_URL not set, default to localhost  ")
         }
 
@@ -71,7 +76,16 @@ class PaperlyzerApp(val mongo: Mongo) {
         log.info("PaperlyzerApp.()  url = ${url()}")
     }
 
-    fun url():String = "$BASE_URL/"
+    fun initData() {
+        runBlocking {
+//            val res = hIndexModel.loadHindexData()
+//            if (res != null){
+//                print(res)
+//            }
+        }
+    }
+
+    fun url(): String = "$BASE_URL/"
 
     fun initProcess(type: ProcessType) {
         matcher = TopicMatcher(topics)
@@ -190,6 +204,7 @@ class PaperlyzerApp(val mongo: Mongo) {
     fun updateServerPort(port: String) {
         this.port = port
     }
+
 
 }
 
