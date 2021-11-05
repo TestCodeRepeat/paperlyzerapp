@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 
 val API_BATCH_SIZE = System.getenv("API_BATCH_SIZE").toString().toInt()
 val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toString().toInt()
+var BASE_URL = "localhost"
 
 enum class ProcessType {
     citation, discipline, wostoss, report
@@ -26,7 +27,7 @@ enum class ProcessType {
 const val BUILD_VERSION = 2
 class PaperlyzerApp(val mongo: Mongo) {
 
-    var serverUrl: String = "na"
+    var port: String = "na"
 
     val log: Logger = Logger.getAnonymousLogger()
 
@@ -44,6 +45,11 @@ class PaperlyzerApp(val mongo: Mongo) {
 
     init {
         val sysApiSize = System.getenv("API_BATCH_SIZE").toString().toInt()
+        try {
+            BASE_URL = System.getenv("BASE_URL").toString()
+        } catch(e:Exception){
+            log.info("PaperlyzerApp () BASE_URL not set, default to localhost  ")
+        }
 
         println("PaperlyzerApp.kt :: PaperlyzerApp :: init()")
         println("PaperlyzerApp.kt :: API() :: sysApiSize = $sysApiSize")
@@ -62,7 +68,10 @@ class PaperlyzerApp(val mongo: Mongo) {
         File("test.json").writeText("hello json")
 
         log.info("\n\n build version: $BUILD_VERSION \n\n ")
+        log.info("PaperlyzerApp.()  url = ${url()}")
     }
+
+    fun url():String = "$BASE_URL:$port/"
 
     fun initProcess(type: ProcessType) {
         matcher = TopicMatcher(topics)
@@ -178,8 +187,8 @@ class PaperlyzerApp(val mongo: Mongo) {
         print(logReadout.value)
     }
 
-    fun updateServerUrl(url: String) {
-        serverUrl = url
+    fun updateServerPort(port: String) {
+        this.port = port
     }
 
 }

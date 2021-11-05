@@ -9,7 +9,6 @@ import io.ktor.http.content.*
 import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import kotlinx.html.a
 import kotlinx.html.body
 import kotlinx.html.h5
 
@@ -36,11 +35,11 @@ fun Application.configureRouting() {
         }
 
         get("/url"){
-            call.respondText { app.serverUrl }
+            call.respondText { app.port }
         }
 
         get("/") {
-            call.respondText { "hello" }
+            call.respondText { app.url() }
         }
 
         // Static feature. Try to access `/static/index.html`

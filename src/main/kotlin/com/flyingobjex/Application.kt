@@ -21,7 +21,7 @@ fun Application.module(testing: Boolean = false) {
 
     (environment as ApplicationEngineEnvironment).connectors.forEach { connector ->
         println("${connector.host}:${connector.port}")
-        app.updateServerUrl("${connector.host}:${connector.port}")
+        app.updateServerPort("${connector.host}:${connector.port}")
     }
 
     configureRouting()
