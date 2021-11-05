@@ -1,7 +1,13 @@
 package com.flyingobjex.csv
 
-import java.io.File
-import org.junit.Test
+import com.flyingobjex.paperlyzer.parser.HIndexParser
+import com.flyingobjex.paperlyzer.parser.SJRJournal
+import com.flyingobjex.paperlyzer.util.JsonUtils
+import com.flyingobjex.paperlyzer.util.JsonUtils.json
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.shouldNotBe
+import kotlin.test.Test
+import kotlinx.serialization.decodeFromString
 
 
 class HIndexTest {
@@ -10,6 +16,8 @@ class HIndexTest {
     val franceTitle = "Bulletin - Societie Geologique de France"
     val bioTitle = "Magnetic Resonance Materials in Physics, Biology, and Medicine"
     val transpoTitle = "Journal of Transportation Engineering Part A: Systems"
+
+    val path = "docs/sjrscore.json"
 
 //    fun `should load h-index csv`(){
 ////        val file =
@@ -20,14 +28,16 @@ class HIndexTest {
 //    }
 
     @Test
-    fun `should hello worl`(){
+    fun `should hello world`(){
         println("hello world :: should hello worl :: ")
     }
 
     @Test
     fun `should convert h-index csv file from to json file`(){
-        File("testfile.json").writeText("thing")
-//        val res = CSVHIndexParser.csfToHIndex("")
+        val file = JsonUtils.loadFile(path)
+        val res = json.decodeFromString<ArrayList<SJRJournal>>(file)
+        res shouldNotBe null
+        res.size shouldBeGreaterThan 30000
     }
 
 ////    @Test
