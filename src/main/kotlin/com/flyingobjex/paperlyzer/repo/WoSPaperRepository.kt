@@ -88,8 +88,8 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
         val totalPapers = mongo.genderedPapers.countDocuments().toInt()
         val processedCount = mongo.genderedPapers.countDocuments(
-            or(
-                WosPaper::sjrRank gte -5,
+            and(
+                WosPaper::sjrRank gt -5,
                 WosPaper::sjrRank ne null,
             )
         ).toInt()
