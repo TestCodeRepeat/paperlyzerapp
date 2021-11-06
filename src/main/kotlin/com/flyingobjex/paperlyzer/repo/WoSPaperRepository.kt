@@ -89,17 +89,15 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         val totalPapers = mongo.genderedPapers.countDocuments().toInt()
         val processedCount = mongo.genderedPapers.countDocuments(
             or(
-                WosPaper::sjrRank eq -5,
-                WosPaper::sjrRank gt 0,
+                WosPaper::sjrRank gte -5,
                 WosPaper::sjrRank ne null,
             )
-        )
-            .toInt()
+        ).toInt()
 
         return SJRStats(
             totalProcessedWithSJRIndex = processedCount,
             totalWithMatchingSJR = mongo.genderedPapers.countDocuments(WosPaper::sjrRank gt 0).toInt(),
-            totalUnidentified = mongo.genderedPapers.countDocuments(WosPaper::sjrRank eq -5).toInt(),
+            totalUnidentified = mongo.genderedPapers.countDocuments(WosPaper::sjrRank eq 0).toInt(),
             totalUnprocessed = totalPapers - processedCount,
             totalWosPapers = totalPapers
         )
@@ -147,9 +145,8 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
     fun unprocessedDisciplinesCount(): Long =
         mongo.genderedPapers.countDocuments(WosPaper::score eq -5)
 
-
     fun unprocessedSJRIndexCount(): Long =
-        mongo.genderedPapers.countDocuments(WosPaper::score eq -5)
+        mongo.genderedPapers.countDocuments(WosPaper::sjrRank eq -5)
 
     /** Citations */
     fun updateCitationsCount(wosPaperId: WosPaperId, count: Int, influentialCount: Int): UpdateResult =
@@ -203,7 +200,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         logMessage?.let { it("WoSPaperRepository.resetSJRIndexProcessed()  ") }
         val time = measureTimeMillis {
             mongo.genderedPapers.updateMany(
-                or(WosPaper::sjrRank eq -5, WosPaper::sjrRank eq null),
+                or(WosPaper::sjrRank ne -5),
                 listOf(
                     setValue(WosPaper::sjrRank, -5),
                     setValue(WosPaper::hIndex, -5),
@@ -383,6 +380,14 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
     fun getPaper(id: String): WosPaper? =
         mongo.genderedPapers.findOne(WosPaper::_id eq id)
+
+    fun getUnprocessedPapersBySJRIndex(batchSize: Int): List<WosPaper> =
+        mongo.genderedPapers.aggregate<WosPaper>(
+            match(
+                or(WosPaper::sjrRank eq -5),
+            ),
+            limit(batchSize)
+        ).toList()
 
 
 }

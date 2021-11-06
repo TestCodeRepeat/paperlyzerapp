@@ -11,15 +11,25 @@ class SJRProcessTest {
     private val mongo = Mongo(false)
     private val wosRepo = WoSPaperRepository(mongo)
 
-//    private val app = PaperlyzerApp(mongo)
+
+    private val app = PaperlyzerApp(mongo)
     private val process = SJRProcess(mongo)
 
-//    @Test
-    fun `should reset SJR process by making all WOS paper sjrank = -5`(){
-        process.reset()
+    @Test
+    fun `app should run sjr process`(){
+        app.process.reset()
+        app.process.printStats()
+        app.start()
     }
 
-    @Test
+//    @Test
+    fun `should run SJR process for first 10000 records`(){
+        process.reset()
+        process.runProcess()
+        process.printStats()
+    }
+
+//    @Test
     fun `should print stats for sjr process`(){
         process.printStats()
     }

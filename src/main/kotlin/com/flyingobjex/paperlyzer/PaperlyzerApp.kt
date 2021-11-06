@@ -23,7 +23,7 @@ val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toStrin
 var BASE_URL = "localhost:8080"
 
 enum class ProcessType {
-    citation, discipline, wostoss, report
+    citation, discipline, wostoss, report, sjr
 }
 
 const val BUILD_VERSION = 2
@@ -64,7 +64,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
 
-        initProcess(ProcessType.discipline)
+        initProcess(ProcessType.sjr)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")
@@ -95,6 +95,7 @@ class PaperlyzerApp(val mongo: Mongo) {
             ProcessType.discipline -> DisciplineProcess(mongo, matcher)
             ProcessType.wostoss -> WosToSsProcess(mongo, ::logMessage)
             ProcessType.report -> ReportProcess(mongo)
+            ProcessType.sjr -> SJRProcess(mongo)
         }
 
         process.init()

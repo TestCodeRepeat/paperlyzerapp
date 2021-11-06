@@ -71,7 +71,6 @@ class DisciplineProcess(
         return shouldContinue
     }
 
-
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
         log.info("WosCitationProcess.runProcess()  0000 :: batchSize = $batchSize")
@@ -100,7 +99,6 @@ class DisciplineProcess(
     }
 
     override fun reset() = wosRepo.resetDisciplineProcessed()
-
 
     override fun cancelJobs() {
         println("DisciplineProcess.kt :: cancelJobs :: ")

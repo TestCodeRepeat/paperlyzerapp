@@ -20,7 +20,7 @@ fun cleanTitle(title: String): String {
 data class SJRScore(val sjrRank: SJRank, val score: Int)
 
 val re = Regex("[^A-Za-z0-9 ]")
-fun clean(value:String):String =
+fun clean(value: String): String =
     re.replace(value, " ")
         .replace("  ", " ")
         .uppercase()
@@ -33,18 +33,19 @@ class SJRModel() {
     init {
         val contents = JsonUtils.loadResourceFile("sjrscore.json")
         sjrRankings = JsonUtils.json.decodeFromString<ArrayList<SJRank>>(contents)
-            .map { it.copy(title = clean(it.title)) }
-    }
+            .map { it.copy(title = clean(it.title), sjrAsInt = it.sjrToInt()) }
 
+        print("initlized")
+    }
 
 
     fun matchJournalTitleToSJRank(title: String): SJRank? {
         val t = clean(title)
         val res = sjrRankings.filter { it.title == t }
 //        val res = sjrRankings.filter { it.title == t || it.title.contains(t) }
-        if (res.size > 1){
-            println(" ::::: ")
-            println(res.joinToString { "$it :: " })
+        if (res.size > 1) {
+            println(" ::::: DUPLICATE JOURNAL TITLE !!!!!! :::::::")
+            println(res.joinToString { "${it.title} :: " })
             println(" ::::: ")
         }
         return res.firstOrNull()
@@ -64,8 +65,13 @@ data class SJRank(
     val sjr: String,
     val sourceid: Long,
     val title: String,
-    val type: String
-)
+    val type: String,
+    val sjrAsInt: Int? = null,
+) {
+    fun sjrToInt(): Int =
+        sjr.replace(",", "").toIntOrNull() ?: -99
+
+}
 
 object HIndexParser {
 

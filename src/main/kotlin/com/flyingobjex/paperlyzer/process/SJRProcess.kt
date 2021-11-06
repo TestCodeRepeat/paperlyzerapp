@@ -1,7 +1,10 @@
 package com.flyingobjex.paperlyzer.process
 
+import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
+import com.flyingobjex.paperlyzer.entity.WosPaper
+import com.flyingobjex.paperlyzer.parser.SJRModel
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
@@ -9,6 +12,8 @@ import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
+import org.litote.kmongo.eq
+import org.litote.kmongo.setValue
 
 
 data class SJRStats(
@@ -17,7 +22,7 @@ data class SJRStats(
     val totalUnidentified: Int,
     val totalUnprocessed: Int,
     val totalWosPapers: Int
-){
+) {
     override fun toString(): String {
         return ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
@@ -40,6 +45,7 @@ class SJRProcess(val mongo: Mongo) : IProcess {
 
     val log: Logger = Logger.getAnonymousLogger()
     private val wosRepo = WoSPaperRepository(mongo)
+    private val sjrModel = SJRModel()
 
     override fun init() {
         println("SJRProcess.kt :: init :: ")
@@ -48,16 +54,39 @@ class SJRProcess(val mongo: Mongo) : IProcess {
     override fun name(): String = "SJR / H Index Process"
 
     override fun shouldContinueProcess(): Boolean {
-        var shouldContinue = false
+        var shouldContinue: Boolean
         val time = measureTimeMillis {
-            shouldContinue = wosRepo.unprocessedSJRIndexCount() > UNPROCESSED_RECORDS_GOAL
+            val unprocessedCount = wosRepo.unprocessedSJRIndexCount()
+            shouldContinue = unprocessedCount >= UNPROCESSED_RECORDS_GOAL
         }
         println("DisciplineProcess.shouldContinue() time == $time")
         return shouldContinue
     }
 
     override fun runProcess() {
-        TODO("Not yet implemented")
+        val batchSize = API_BATCH_SIZE
+        log.info("SJRProcess.runProcess()  0000 :: batchSize = $batchSize")
+        var unprocessed: List<WosPaper>
+        val time = measureTimeMillis {
+            unprocessed = wosRepo.getUnprocessedPapersBySJRIndex(batchSize)
+        }
+
+        log.info("SJRProcess.runProcess()  getUnprocessedPapersBySJRIndex time :: $time ms")
+
+        unprocessed.parallelStream().forEach { paper ->
+            sjrModel.matchJournalTitleToSJRank(paper.journal)?.let { match ->
+                mongo.genderedPapers.updateOne(
+                    WosPaper::_id eq paper._id,
+                    setValue(WosPaper::sjrRank, match.sjrToInt())
+                )
+            } ?: run {
+                mongo.genderedPapers.updateOne(
+                    WosPaper::_id eq paper._id,
+                    setValue(WosPaper::sjrRank, 0)
+                )
+            }
+        }
+
     }
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
