@@ -1,17 +1,9 @@
 package com.flyingobjex.paperlyzer.parser
 
-import com.flyingobjex.paperlyzer.BASE_URL
 import com.flyingobjex.paperlyzer.util.JsonUtils
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.request.*
-import java.io.File
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 
 data class HIndexLine(val title: String, val sjr: Int, val hIndex: Int)
@@ -27,17 +19,29 @@ fun cleanTitle(title: String): String {
 
 data class SJRScore(val sjrRank: SJRank, val score: Int)
 
-class HIndexModel() {
+val re = Regex("[^A-Za-z0-9 ]")
+fun clean(value:String):String =
+    re.replace(value, " ")
+        .replace("  ", " ")
+        .uppercase()
+        .trim()
+
+class SJRModel() {
 
     private val sjrRankings: List<SJRank>
 
     init {
         val contents = JsonUtils.loadResourceFile("sjrscore.json")
         sjrRankings = JsonUtils.json.decodeFromString<ArrayList<SJRank>>(contents)
+            .map { it.copy(title = clean(it.title)) }
     }
 
-    fun matchJournalTitleToSJRank(title: String): SJRank {
 
+
+    fun matchJournalTitleToSJRank(title: String): SJRank? {
+        val t = clean(title)
+        val res = sjrRankings.filter { it.title == t }
+        return res.firstOrNull()
     }
 
 }

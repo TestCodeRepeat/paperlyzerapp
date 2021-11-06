@@ -2,7 +2,7 @@ package com.flyingobjex.paperlyzer
 
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.domain.topics
-import com.flyingobjex.paperlyzer.parser.HIndexModel
+import com.flyingobjex.paperlyzer.parser.SJRModel
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
 import com.flyingobjex.paperlyzer.process.*
 import com.flyingobjex.plugins.SocketAction
@@ -36,7 +36,7 @@ class PaperlyzerApp(val mongo: Mongo) {
 
     var matcher = TopicMatcher(topics)
 
-    var hIndexModel = HIndexModel()
+    var hIndexModel = SJRModel()
 
     lateinit var process: IProcess
 
