@@ -148,7 +148,7 @@ class PaperlyzerApp(val mongo: Mongo) {
                 GlobalScope.launch {
                     start()
                 }
-                "Starting WoS -> Semantic Scholar Paper Batch Process"
+                "Starting Process :: ${process.name()}"
             }
             SocketAction.STOP -> {
                 stop(outgoing)
