@@ -45,7 +45,7 @@ class SJRModel() {
 //        val res = sjrRankings.filter { it.title == t || it.title.contains(t) }
         if (res.size > 1) {
             println(" ::::: DUPLICATE JOURNAL TITLE !!!!!! :::::::")
-            println(res.joinToString { "${it.title} :: " })
+            println(res.joinToString("") { "${it.title} :: " })
             println(" ::::: ")
         }
         return res.firstOrNull()

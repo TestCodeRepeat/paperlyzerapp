@@ -57,7 +57,7 @@ class SJRProcess(val mongo: Mongo) : IProcess {
         var shouldContinue: Boolean
         val time = measureTimeMillis {
             val unprocessedCount = wosRepo.unprocessedSJRIndexCount()
-            shouldContinue = unprocessedCount >= UNPROCESSED_RECORDS_GOAL
+            shouldContinue = unprocessedCount > UNPROCESSED_RECORDS_GOAL
         }
         println("DisciplineProcess.shouldContinue() time == $time")
         return shouldContinue
