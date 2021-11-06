@@ -41,6 +41,12 @@ class SJRModel() {
     fun matchJournalTitleToSJRank(title: String): SJRank? {
         val t = clean(title)
         val res = sjrRankings.filter { it.title == t }
+//        val res = sjrRankings.filter { it.title == t || it.title.contains(t) }
+        if (res.size > 1){
+            println(" ::::: ")
+            println(res.joinToString { "$it :: " })
+            println(" ::::: ")
+        }
         return res.firstOrNull()
     }
 

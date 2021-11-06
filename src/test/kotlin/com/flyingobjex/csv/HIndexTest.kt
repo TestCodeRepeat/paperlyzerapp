@@ -28,14 +28,22 @@ class HIndexTest {
     val sjrCanada = "Canadian Journal of Fisheries and Aquatic Sciences"
     val canada = "CANADIAN JOURNAL OF FISHERIES AND AQUATIC SCIENCES"
 
+    val wiley ="WILEY INTERDISCIPLINARY REVIEWS-CLIMATE CHANGE"
+
     val dbNatureResource = "NATURAL RESOURCES RESEARCH"
 
     val sjrModel = SJRModel()
 
     @Test
-    fun `should match deepSea journal name from sjr rankings`() {
+    fun `should match `(){
+        sjrModel.matchJournalTitleToSJRank("INTERNATIONAL JOURNAL FOR NUMERICAL AND ANALYTICAL METHODS IN") shouldNotBe null
+    }
+
+    @Test
+    fun `should match journal name to sjr journal title`() {
         sjrModel.matchJournalTitleToSJRank(deepSea) shouldNotBe null
         sjrModel.matchJournalTitleToSJRank(canada) shouldNotBe null
+        sjrModel.matchJournalTitleToSJRank(wiley) shouldNotBe null
     }
 
     @Test
@@ -49,7 +57,7 @@ class HIndexTest {
         sjrModel.matchJournalTitleToSJRank(dbNatureResource) shouldNotBe null
     }
 
-//    @Test
+    @Test
     fun `should match basic journal names from sjr rankings`() {
         sjrModel.matchJournalTitleToSJRank(transpoTitle) shouldNotBe null
         sjrModel.matchJournalTitleToSJRank(bioTitle) shouldNotBe null

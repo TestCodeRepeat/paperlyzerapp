@@ -6,9 +6,11 @@ import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.parser.MatchingCriteria
 import com.flyingobjex.paperlyzer.process.DisciplineProcessStats
 import com.flyingobjex.paperlyzer.process.ReportStats
+import com.flyingobjex.paperlyzer.process.SJRStats
 import com.flyingobjex.paperlyzer.process.WosCitationStats
 import com.mongodb.client.result.UpdateResult
 import java.util.logging.Logger
+import kotlin.system.measureTimeMillis
 import kotlinx.serialization.Serializable
 import org.litote.kmongo.*
 
@@ -82,6 +84,27 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         )
     }
 
+    fun getSJRStats(): SJRStats {
+
+        val totalPapers = mongo.genderedPapers.countDocuments().toInt()
+        val processedCount = mongo.genderedPapers.countDocuments(
+            or(
+                WosPaper::sjrRank eq -5,
+                WosPaper::sjrRank gt 0,
+                WosPaper::sjrRank ne null,
+            )
+        )
+            .toInt()
+
+        return SJRStats(
+            totalProcessedWithSJRIndex = processedCount,
+            totalWithMatchingSJR = mongo.genderedPapers.countDocuments(WosPaper::sjrRank gt 0).toInt(),
+            totalUnidentified = mongo.genderedPapers.countDocuments(WosPaper::sjrRank eq -5).toInt(),
+            totalUnprocessed = totalPapers - processedCount,
+            totalWosPapers = totalPapers
+        )
+    }
+
     fun applyMatchingCriteria(paper: WosPaper, allCriteria: List<MatchingCriteria>): WosPaper {
         val topCriteria = allCriteria.sortedByDescending { it.score }.firstOrNull()
 
@@ -124,6 +147,9 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
     fun unprocessedDisciplinesCount(): Long =
         mongo.genderedPapers.countDocuments(WosPaper::score eq -5)
 
+
+    fun unprocessedSJRIndexCount(): Long =
+        mongo.genderedPapers.countDocuments(WosPaper::score eq -5)
 
     /** Citations */
     fun updateCitationsCount(wosPaperId: WosPaperId, count: Int, influentialCount: Int): UpdateResult =
@@ -171,6 +197,23 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         mongo.genderedPapers.countDocuments(
             WosPaper::citationsProcessed eq true
         ).toInt()
+
+    fun resetSJRIndexProcessed() {
+        log.info("WoSPaperRepository.resetSJRIndexProcessed()  ")
+        logMessage?.let { it("WoSPaperRepository.resetSJRIndexProcessed()  ") }
+        val time = measureTimeMillis {
+            mongo.genderedPapers.updateMany(
+                or(WosPaper::sjrRank eq -5, WosPaper::sjrRank eq null),
+                listOf(
+                    setValue(WosPaper::sjrRank, -5),
+                    setValue(WosPaper::hIndex, -5),
+                )
+            )
+        }
+        log.info("WoSPaperRepository.resetSJRIndexProcessed()  COMPLETED in $time ms")
+        logMessage?.let { it("WoSPaperRepository.resetSJRIndexProcessed() COMPLETED in $time ms  ") }
+    }
+
 
     fun resetCitationProcessed(): String {
         log.info("WoSPaperRepository.resetCitationProcessed()  ")
@@ -312,10 +355,10 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         return mongo.rawPaperFullDetails.find().toList()
     }
 
+
     fun clearPapers() {
         mongo.clearPapers()
     }
-
 
     fun getCitationStats(): WosCitationStats {
         return WosCitationStats(

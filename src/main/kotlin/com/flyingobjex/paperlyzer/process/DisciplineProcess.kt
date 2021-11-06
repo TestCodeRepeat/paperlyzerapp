@@ -34,7 +34,7 @@ data class DisciplineProcessStats(
             "totalSSH: $totalSSH \n" +
             "totalMaybe: $totalMaybe \n" +
             "totalUnidentified: $totalUnidentified \n" +
-            "PROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
+            "UNPROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n"

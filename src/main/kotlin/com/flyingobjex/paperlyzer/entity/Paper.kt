@@ -83,6 +83,8 @@ data class WosPaper(
     var topStem: MatchingCriteria? = null,
     var topSSH: MatchingCriteria? = null,
     var reported: Boolean? = null,
+    var sjrRank: Int? = null,
+    var hIndex: Int? = null,
     val _id: String? = null,
 ) {
 }
