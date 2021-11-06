@@ -76,6 +76,8 @@ data class PaperReportLine(
     var discipline: DisciplineType? = null,
     var discScore: Int? = null,
     val discTopic: String?,
+    val sjrRank:Int? = null,
+    val hIndex:Int? = null,
 //    var discTopSSH: String? = null,
 //    val discTopSTEM: String? = null,
 )
@@ -175,9 +177,10 @@ class StatsController(val mongo: Mongo) {
             discScore = it.score,
             discTopic = it.matchingCriteria?.sortedByDescending { it.score }?.firstOrNull()?.term,
             diszOrigTopic = it.topics.joinToString("; "),
+            sjrRank = it.sjrRank,
+            hIndex = it.hIndex,
         )
     }
-
 
     /** Disciplines */
     fun resetDisciplinesReport() {

@@ -46,12 +46,12 @@ Oct 21
 
   Steps
   * re-apply stem/ssh topics
-  - import Journal & Country rank csv file to mongo table apply H index & SJR score to all the papers on a new column
-  - ? check & see if we can run authors from SSPaper table to get their country code
-  - ? check & see if we can match code the author country by email
+  * import Journal & Country rank csv file to mongo table apply H index & SJR score to all the papers on a new column
 
   Paper Co-Authors - Gendered Authors Table
   - number of co-authors per paper combined (total authors - target author) / total number of papers
+  - ? check & see if we can run authors from SSPaper table to get their country code
+  - ? check & see if we can match code the author country by email
 
 
 
