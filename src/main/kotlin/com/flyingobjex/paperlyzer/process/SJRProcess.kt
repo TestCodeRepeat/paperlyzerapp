@@ -77,7 +77,8 @@ class SJRProcess(val mongo: Mongo) : IProcess {
             sjrModel.matchJournalTitleToSJRank(paper.journal)?.let { match ->
                 mongo.genderedPapers.updateOne(
                     WosPaper::_id eq paper._id,
-                    setValue(WosPaper::sjrRank, match.sjrToInt())
+                    listOf(setValue(WosPaper::sjrRank, match.sjrToInt()),
+                    setValue(WosPaper::hIndex, match.hIndex.toInt()))
                 )
             } ?: run {
                 mongo.genderedPapers.updateOne(
