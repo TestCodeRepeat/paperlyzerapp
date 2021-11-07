@@ -51,7 +51,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     override fun name(): String = "CoAuthor / Author Process"
 
-    fun getAssociatedPaper(papers:List<WosPaperWithAuthors>, doi:String) =
+    private fun getAssociatedPaper(papers:List<WosPaperWithAuthors>, doi:String) =
         papers.firstOrNull { it.doi == doi }
 
     override fun runProcess() {
@@ -64,8 +64,10 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
-        val allDois = unprocessed.map { it.papers?.map { it.doi } ?: emptyList() }.flatten()
+        val allDois = unprocessed.map { unProcessedAuthor -> unProcessedAuthor.papers?.map { it.doi } ?: emptyList() }.flatten()
         val allAssociatedPapers = wosRepo.getPapers(allDois)
+
+        log.info("CoAuthorProcess.runProcess()  allDois: ${allDois}  allAssociatedPapers: ${allAssociatedPapers.size}" )
 
         unprocessed.parallelStream().forEach { author ->
             val associatedPapers = author.papers?.map { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
@@ -73,22 +75,10 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
             val totalAllAuthors = associatedPapers.sumOf { it?.totalAuthors ?: 0 }
             val totalCoAuthors = totalAllAuthors - totalPapers
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
-
-            authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
+            log.info("CoAuthorProcess.runProcess()   = ${author.lastName}${author.firstName}  associatedPapers:${associatedPapers.size}  averageCoAuthors: ${averageCoAuthors} ")
+            val res = authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
+            res
         }
-
-
-//        unprocessed.parallelStream().forEach { author ->
-//            val associatedPapers = wosRepo.getPapers(author.papers?.map { it.doi } ?: emptyList())
-//            val totalPapers = associatedPapers.size
-//            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
-//            val totalCoAuthors = totalAllAuthors - totalPapers
-//            val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
-//
-//            authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
-//        }
-
-
     }
 
     override fun shouldContinueProcess(): Boolean {
