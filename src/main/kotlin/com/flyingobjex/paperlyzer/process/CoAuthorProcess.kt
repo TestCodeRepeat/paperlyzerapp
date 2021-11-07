@@ -52,13 +52,13 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
-        log.info("WosCitationProcess.runProcess()  0000 :: batchSize = $batchSize")
+        log.info("CoAuthorProcess.runProcess()  :: batchSize = $batchSize")
         var unprocessed = emptyList<Author>()
         val time = measureTimeMillis {
             unprocessed = authorRepo.getUnprocessedAuthorsByCoAuthors(batchSize)
         }
 
-        log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time")
+        log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
         val processTime = measureTimeMillis {
 
@@ -74,7 +74,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
             }
         }
 
-        log.info("CoAuthorProcess.runProcess() paralell processTime = $processTime" )
+        log.info("\n\nCoAuthorProcess.runProcess() parallell processTime = $processTime \n\n" )
 
 
     }
