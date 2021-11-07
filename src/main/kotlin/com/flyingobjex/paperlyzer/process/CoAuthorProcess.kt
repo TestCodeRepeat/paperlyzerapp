@@ -68,9 +68,9 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
         log.info("CoAuthorProcess.runProcess()  allDOis.size = ${allDois.size}" )
 
-        val allAssociatedPapers = allDois.mapNotNull { wosRepo.getPaperReduced(it) }
+        val allAssociatedPapers = wosRepo.getPapers(allDois)
 
-        log.info("CoAuthorProcess.runProcess()  allDois: ${allDois}  allAssociatedPapers: ${allAssociatedPapers.size}" )
+        log.info("CoAuthorProcess.runProcess()  allDois: $allDois  allAssociatedPapers: ${allAssociatedPapers.size}" )
 
         unprocessed.parallelStream().forEach { author ->
             val associatedPapers = author.papers?.map { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
