@@ -4,7 +4,6 @@ import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.Author
-import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
@@ -14,7 +13,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
-import org.litote.kmongo.ne
 
 data class CoAuthorProcessStats(
     val totalProcessedWithCoAuthorData: Long,
@@ -77,7 +75,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     override fun shouldContinueProcess(): Boolean {
         var shouldContinue = false
-        val unprocessedCount = authorRepo.unprocessedAuthorsCount()
+        val unprocessedCount = authorRepo.unprocessedCoAuthorsCount()
         log.info("CoAuthorProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
         val time = measureTimeMillis {
             shouldContinue = unprocessedCount > UNPROCESSED_RECORDS_GOAL

@@ -13,12 +13,44 @@ class AuthorRepository(val mongo: Mongo) {
 
     fun resetCoAuthorData() {
         mongo.genderedAuthors.updateMany(
-            Author::averageCoAuthors ne -5.0,
+            Author::averageCoAuthors ne -5.5,
             listOf(
-                setValue(Author::averageCoAuthors, -5.0),
+                setValue(Author::averageCoAuthors, -5.5),
                 setValue(Author::totalPapers, -5)
             )
         )
+    }
+
+    fun getCoAuthorStats(): CoAuthorProcessStats {
+        val totalAuthors = mongo.genderedAuthors.countDocuments()
+        val totalProcessed = mongo.genderedAuthors.countDocuments(Author::averageCoAuthors gt -5.0)
+        return CoAuthorProcessStats(
+            totalProcessedWithCoAuthorData = totalProcessed,
+            totalUnprocessed = unprocessedCoAuthorsCount(),
+            totalAuthors = totalAuthors,
+            0
+        )
+    }
+
+    fun unprocessedCoAuthorsCount(): Long {
+        return mongo.genderedAuthors.countDocuments(
+            or(
+                Author::averageCoAuthors eq -5.5,
+                Author::averageCoAuthors eq null
+            )
+        )
+    }
+
+    fun getUnprocessedAuthorsByCoAuthors(batchSize: Int): List<Author> {
+        return mongo.genderedAuthors.aggregate<Author>(
+            match(
+                or(
+                    Author::averageCoAuthors eq -5.5,
+                    Author::averageCoAuthors eq null,
+                )
+            ),
+            limit(batchSize)
+        ).toList()
     }
 
     fun getSsUnprocessedAuthors(batchSize: Int): List<Author> {
@@ -172,36 +204,6 @@ class AuthorRepository(val mongo: Mongo) {
             }
 
         }
-    }
-
-    fun getCoAuthorStats(): CoAuthorProcessStats {
-        val totalAuthors = mongo.genderedAuthors.countDocuments()
-        val totalProcessed = mongo.genderedAuthors.countDocuments(Author::averageCoAuthors gt -5.0)
-        return CoAuthorProcessStats(
-            totalProcessedWithCoAuthorData = totalProcessed,
-            totalUnprocessed = unprocessedAuthorsCount(),
-            totalAuthors = totalAuthors,
-            0
-        )
-    }
-
-    fun unprocessedAuthorsCount(): Long {
-        return mongo.genderedAuthors.countDocuments(
-            or(
-                Author::averageCoAuthors eq -5.0,
-                Author::averageCoAuthors eq null
-            )
-        )
-    }
-
-    fun getUnprocessedAuthorsByCoAuthors(batchSize: Int): List<Author> {
-        return mongo.genderedAuthors.find(
-            or(
-                Author::averageCoAuthors eq -5.0,
-                Author::averageCoAuthors eq null,
-            ),
-            limit(batchSize)
-        ).toList()
     }
 
     fun updateAuthor(author: Author): UpdateResult =
