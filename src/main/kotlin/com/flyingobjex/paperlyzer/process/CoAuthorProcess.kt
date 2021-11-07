@@ -6,6 +6,7 @@ import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.repo.WosPaperWithAuthors
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
@@ -60,8 +61,11 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
+        val allDois = unprocessed.map { it.papers?.map { it.doi } ?: emptyList() }.flatten()
+        val allAssociatedPapers = wosRepo.getPapers(allDois).groupBy(WosPaperWithAuthors::doi)
+
         unprocessed.parallelStream().forEach { author ->
-            val associatedPapers = wosRepo.getPapers(author.papers?.map { it.doi } ?: emptyList())
+            val associatedPapers = author.papers?.map { allAssociatedPapers[it.doi] ?: emptyList() }?.flatten() ?: emptyList()
             val totalPapers = associatedPapers.size
             val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
             val totalCoAuthors = totalAllAuthors - totalPapers
@@ -69,6 +73,17 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
             authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
         }
+
+
+//        unprocessed.parallelStream().forEach { author ->
+//            val associatedPapers = wosRepo.getPapers(author.papers?.map { it.doi } ?: emptyList())
+//            val totalPapers = associatedPapers.size
+//            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
+//            val totalCoAuthors = totalAllAuthors - totalPapers
+//            val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
+//
+//            authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
+//        }
 
 
     }
