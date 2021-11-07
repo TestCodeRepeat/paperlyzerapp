@@ -7,8 +7,6 @@ import com.flyingobjex.paperlyzer.process.CoAuthorProcessStats
 import com.mongodb.client.result.UpdateResult
 import org.litote.kmongo.*
 import java.util.logging.Logger
-import kotlin.system.measureNanoTime
-import kotlin.system.measureTimeMillis
 
 class AuthorRepository(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
@@ -34,13 +32,8 @@ class AuthorRepository(val mongo: Mongo) {
         )
     }
 
-    fun unprocessedCoAuthorsCount(): Long {
-        return mongo.genderedAuthors.countDocuments(
-            or(
-                Author::averageCoAuthors eq -5.5
-            )
-        )
-    }
+    fun unprocessedCoAuthorsCount(): Long = mongo.genderedAuthors.countDocuments(Author::averageCoAuthors eq -5.5)
+
 
     fun getUnprocessedAuthorsByCoAuthors(batchSize: Int): List<Author> {
         return mongo.genderedAuthors.aggregate<Author>(
@@ -203,18 +196,13 @@ class AuthorRepository(val mongo: Mongo) {
     }
 
     fun updateAuthor(author: Author): UpdateResult {
-        var res: UpdateResult
-        val time = measureTimeMillis {
-            res = mongo.genderedAuthors.updateOne(
-                Author::_id eq author._id,
-                listOf(
-                    setValue(Author::totalPapers, author.totalPapers),
-                    setValue(Author::averageCoAuthors, author.averageCoAuthors),
-                )
+        return mongo.genderedAuthors.updateOne(
+            Author::_id eq author._id,
+            listOf(
+                setValue(Author::totalPapers, author.totalPapers),
+                setValue(Author::averageCoAuthors, author.averageCoAuthors),
             )
-        }
-//        log.info("AuthorRepository.updateAuthor()  update time = $time" )
-        return res
+        )
     }
 }
 
