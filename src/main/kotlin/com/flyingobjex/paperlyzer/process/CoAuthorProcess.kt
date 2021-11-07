@@ -60,10 +60,10 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
-        val processTime = measureTimeMillis {
 
             unprocessed.parallelStream().forEach { author ->
 
+        val processTime = measureTimeMillis {
                 val associatedPapers = wosRepo.getPapers(author.papers?.map { it.doi } ?: emptyList())
                 val totalPapers = associatedPapers.size
                 val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
@@ -72,9 +72,9 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
                 authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
             }
+            log.info("\n\nCoAuthorProcess.runProcess() parallell processTime = $processTime \n\n" )
         }
 
-        log.info("\n\nCoAuthorProcess.runProcess() parallell processTime = $processTime \n\n" )
 
 
     }

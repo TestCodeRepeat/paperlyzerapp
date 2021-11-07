@@ -213,7 +213,7 @@ class AuthorRepository(val mongo: Mongo) {
                 )
             )
         }
-        log.info("AuthorRepository.updateAuthor()  update time = $time" )
+//        log.info("AuthorRepository.updateAuthor()  update time = $time" )
         return res
     }
 }
