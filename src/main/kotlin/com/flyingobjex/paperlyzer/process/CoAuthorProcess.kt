@@ -64,13 +64,13 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
-        val allDois = unprocessed.map { unProcessedAuthor -> unProcessedAuthor.papers?.map { it.doi } ?: emptyList() }.flatten()
+        val allShortTitles = unprocessed.map { unProcessedAuthor -> unProcessedAuthor.papers?.map { it.shortTitle } ?: emptyList() }.flatten()
 
-        log.info("CoAuthorProcess.runProcess()  allDOis.size = ${allDois.size}" )
+        log.info("CoAuthorProcess.runProcess()  allDOis.size = ${allShortTitles.size}" )
 
-        val allAssociatedPapers = wosRepo.getPapers(allDois)
+        val allAssociatedPapers = wosRepo.getPapers(allShortTitles)
 
-        log.info("CoAuthorProcess.runProcess()  allDois: $allDois  allAssociatedPapers: ${allAssociatedPapers.size}" )
+        log.info("CoAuthorProcess.runProcess()   allAssociatedPapers: ${allAssociatedPapers.size}" )
 
         unprocessed.parallelStream().forEach { author ->
             val associatedPapers = author.papers?.map { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
@@ -78,7 +78,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
             val totalAllAuthors = associatedPapers.sumOf { it?.totalAuthors ?: 0 }
             val totalCoAuthors = totalAllAuthors - totalPapers
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
-            log.info("CoAuthorProcess.runProcess()   = ${author.lastName}${author.firstName}  associatedPapers:${associatedPapers.size}  averageCoAuthors: ${averageCoAuthors} ")
+//            log.info("CoAuthorProcess.runProcess()   = ${author.lastName}${author.firstName}  associatedPapers:${associatedPapers.size}  averageCoAuthors: ${averageCoAuthors} ")
             val res = authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
             res
         }

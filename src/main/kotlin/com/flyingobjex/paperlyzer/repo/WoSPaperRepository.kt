@@ -381,10 +381,10 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         )
     }
 
-    fun getPapers(doiNumbers: List<String>): List<WosPaperWithAuthors> {
+    fun getPapers(shortTitles: List<String>): List<WosPaperWithAuthors> {
 
         return mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
-            match(WosPaper::doi `in` doiNumbers),
+            match(WosPaper::shortTitle `in` shortTitles),
             project(
                 WosPaperWithAuthors::_id from WosPaper::_id,
                 WosPaperWithAuthors::doi from WosPaper::doi,
