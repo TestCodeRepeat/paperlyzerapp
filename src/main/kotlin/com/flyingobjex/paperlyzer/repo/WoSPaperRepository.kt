@@ -382,23 +382,16 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
     }
 
     fun getPapers(doiNumbers: List<String>): List<WosPaperWithAuthors> {
-        val res: List<WosPaperWithAuthors>
 
-        val getPapersTime = measureTimeMillis {
+        return mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
+            match(WosPaper::doi `in` doiNumbers),
+            project(
+                WosPaperWithAuthors::_id from WosPaper::_id,
+                WosPaperWithAuthors::doi from WosPaper::doi,
+                WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors
+            ),
+        ).toList()
 
-            res = mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
-                match(WosPaper::doi `in` doiNumbers),
-                project(
-                    WosPaperWithAuthors::_id from WosPaper::_id,
-                    WosPaperWithAuthors::doi from WosPaper::doi,
-                    WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors
-                ),
-            ).toList()
-        }
-
-        log.info("WoSPaperRepository.getPapers()  getPapersTime = $getPapersTime" )
-
-        return res
     }
 
 
