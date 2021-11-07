@@ -72,7 +72,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
                 authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
             }
-            log.info("CoAuthorProcess.runProcess() parallell processTime = $processTime ")
+//            log.info("CoAuthorProcess.runProcess() parallell processTime = $processTime ")
         }
 
 
