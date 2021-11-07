@@ -58,18 +58,24 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
             unprocessed = authorRepo.getUnprocessedAuthorsByCoAuthors(batchSize)
         }
 
-        unprocessed.parallelStream().forEach { author ->
+        log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time")
 
-            val associatedPapers = wosRepo.getPapers(author.papers?.map { it.doi } ?: emptyList())
-            val totalPapers = associatedPapers.size
-            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
-            val totalCoAuthors = totalAllAuthors - associatedPapers.size
-            val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
+        val processTime = measureTimeMillis {
 
-            authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
+            unprocessed.parallelStream().forEach { author ->
+
+                val associatedPapers = wosRepo.getPapers(author.papers?.map { it.doi } ?: emptyList())
+                val totalPapers = associatedPapers.size
+                val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
+                val totalCoAuthors = totalAllAuthors - associatedPapers.size
+                val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
+
+                authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
+            }
         }
 
-        log.info("CoAuthorProcess.runProcess()  time = $time")
+        log.info("CoAuthorProcess.runProcess() paralell processTime = $processTime" )
+
 
     }
 
