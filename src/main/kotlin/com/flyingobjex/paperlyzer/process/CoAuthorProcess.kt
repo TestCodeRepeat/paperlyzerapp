@@ -65,7 +65,8 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
         val allDois = unprocessed.map { unProcessedAuthor -> unProcessedAuthor.papers?.map { it.doi } ?: emptyList() }.flatten()
-        val allAssociatedPapers = wosRepo.getPapers(allDois)
+
+        val allAssociatedPapers = allDois.mapNotNull { wosRepo.getPaperReduced(it) }
 
         log.info("CoAuthorProcess.runProcess()  allDois: ${allDois}  allAssociatedPapers: ${allAssociatedPapers.size}" )
 

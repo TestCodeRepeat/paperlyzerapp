@@ -394,6 +394,15 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
     }
 
+    fun getPaperReduced(id: String): WosPaperWithAuthors? =
+        mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
+            match(WosPaper::doi eq id),
+            project(
+                WosPaperWithAuthors::_id from WosPaper::_id,
+                WosPaperWithAuthors::doi from WosPaper::doi,
+                WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors
+            ),
+        ).toList().firstOrNull()
 
     fun getPaper(id: String): WosPaper? =
         mongo.genderedPapers.findOne(WosPaper::_id eq id)

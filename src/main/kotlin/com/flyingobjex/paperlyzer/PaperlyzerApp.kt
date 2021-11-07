@@ -121,7 +121,7 @@ class PaperlyzerApp(val mongo: Mongo) {
             process.runProcess()
         }
 
-        println("PaperlyzerApp.kt :: PaperlyzerApp :: runProcess :: time = $time")
+        println("PaperlyzerApp.kt :: PaperlyzerApp :: runProcess :: time = $time \n")
         if (!forceCancel && process.shouldContinueProcess()) {
             runProcess()
         } else {
