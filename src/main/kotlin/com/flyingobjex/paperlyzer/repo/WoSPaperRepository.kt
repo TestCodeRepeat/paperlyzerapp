@@ -20,7 +20,7 @@ data class AuthorResult(val _id: String, val shortTitle: String, val authors: Li
 data class WosPaperId(val doi: String, val _id: String? = null)
 
 @Serializable
-data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors:Long)
+data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long)
 
 fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
     genderDetails.firstOrNull { it.firstName == name }
@@ -381,15 +381,25 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         )
     }
 
-    fun getPapers(doiNumbers: List<String>): List<WosPaperWithAuthors> =
-        mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
-            match(WosPaper::doi `in` doiNumbers),
-            project(
-                WosPaperWithAuthors::_id from WosPaper::_id,
-                WosPaperWithAuthors::doi from WosPaper::doi,
-                WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors
-            ),
-        ).toList()
+    fun getPapers(doiNumbers: List<String>): List<WosPaperWithAuthors> {
+        val res: List<WosPaperWithAuthors>
+
+        val getPapersTime = measureTimeMillis {
+
+            res = mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
+                match(WosPaper::doi `in` doiNumbers),
+                project(
+                    WosPaperWithAuthors::_id from WosPaper::_id,
+                    WosPaperWithAuthors::doi from WosPaper::doi,
+                    WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors
+                ),
+            ).toList()
+        }
+
+        log.info("WoSPaperRepository.getPapers()  getPapersTime = $getPapersTime" )
+
+        return res
+    }
 
 
     fun getPaper(id: String): WosPaper? =
@@ -404,4 +414,4 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         ).toList()
 }
 
-data class WosPaperReduced(val doi:String, )
+data class WosPaperReduced(val doi: String)
