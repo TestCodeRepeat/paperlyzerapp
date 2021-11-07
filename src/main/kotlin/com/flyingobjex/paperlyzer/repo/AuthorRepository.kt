@@ -7,6 +7,8 @@ import com.flyingobjex.paperlyzer.process.CoAuthorProcessStats
 import com.mongodb.client.result.UpdateResult
 import org.litote.kmongo.*
 import java.util.logging.Logger
+import kotlin.system.measureNanoTime
+import kotlin.system.measureTimeMillis
 
 class AuthorRepository(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
@@ -200,14 +202,20 @@ class AuthorRepository(val mongo: Mongo) {
         }
     }
 
-    fun updateAuthor(author: Author): UpdateResult =
-        mongo.genderedAuthors.updateOne(
-            Author::_id eq author._id,
-            listOf(
-                setValue(Author::totalPapers, author.totalPapers),
-                setValue(Author::averageCoAuthors, author.averageCoAuthors),
+    fun updateAuthor(author: Author): UpdateResult {
+        var res: UpdateResult
+        val time = measureTimeMillis {
+            res = mongo.genderedAuthors.updateOne(
+                Author::_id eq author._id,
+                listOf(
+                    setValue(Author::totalPapers, author.totalPapers),
+                    setValue(Author::averageCoAuthors, author.averageCoAuthors),
+                )
             )
-        )
+        }
+        log.info("AuthorRepository.updateAuthor()  update time = $time" )
+        return res
+    }
 }
 
 fun isAbbreviation(value: String): Boolean {
