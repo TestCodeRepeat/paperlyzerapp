@@ -378,6 +378,10 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         )
     }
 
+    fun getPapers(doiNumbers: List<String>): List<WosPaper> =
+        mongo.genderedPapers.find(WosPaper::doi `in` doiNumbers).toList()
+
+
     fun getPaper(id: String): WosPaper? =
         mongo.genderedPapers.findOne(WosPaper::_id eq id)
 

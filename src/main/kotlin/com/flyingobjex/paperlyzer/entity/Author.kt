@@ -58,6 +58,8 @@ data class Author(
     var ssFirstYearPublished:Int? = null,
     var ssLastYearPublished:Int? = null,
     var ssProcessedYearsPub:Boolean = false,
+    val totalPapers:Int? = null,
+    val averageCoAuthors: Double? = null,
     var _id: Id<Author>? = null,
 ){
     fun toYearsPublished(): List<String> = papers?.map { it.year.trim() } ?: emptyList()

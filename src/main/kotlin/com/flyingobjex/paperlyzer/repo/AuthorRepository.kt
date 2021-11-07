@@ -3,11 +3,23 @@ package com.flyingobjex.paperlyzer.repo
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.AuthorTableStats
 import com.flyingobjex.paperlyzer.entity.*
+import com.flyingobjex.paperlyzer.process.CoAuthorProcessStats
+import com.mongodb.client.result.UpdateResult
 import org.litote.kmongo.*
 import java.util.logging.Logger
 
 class AuthorRepository(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
+
+    fun resetCoAuthorData() {
+        mongo.genderedAuthors.updateMany(
+            Author::averageCoAuthors ne -5.0,
+            listOf(
+                setValue(Author::averageCoAuthors, -5.0),
+                setValue(Author::totalPapers, -5)
+            )
+        )
+    }
 
     fun getSsUnprocessedAuthors(batchSize: Int): List<Author> {
         return mongo.genderedAuthors.find(Author::ssProcessedYearsPub eq false)
@@ -162,6 +174,44 @@ class AuthorRepository(val mongo: Mongo) {
         }
     }
 
+    fun getCoAuthorStats(): CoAuthorProcessStats {
+        val totalAuthors = mongo.genderedAuthors.countDocuments()
+        val totalProcessed = mongo.genderedAuthors.countDocuments(Author::averageCoAuthors gt -5.0)
+        return CoAuthorProcessStats(
+            totalProcessedWithCoAuthorData = totalProcessed,
+            totalUnprocessed = unprocessedAuthorsCount(),
+            totalAuthors = totalAuthors,
+            0
+        )
+    }
+
+    fun unprocessedAuthorsCount(): Long {
+        return mongo.genderedAuthors.countDocuments(
+            or(
+                Author::averageCoAuthors eq -5.0,
+                Author::averageCoAuthors eq null
+            )
+        )
+    }
+
+    fun getUnprocessedAuthorsByCoAuthors(batchSize: Int): List<Author> {
+        return mongo.genderedAuthors.find(
+            or(
+                Author::averageCoAuthors eq -5.0,
+                Author::averageCoAuthors eq null,
+            ),
+            limit(batchSize)
+        ).toList()
+    }
+
+    fun updateAuthor(author: Author): UpdateResult =
+        mongo.genderedAuthors.updateOne(
+            Author::_id eq author._id,
+            listOf(
+                setValue(Author::totalPapers, author.totalPapers),
+                setValue(Author::averageCoAuthors, author.averageCoAuthors),
+            )
+        )
 }
 
 fun isAbbreviation(value: String): Boolean {
