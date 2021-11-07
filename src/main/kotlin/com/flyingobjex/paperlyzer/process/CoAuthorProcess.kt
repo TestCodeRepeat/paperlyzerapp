@@ -51,6 +51,9 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     override fun name(): String = "CoAuthor / Author Process"
 
+    fun getAssociatedPaper(papers:List<WosPaperWithAuthors>, doi:String) =
+        papers.firstOrNull { it.doi == doi }
+
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
         log.info("CoAuthorProcess.runProcess()  :: batchSize = $batchSize")
@@ -62,12 +65,12 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
         val allDois = unprocessed.map { it.papers?.map { it.doi } ?: emptyList() }.flatten()
-        val allAssociatedPapers = wosRepo.getPapers(allDois).groupBy(WosPaperWithAuthors::doi)
+        val allAssociatedPapers = wosRepo.getPapers(allDois)
 
         unprocessed.parallelStream().forEach { author ->
-            val associatedPapers = author.papers?.map { allAssociatedPapers[it.doi] ?: emptyList() }?.flatten() ?: emptyList()
+            val associatedPapers = author.papers?.map { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
             val totalPapers = associatedPapers.size
-            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
+            val totalAllAuthors = associatedPapers.sumOf { it?.totalAuthors ?: 0 }
             val totalCoAuthors = totalAllAuthors - totalPapers
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
 
