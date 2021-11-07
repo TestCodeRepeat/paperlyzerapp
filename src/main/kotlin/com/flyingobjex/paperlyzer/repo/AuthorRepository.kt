@@ -35,20 +35,14 @@ class AuthorRepository(val mongo: Mongo) {
     fun unprocessedCoAuthorsCount(): Long {
         return mongo.genderedAuthors.countDocuments(
             or(
-                Author::averageCoAuthors eq -5.5,
-                Author::averageCoAuthors eq null
+                Author::averageCoAuthors eq -5.5
             )
         )
     }
 
     fun getUnprocessedAuthorsByCoAuthors(batchSize: Int): List<Author> {
         return mongo.genderedAuthors.aggregate<Author>(
-            match(
-                or(
-                    Author::averageCoAuthors eq -5.5,
-                    Author::averageCoAuthors eq null,
-                )
-            ),
+            match(Author::averageCoAuthors eq -5.5),
             limit(batchSize)
         ).toList()
     }
