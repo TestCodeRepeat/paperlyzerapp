@@ -19,6 +19,9 @@ data class AuthorResult(val _id: String, val shortTitle: String, val authors: Li
 @Serializable
 data class WosPaperId(val doi: String, val _id: String? = null)
 
+@Serializable
+data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors:Long)
+
 fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
     genderDetails.firstOrNull { it.firstName == name }
 
@@ -378,8 +381,15 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         )
     }
 
-    fun getPapers(doiNumbers: List<String>): List<WosPaper> =
-        mongo.genderedPapers.find(WosPaper::doi `in` doiNumbers).toList()
+    fun getPapers(doiNumbers: List<String>): List<WosPaperWithAuthors> =
+        mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
+            match(WosPaper::doi `in` doiNumbers),
+            project(
+                WosPaperWithAuthors::_id from WosPaper::_id,
+                WosPaperWithAuthors::doi from WosPaper::doi,
+                WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors
+            ),
+        ).toList()
 
 
     fun getPaper(id: String): WosPaper? =
@@ -392,6 +402,6 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
             ),
             limit(batchSize)
         ).toList()
-
-
 }
+
+data class WosPaperReduced(val doi:String, )

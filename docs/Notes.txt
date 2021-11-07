@@ -53,8 +53,7 @@ Oct 21
   - ? check & see if we can run authors from SSPaper table to get their country code
   - ? check & see if we can match code the author country by email
 
-
-
+Parmentier, Ingrid/Malhi, Yadvinder/Senterre, Bruno/Whittaker, Robert J./Alonso, Alfonso/Balinga, Michael P. B./Bakayoko, Adama/Bongers, Frans/Chatelain, Cyrille/Comiskey, James A./Cortay, Renaud/Kamdem, Marie-Noel Djuikouo/Doucet, Jean-Louis/Gautier, Laurent/Hawthorne, William D./Issembe, Yves A./Kouame, Francois N./Kouka, Lazare A./Leal, Miguel E./Lejoly, Jean/Lewis, Simon L./Nusbaumer, Louis/Parren, Marc P. E./Peh, Kelvin S. -H./Phillips, Oliver L./Sheil, Douglas/Sonke, Bonaventure/Sosef, Marc S. M./Sunderland, Terry C. H./Stropp, Juliana/Ter Steege, Hans/Swaine, Mike D./Tchouto, M. G. P./van Gemerden, Barend S./van Valkenburg, Johan L. C. H./Woell, Hannsjoerg
 
 Sept 1
   - doi matching

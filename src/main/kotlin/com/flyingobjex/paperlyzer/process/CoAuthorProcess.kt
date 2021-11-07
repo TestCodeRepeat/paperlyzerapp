@@ -62,7 +62,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
             val associatedPapers = wosRepo.getPapers(author.papers?.map { it.doi } ?: emptyList())
             val totalPapers = associatedPapers.size
-            val totalAllAuthors = associatedPapers.sumOf { it.authors.size }
+            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
             val totalCoAuthors = totalAllAuthors - associatedPapers.size
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
 
