@@ -75,9 +75,9 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     override fun shouldContinueProcess(): Boolean {
         var shouldContinue = false
-        val unprocessedCount = authorRepo.unprocessedCoAuthorsCount()
-        log.info("CoAuthorProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
         val time = measureTimeMillis {
+            val unprocessedCount = authorRepo.unprocessedCoAuthorsCount()
+            log.info("CoAuthorProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
             shouldContinue = unprocessedCount > UNPROCESSED_RECORDS_GOAL
         }
         log.info("CoAuthorProcess.shouldContinueProcess()  time = $time ms")
