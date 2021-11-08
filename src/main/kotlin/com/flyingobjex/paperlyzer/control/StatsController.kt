@@ -39,17 +39,19 @@ data class JournalTableStats(
     val top50Journals: List<JournalCount>,
 )
 
+@Serializable
 data class AuthorReportLine(
     val firstName: String,
     val lastName: String,
     val gender: GenderIdentitiy,
-    val probability: Double,
-    val paperCount: Int,
+    val genderProbability: Double,
+    val totalPapers: Int,
     val yearsPublished: String,
     val firstYearPublished: Int,
     val lastYearPublished: Int,
     val publishedTitles: String,
     val orcID: String?,
+    val coAuthorAverage:Double,
 )
 
 @Serializable
@@ -205,12 +207,7 @@ class StatsController(val mongo: Mongo) {
 
     fun runGenderedAuthorReport(): File {
         val querySize = 500000
-        val batch: List<Author> = mongo.genderedAuthors.find(
-            or(
-                Author::gender / Gender::gender eq GenderIdentitiy.MALE,
-                Author::gender / Gender::gender eq GenderIdentitiy.FEMALE,
-            )
-        ).limit(querySize).toList()
+        val batch: List<Author> = authorRepo.getGenderedAuthors(querySize)
 
         val report = mutableListOf<AuthorReportLine>()
         batch.parallelStream().asSequence().filterNotNull().forEach { author ->
@@ -230,11 +227,12 @@ class StatsController(val mongo: Mongo) {
                     years.lastOrNull() ?: 0,
                     author.publishedTitles().joinToString(";"),
                     author.orcIDString,
+                    author.averageCoAuthors ?: -5.5
                 )
             )
         }
 
-        return CSVHelper.writeCsvFile(report.sortedByDescending { it.paperCount }, "genderReveal")
+        return CSVHelper.writeCsvFile(report.sortedByDescending { it.totalPapers }, "genderReveal")
     }
 
     /** Journal Stats */

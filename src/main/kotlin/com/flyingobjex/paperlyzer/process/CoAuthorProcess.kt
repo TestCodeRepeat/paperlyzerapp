@@ -78,7 +78,6 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
             val totalAllAuthors = associatedPapers.sumOf { it?.totalAuthors ?: 0 }
             val totalCoAuthors = totalAllAuthors - totalPapers
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
-//            log.info("CoAuthorProcess.runProcess()   = ${author.lastName}${author.firstName}  associatedPapers:${associatedPapers.size}  averageCoAuthors: ${averageCoAuthors} ")
             val res = authorRepo.updateAuthor(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
             res
         }

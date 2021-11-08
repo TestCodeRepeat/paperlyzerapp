@@ -11,6 +11,7 @@ import java.util.logging.Logger
 class AuthorRepository(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
 
+    /** Co-Author */
     fun resetCoAuthorData() {
         mongo.genderedAuthors.updateMany(
             Author::averageCoAuthors ne -5.5,
@@ -34,7 +35,6 @@ class AuthorRepository(val mongo: Mongo) {
 
     fun unprocessedCoAuthorsCount(): Long = mongo.genderedAuthors.countDocuments(Author::averageCoAuthors eq -5.5)
 
-
     fun getUnprocessedAuthorsByCoAuthors(batchSize: Int): List<Author> {
         return mongo.genderedAuthors.aggregate<Author>(
             match(Author::averageCoAuthors eq -5.5),
@@ -42,11 +42,13 @@ class AuthorRepository(val mongo: Mongo) {
         ).toList()
     }
 
+    /** Semantic Scholar  */
     fun getSsUnprocessedAuthors(batchSize: Int): List<Author> {
         return mongo.genderedAuthors.find(Author::ssProcessedYearsPub eq false)
             .limit(batchSize).toList()
     }
 
+    /** Gender */
     fun buildAuthorTableInParallel(batchSize: Int) {
         val batch = mongo.rawAuthors.find(
             and(
@@ -163,10 +165,7 @@ class AuthorRepository(val mongo: Mongo) {
         )
     }
 
-    fun insertManyAuthors(authors: List<Author>) {
-        mongo.rawAuthors.insertMany(authors)
-    }
-
+    /** First Name Table */
     fun buildFirstNameTable(batchSize: Int) {
         val batch: List<Author> = mongo.authors.find(
             and(
@@ -193,6 +192,19 @@ class AuthorRepository(val mongo: Mongo) {
             }
 
         }
+    }
+
+    /** General Accessors */
+    fun getGenderedAuthors(querySize:Int):List<Author> =
+        mongo.genderedAuthors.find(
+            or(
+                Author::gender / Gender::gender eq GenderIdentitiy.MALE,
+                Author::gender / Gender::gender eq GenderIdentitiy.FEMALE,
+            )
+        ).limit(querySize).toList()
+
+    fun insertManyAuthors(authors: List<Author>) {
+        mongo.rawAuthors.insertMany(authors)
     }
 
     fun updateAuthor(author: Author): UpdateResult {

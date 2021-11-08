@@ -1,6 +1,7 @@
 package com.flyingobjex.paperlyzer
 
 import com.flyingobjex.paperlyzer.api.SemanticScholarPaper
+import com.flyingobjex.paperlyzer.control.AuthorReportLine
 import com.flyingobjex.paperlyzer.control.PaperReportLine
 import com.flyingobjex.paperlyzer.entity.*
 import com.flyingobjex.paperlyzer.parser.MatchingCriteria
@@ -30,6 +31,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
     private val authorsCollection = database.getCollection<Author>("authors")
     private val journalCollection = database.getCollection<Journal>("journals")
     private val reportCollection = database.getCollection<PaperReportLine>("reports")
+    private val authorReportCollection = database.getCollection<AuthorReportLine>("authorReportCollection")
 
     private val genderedAuthorsCollection = database.getCollection<Author>("genderedAuthors")
     private val genderedPapersCollection = database.getCollection<WosPaper>("genderedPapersCollection")
@@ -44,6 +46,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
     val genderedPapers = genderedPapersCollection
     val ssPapers = semanticScholarPaperCollection
     val reports = reportCollection
+    val authorReport = authorReportCollection
 
     init {
         setMongoDbLogsToErrorOnly()

@@ -4,12 +4,12 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
 import com.flyingobjex.paperlyzer.parser.CSVTopicParser
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
-import com.flyingobjex.paperlyzer.process.ReportProcess
+import com.flyingobjex.paperlyzer.process.PaperReportProcess
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import kotlinx.serialization.json.Json
 import org.junit.Test
 
-class ReportProcessTest {
+class PaperReportProcessTest {
     private val mongo = Mongo(false)
     private val wosRepo = WoSPaperRepository(mongo)
 
@@ -22,7 +22,7 @@ class ReportProcessTest {
     private val matcher = TopicMatcher(topics)
 
     private val app = PaperlyzerApp(mongo)
-    private val process = ReportProcess(mongo)
+    private val process = PaperReportProcess(mongo)
 
     @Test
     fun `should start running processes`(){

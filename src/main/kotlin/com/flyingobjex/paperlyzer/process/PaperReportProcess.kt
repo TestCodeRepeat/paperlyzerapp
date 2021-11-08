@@ -34,7 +34,7 @@ data class ReportStats(
     }
 }
 
-class ReportProcess(
+class PaperReportProcess(
     val mongo: Mongo,
 ) : IProcess {
 
