@@ -10,6 +10,10 @@ class ReportRepository(val mongo: Mongo) {
         mongo.authorReport.insertMany(reportLines)
     }
 
+    fun addAuthorReportLine(line:AuthorReportLine){
+        mongo.authorReport.insertOne(line)
+    }
+
     fun resetAuthorReport() {
         mongo.authorReport.drop()
     }
