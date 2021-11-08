@@ -48,6 +48,8 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
     override fun name(): String = "Author Report Process"
 
     override fun runProcess() {
+        val unprocessed = authorRepo.getUnprocessedAuthorsByReport(API_BATCH_SIZE)
+
         val querySize = 500000
         val batch: List<Author> = authorRepo.getGenderedAuthors(querySize)
 
@@ -92,5 +94,8 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
 
     override fun cancelJobs() {}
 
-    override fun reset() = reportRepo.resetAuthorReport()
+    override fun reset() {
+        authorRepo.resetAuthorReport()
+        reportRepo.resetAuthorReport()
+    }
 }

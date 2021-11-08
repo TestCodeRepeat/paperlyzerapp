@@ -42,6 +42,10 @@ class AuthorRepository(val mongo: Mongo) {
         ).toList()
     }
 
+    fun getUnprocessedAuthorsByReport(batchSize: Int): List<Author> =
+        mongo.genderedAuthors.find(Author::unprocessed eq true).toList()
+
+
     /** Semantic Scholar  */
     fun getSsUnprocessedAuthors(batchSize: Int): List<Author> {
         return mongo.genderedAuthors.find(Author::ssProcessedYearsPub eq false)
@@ -195,7 +199,7 @@ class AuthorRepository(val mongo: Mongo) {
     }
 
     /** General Accessors */
-    fun getGenderedAuthors(querySize:Int):List<Author> =
+    fun getGenderedAuthors(querySize: Int): List<Author> =
         mongo.genderedAuthors.find(
             or(
                 Author::gender / Gender::gender eq GenderIdentitiy.MALE,
@@ -216,6 +220,11 @@ class AuthorRepository(val mongo: Mongo) {
             )
         )
     }
+
+    fun resetAuthorReport(): UpdateResult =
+        mongo.genderedAuthors.updateMany(Author::unprocessed ne true)
+
+
 }
 
 fun isAbbreviation(value: String): Boolean {
