@@ -53,7 +53,6 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
         val querySize = 500000
         val batch: List<Author> = authorRepo.getGenderedAuthors(querySize)
 
-//        val reportLines = mutableListOf<AuthorReportLine>()
         batch.parallelStream().asSequence().filterNotNull().forEach { author ->
             val years = author.toYearsPublished()
                 .mapNotNull { it.toIntOrNull() }
@@ -75,8 +74,6 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
                 )
             )
         }
-
-//        reportRepo.addAuthorReportLines(reportLines.toList())
     }
 
     override fun shouldContinueProcess(): Boolean {

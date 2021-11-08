@@ -222,7 +222,10 @@ class AuthorRepository(val mongo: Mongo) {
     }
 
     fun resetAuthorReport(): UpdateResult =
-        mongo.genderedAuthors.updateMany(Author::unprocessed ne true)
+        mongo.genderedAuthors.updateMany(
+            Author::unprocessed ne true,
+            setValue(Author::unprocessed, true)
+        )
 
 
 }
