@@ -42,12 +42,14 @@ class AuthorRepository(val mongo: Mongo) {
         ).toList()
     }
 
-    fun getUnprocessedAuthorsByReport(batchSize: Int): List<Author> =
+    fun getUnprocessedAuthorsByAuthorReport(batchSize: Int): List<Author> =
         mongo.genderedAuthors.aggregate<Author>(
             match(Author::unprocessed eq true),
             limit(batchSize)
         ).toList()
 
+    fun unprocessedAuthorsByAuthorReportCount() =
+        mongo.genderedAuthors.countDocuments(Author::unprocessed eq true)
 
     /** Semantic Scholar  */
     fun getSsUnprocessedAuthors(batchSize: Int): List<Author> {
@@ -214,7 +216,13 @@ class AuthorRepository(val mongo: Mongo) {
         mongo.rawAuthors.insertMany(authors)
     }
 
-    fun updateAuthor(author: Author): UpdateResult {
+    fun updateAuthorUnprocessedForAuthorReport(author: Author): UpdateResult =
+        mongo.genderedAuthors.updateOne(
+            Author::_id eq author._id,
+            setValue(Author::unprocessed, false)
+        )
+
+    fun updateAuthorCoAuthors(author: Author): UpdateResult {
         return mongo.genderedAuthors.updateOne(
             Author::_id eq author._id,
             listOf(

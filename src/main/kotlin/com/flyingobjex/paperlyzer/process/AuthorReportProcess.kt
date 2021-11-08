@@ -4,12 +4,12 @@ import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.control.AuthorReportLine
-import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.ReportRepository
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.streams.asSequence
+import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
@@ -48,12 +48,9 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
     override fun name(): String = "Author Report Process"
 
     override fun runProcess() {
-//        val unprocessed = authorRepo.getUnprocessedAuthorsByReport(API_BATCH_SIZE)
+        val unprocessed = authorRepo.getUnprocessedAuthorsByAuthorReport(API_BATCH_SIZE)
 
-        val querySize = 500000
-        val batch: List<Author> = authorRepo.getGenderedAuthors(querySize)
-
-        batch.parallelStream().asSequence().filterNotNull().forEach { author ->
+        unprocessed.parallelStream().asSequence().filterNotNull().forEach { author ->
             val years = author.toYearsPublished()
                 .mapNotNull { it.toIntOrNull() }
                 .sorted()
@@ -73,11 +70,20 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
                     author.averageCoAuthors ?: -9.9
                 )
             )
+
+            authorRepo.updateAuthorUnprocessedForAuthorReport(author)
         }
     }
 
     override fun shouldContinueProcess(): Boolean {
-        return false
+        var shouldContinue = false
+        val time = measureTimeMillis {
+            val unprocessedCount = authorRepo.unprocessedAuthorsByAuthorReportCount()
+            log.info("AuthorReportProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
+            shouldContinue = unprocessedCount > UNPROCESSED_RECORDS_GOAL
+        }
+        log.info("AuthorReportProcess.shouldContinueProcess()  time = $time ms")
+        return shouldContinue
     }
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
