@@ -43,7 +43,10 @@ class AuthorRepository(val mongo: Mongo) {
     }
 
     fun getUnprocessedAuthorsByReport(batchSize: Int): List<Author> =
-        mongo.genderedAuthors.find(Author::unprocessed eq true).toList()
+        mongo.genderedAuthors.aggregate<Author>(
+            match(Author::unprocessed eq true),
+            limit(batchSize)
+        ).toList()
 
 
     /** Semantic Scholar  */

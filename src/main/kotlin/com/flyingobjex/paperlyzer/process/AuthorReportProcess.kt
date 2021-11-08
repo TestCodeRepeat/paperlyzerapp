@@ -48,7 +48,7 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
     override fun name(): String = "Author Report Process"
 
     override fun runProcess() {
-        val unprocessed = authorRepo.getUnprocessedAuthorsByReport(API_BATCH_SIZE)
+//        val unprocessed = authorRepo.getUnprocessedAuthorsByReport(API_BATCH_SIZE)
 
         val querySize = 500000
         val batch: List<Author> = authorRepo.getGenderedAuthors(querySize)
