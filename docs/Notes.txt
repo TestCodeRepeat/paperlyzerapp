@@ -1,22 +1,31 @@
 Gender API
 * Line Up Labels to old csv
 * make 2 columns - one for the Earliest year, one for the Latest year
-
 !! - names that were in the paper as only initial can be inferred from OrcIDs
-
 - run SsPapers against Semantic Scholar API
-
 - remove batched process
 
 heroku link:
-
 10.1016/S0140-6736(18)32594-7
-
 - Wrong Years for published paper
 	- only goes back to 2014, looks like parsing issue
 
 The API key needs to be sent in the header of the request as x-api-key directed at https://api.semanticscholar.org
 Max requests - 100/sec
+
+Nov 10
+  :: Apply STEM/SSH/M to the author table.
+     I calculated the coding by defining
+     STEM = 0, M = .5, SSH = 1
+     Then I took the discipline from the papers of every
+     single author and took the mean value.
+     E.g. Jane Smith had 2 STEM and a M paper: 0 + 0 + .5 / 3 = .16
+          resulting in Jane Smith being STEM.
+      I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1.
+
+  :: Please fix the columns “firstYearPublished” and “lastYearPublished”, which are broken in the last data run.
+
+
 
 Nov 2
   :: Discipline process (apply STEM/SSM/NA to WoS Papers by topics)
@@ -25,7 +34,6 @@ Nov 2
         - Previously shouldContinue() was checking for null (approx. 50 seconds)
         - when using -5 as default value, shouldConinue() took less than 4 seconds
     - API Batch of 10,000 takes approx. 30 seconds to process
-
 
 
 Oct 21

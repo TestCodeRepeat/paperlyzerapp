@@ -1,10 +1,11 @@
-package com.flyingobjex.paperlyzer.process
+package com.flyingobjex.paperlyzer.process.reports
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.entity.WosPaper
+import com.flyingobjex.paperlyzer.process.IProcess
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger

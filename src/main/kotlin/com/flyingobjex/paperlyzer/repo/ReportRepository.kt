@@ -2,7 +2,7 @@ package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.AuthorReportLine
-import com.flyingobjex.paperlyzer.process.AuthorReportStats
+import com.flyingobjex.paperlyzer.process.reports.AuthorReportStats
 
 class ReportRepository(val mongo: Mongo) {
 

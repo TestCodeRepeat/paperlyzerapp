@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.entity
 
 import com.flyingobjex.paperlyzer.api.GenderApiRequest
 import com.flyingobjex.paperlyzer.api.GenderApiResponse
+import com.flyingobjex.paperlyzer.parser.DisciplineType
 import kotlinx.serialization.Serializable
 import org.litote.kmongo.Id
 
@@ -61,6 +62,8 @@ data class Author(
     val totalPapers:Int? = null,
     val averageCoAuthors: Double? = null,
     val unprocessed:Boolean? = false,
+    val discipline:DisciplineType? = null,
+    val disciplineScore:Double? = null,
     var _id: Id<Author>? = null,
 ){
     fun toYearsPublished(): List<String> = papers?.map { it.year.trim() } ?: emptyList()

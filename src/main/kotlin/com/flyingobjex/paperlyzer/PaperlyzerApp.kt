@@ -5,6 +5,8 @@ import com.flyingobjex.paperlyzer.domain.topics
 import com.flyingobjex.paperlyzer.parser.SJRModel
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
 import com.flyingobjex.paperlyzer.process.*
+import com.flyingobjex.paperlyzer.process.reports.AuthorReportProcess
+import com.flyingobjex.paperlyzer.process.reports.PaperReportProcess
 import com.flyingobjex.plugins.SocketAction
 import io.ktor.http.cio.websocket.*
 import java.io.File

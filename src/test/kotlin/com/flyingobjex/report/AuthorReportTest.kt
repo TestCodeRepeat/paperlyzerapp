@@ -2,7 +2,7 @@ package com.flyingobjex.report
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
-import com.flyingobjex.paperlyzer.process.PaperReportProcess
+import com.flyingobjex.paperlyzer.process.reports.PaperReportProcess
 import org.junit.Test
 
 class AuthorReportTest {

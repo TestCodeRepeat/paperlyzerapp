@@ -4,7 +4,7 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
 import com.flyingobjex.paperlyzer.parser.CSVTopicParser
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
-import com.flyingobjex.paperlyzer.process.PaperReportProcess
+import com.flyingobjex.paperlyzer.process.reports.PaperReportProcess
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import kotlinx.serialization.json.Json
 import org.junit.Test

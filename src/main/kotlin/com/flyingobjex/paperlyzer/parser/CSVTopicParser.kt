@@ -4,7 +4,7 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.serialization.Serializable
 
 enum class DisciplineType {
-    STEM, SSH, M, NA;
+    STEM, SSH, M, NA, UNINITIALIZED;
 
     companion object {
         fun toType(value: String): DisciplineType {
@@ -15,6 +15,7 @@ enum class DisciplineType {
                 "SSH?" -> SSH
                 "M" -> M
                 "M?" -> M
+                "UNINITIALIZED" -> UNINITIALIZED
                 else -> NA
             }
         }

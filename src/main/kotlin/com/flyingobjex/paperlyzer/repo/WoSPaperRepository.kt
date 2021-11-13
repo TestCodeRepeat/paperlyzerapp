@@ -5,7 +5,7 @@ import com.flyingobjex.paperlyzer.entity.*
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.parser.MatchingCriteria
 import com.flyingobjex.paperlyzer.process.DisciplineProcessStats
-import com.flyingobjex.paperlyzer.process.ReportStats
+import com.flyingobjex.paperlyzer.process.reports.ReportStats
 import com.flyingobjex.paperlyzer.process.SJRStats
 import com.flyingobjex.paperlyzer.process.WosCitationStats
 import com.mongodb.client.result.UpdateResult

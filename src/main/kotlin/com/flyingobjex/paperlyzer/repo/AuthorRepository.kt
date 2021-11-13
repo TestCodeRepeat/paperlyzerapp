@@ -3,13 +3,43 @@ package com.flyingobjex.paperlyzer.repo
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.AuthorTableStats
 import com.flyingobjex.paperlyzer.entity.*
+import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.CoAuthorProcessStats
+import com.flyingobjex.paperlyzer.process.StemSshAuthorProcessStats
 import com.mongodb.client.result.UpdateResult
 import org.litote.kmongo.*
 import java.util.logging.Logger
 
 class AuthorRepository(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
+
+    /** Author STEM / SSH -  */
+
+    fun getStemSshAuthorStats(): StemSshAuthorProcessStats {
+        val totalAuthors = mongo.genderedAuthors.countDocuments()
+        val totalProcessed = mongo.genderedAuthors.countDocuments(Author::discipline ne DisciplineType.UNINITIALIZED)
+        return StemSshAuthorProcessStats(
+            totalProcessedWithStemSshData = totalProcessed,
+            totalUnprocessed = unprocessedCoAuthorsCount(),
+            totalStem = 0,
+            totalSsh = 0,
+            totalM = 0,
+            totalUnidentified = 0,
+            totalAuthors = totalAuthors,
+        )
+    }
+
+    fun getUnprocessedAuthorsByAStemSshCount(): Long =
+        mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED)
+
+    fun getUnprocessedAuthorsByStemSsh(batchSize: Int): List<Author> {
+        val res = mongo.genderedAuthors.aggregate<Author>(
+            match(Author::discipline eq DisciplineType.UNINITIALIZED),
+            limit(batchSize)
+        ).toList()
+
+        return res
+    }
 
     /** Co-Author */
     fun resetCoAuthorData() {
@@ -237,6 +267,13 @@ class AuthorRepository(val mongo: Mongo) {
             Author::unprocessed ne true,
             setValue(Author::unprocessed, true)
         )
+
+    fun resetStemSsh() {
+        mongo.genderedAuthors.updateMany(
+            Author::discipline ne DisciplineType.UNINITIALIZED,
+            setValue(Author::discipline, DisciplineType.UNINITIALIZED)
+        )
+    }
 
 
 }

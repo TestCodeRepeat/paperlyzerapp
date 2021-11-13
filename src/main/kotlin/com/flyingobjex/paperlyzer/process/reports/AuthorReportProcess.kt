@@ -1,9 +1,10 @@
-package com.flyingobjex.paperlyzer.process
+package com.flyingobjex.paperlyzer.process.reports
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.control.AuthorReportLine
+import com.flyingobjex.paperlyzer.process.IProcess
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.ReportRepository
 import io.ktor.http.cio.websocket.*
@@ -38,6 +39,7 @@ data class AuthorReportStats(
 class AuthorReportProcess(val mongo:Mongo) : IProcess {
 
     val log: Logger = Logger.getAnonymousLogger()
+
     private val authorRepo = AuthorRepository(mongo)
     private val reportRepo = ReportRepository(mongo)
 
@@ -50,7 +52,7 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
     override fun runProcess() {
         val unprocessed = authorRepo.getUnprocessedAuthorsByAuthorReport(API_BATCH_SIZE)
 
-        unprocessed.parallelStream().asSequence().filterNotNull().forEach { author ->
+        unprocessed.parallelStream().asSequence().forEach { author ->
             val years = author.toYearsPublished()
                 .mapNotNull { it.toIntOrNull() }
                 .sorted()
@@ -76,7 +78,7 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
     }
 
     override fun shouldContinueProcess(): Boolean {
-        var shouldContinue = false
+        var shouldContinue: Boolean
         val time = measureTimeMillis {
             val unprocessedCount = authorRepo.unprocessedAuthorsByAuthorReportCount()
             log.info("AuthorReportProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")

@@ -10,6 +10,7 @@ import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import org.litote.kmongo.*
 
 
+
 data class OrcIdDuplicate(val firstName: String, val lastName: String, val orcIds: List<OrcID>)
 
 fun isLocalDb(dbName: String): Boolean = dbName == "mongodb://localhost:27017"
@@ -106,6 +107,9 @@ class Mongo(useLiveDatabase: Boolean = false) {
         genderedAuthors.ensureIndex(Author::averageCoAuthors)
         genderedAuthors.ensureIndex(Author::totalPapers)
         genderedAuthors.ensureIndex(Author::unprocessed)
+        genderedAuthors.ensureIndex(Author::discipline)
+        genderedAuthors.ensureIndex(Author::disciplineScore)
+
 
         authorsCollection.ensureIndex(Author::firstName)
         authorsCollection.ensureIndex(Author::lastName)
