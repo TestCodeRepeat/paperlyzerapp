@@ -1,9 +1,15 @@
 package com.flyingobjex.paperlyzer.process
 
+import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
+import com.flyingobjex.paperlyzer.entity.Author
+import com.flyingobjex.paperlyzer.parser.DisciplineType
+import com.flyingobjex.paperlyzer.process.DisciplineUtils.calculateStemSshScores
+import com.flyingobjex.paperlyzer.process.DisciplineUtils.disciplineScoreToDiscipline
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.repo.WosPaperWithStemSsh
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
@@ -54,7 +60,35 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
     override fun name(): String = "Author STEM / SSH Process"
 
     override fun runProcess() {
-        TODO("Not yet implemented")
+        log.info("AuthorStemSshProcess.runProcess()  :: batchSize = $API_BATCH_SIZE")
+        var unprocessed = emptyList<Author>()
+        val time = measureTimeMillis {
+            unprocessed = authorRepo.getUnprocessedAuthorsByStemSsh(API_BATCH_SIZE)
+        }
+
+        log.info("\n\nAuthorStemSshProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
+        val allShortTitles = unprocessed
+            .map { unProcessedAuthor ->
+                unProcessedAuthor.papers?.map { it.shortTitle } ?: emptyList()
+            }
+            .flatten()
+
+        log.info("AuthorStemSshProcess.runProcess()  allShortTitles.size = ${allShortTitles.size}")
+        val allAssociatedPapers = wosRepo.getPapersWithStemSsh(allShortTitles)
+
+        unprocessed.parallelStream().forEach { author ->
+            val associatedPapers = author.papers?.mapNotNull {
+                getAssociatedPapersForStemSsh(allAssociatedPapers, it.doi)
+            } ?: emptyList()
+
+            val stemSshScore = calculateStemSshScores(associatedPapers)
+            authorRepo.updateAuthor(
+                author.copy(
+                    disciplineScore = stemSshScore,
+                    discipline = disciplineScoreToDiscipline(stemSshScore)
+                )
+            )
+        }
     }
 
     override fun shouldContinueProcess(): Boolean {
@@ -86,5 +120,32 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
         authorRepo.resetStemSsh()
     }
 
+}
 
+object DisciplineUtils {
+    fun disciplineScoreToDiscipline(score: Double?): DisciplineType {
+        if (score == null) return DisciplineType.NA
+
+        return if (score <= .45) {
+            DisciplineType.STEM
+        } else if (score > .45 && score <= .55) {
+            DisciplineType.M
+        } else {
+            DisciplineType.SSH
+        }
+    }
+
+    fun calculateStemSshScores(associatedPapers: List<WosPaperWithStemSsh>): Double =
+        associatedPapers
+            .mapNotNull { disciplineToScore(it.discipline) }
+            .sumOf { it }
+
+    fun disciplineToScore(disciplineType: DisciplineType): Double? =
+        when (disciplineType) {
+            DisciplineType.STEM -> 0.0
+            DisciplineType.SSH -> 0.5
+            DisciplineType.M -> 1.0
+            DisciplineType.NA -> null
+            DisciplineType.UNINITIALIZED -> null
+        }
 }

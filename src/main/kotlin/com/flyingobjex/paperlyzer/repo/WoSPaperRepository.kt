@@ -22,6 +22,13 @@ data class WosPaperId(val doi: String, val _id: String? = null)
 @Serializable
 data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long)
 
+@Serializable
+data class WosPaperWithStemSsh(
+    val shortTitle: String,
+    val discipline: DisciplineType,
+    val _id: String? = null,
+)
+
 fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
     genderDetails.firstOrNull { it.firstName == name }
 
@@ -379,6 +386,19 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
             totalSsPapers = mongo.ssPapers.countDocuments().toInt(),
             totalWosPapers = mongo.genderedPapers.countDocuments().toInt(),
         )
+    }
+
+    fun getPapersWithStemSsh(shortTitles: List<String>): List<WosPaperWithStemSsh> {
+
+        return mongo.genderedPapers.aggregate<WosPaperWithStemSsh>(
+            match(WosPaper::shortTitle `in` shortTitles),
+            project(
+                WosPaperWithStemSsh::_id from WosPaper::_id,
+                WosPaperWithStemSsh::shortTitle from WosPaper::shortTitle,
+                WosPaperWithStemSsh::discipline from WosPaper::discipline
+            ),
+        ).toList()
+
     }
 
     fun getPapers(shortTitles: List<String>): List<WosPaperWithAuthors> {

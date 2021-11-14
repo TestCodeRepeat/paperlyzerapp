@@ -21,7 +21,7 @@ Nov 10
      single author and took the mean value.
      E.g. Jane Smith had 2 STEM and a M paper: 0 + 0 + .5 / 3 = .16
           resulting in Jane Smith being STEM.
-      I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1.
+      I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1
 
   :: Please fix the columns “firstYearPublished” and “lastYearPublished”, which are broken in the last data run.
 

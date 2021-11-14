@@ -29,8 +29,8 @@ enum class GenderIdentitiy {
         }
     }
 
-    fun toShortKey():String{
-        return when(this){
+    fun toShortKey(): String {
+        return when (this) {
             FEMALE -> "F"
             MALE -> "M"
             NOFIRSTNAME -> "Y"
@@ -56,16 +56,17 @@ data class Author(
     var probabilityStr: Double? = null,
     var firstYearPublished: Int? = null,
     var lastYearPublished: Int? = null,
-    var ssFirstYearPublished:Int? = null,
-    var ssLastYearPublished:Int? = null,
-    var ssProcessedYearsPub:Boolean = false,
-    val totalPapers:Int? = null,
+    var ssFirstYearPublished: Int? = null,
+    var ssLastYearPublished: Int? = null,
+    var ssProcessedYearsPub: Boolean = false,
+    val totalPapers: Int? = null,
     val averageCoAuthors: Double? = null,
-    val unprocessed:Boolean? = false,
-    val discipline:DisciplineType? = null,
-    val disciplineScore:Double? = null,
+    val unprocessed: Boolean? = false,
+    val disciplineScore: Double? = null,
+    val discipline: DisciplineType? = null,
     var _id: Id<Author>? = null,
-){
+) {
+
     fun toYearsPublished(): List<String> = papers?.map { it.year.trim() } ?: emptyList()
     fun toYearsPublishedAsInt(): List<Int> = papers?.map { it.year.trim().toIntOrNull() ?: 0 } ?: emptyList()
     fun publishedTitles(): List<String> = papers?.map { it.title } ?: emptyList()

@@ -7,6 +7,7 @@ import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.repo.WosPaperWithAuthors
+import com.flyingobjex.paperlyzer.repo.WosPaperWithStemSsh
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
@@ -38,6 +39,12 @@ data class CoAuthorProcessStats(
     }
 }
 
+fun getAssociatedPapersForStemSsh(papers: List<WosPaperWithStemSsh>, shortTitle: String) =
+    papers.firstOrNull { it.shortTitle == shortTitle }
+
+fun getAssociatedPaper(papers: List<WosPaperWithAuthors>, doi: String) =
+    papers.firstOrNull { it.doi == doi }
+
 @DelicateCoroutinesApi
 class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
@@ -51,9 +58,6 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     override fun name(): String = "CoAuthor / Author Process"
 
-    private fun getAssociatedPaper(papers:List<WosPaperWithAuthors>, doi:String) =
-        papers.firstOrNull { it.doi == doi }
-
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
         log.info("CoAuthorProcess.runProcess()  :: batchSize = $batchSize")
@@ -64,13 +68,15 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
 
-        val allShortTitles = unprocessed.map { unProcessedAuthor -> unProcessedAuthor.papers?.map { it.shortTitle } ?: emptyList() }.flatten()
+        val allShortTitles =
+            unprocessed.map { unProcessedAuthor -> unProcessedAuthor.papers?.map { it.shortTitle } ?: emptyList() }
+                .flatten()
 
-        log.info("CoAuthorProcess.runProcess()  allDOis.size = ${allShortTitles.size}" )
+        log.info("CoAuthorProcess.runProcess()  allDOis.size = ${allShortTitles.size}")
 
         val allAssociatedPapers = wosRepo.getPapers(allShortTitles)
 
-        log.info("CoAuthorProcess.runProcess()   allAssociatedPapers: ${allAssociatedPapers.size}" )
+        log.info("CoAuthorProcess.runProcess()   allAssociatedPapers: ${allAssociatedPapers.size}")
 
         unprocessed.parallelStream().forEach { author ->
             val associatedPapers = author.papers?.map { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
@@ -78,7 +84,12 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
             val totalAllAuthors = associatedPapers.sumOf { it?.totalAuthors ?: 0 }
             val totalCoAuthors = totalAllAuthors - totalPapers
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
-            authorRepo.updateAuthorCoAuthors(author.copy(totalPapers = totalPapers, averageCoAuthors = averageCoAuthors))
+            authorRepo.updateAuthorCoAuthors(
+                author.copy(
+                    totalPapers = totalPapers,
+                    averageCoAuthors = averageCoAuthors
+                )
+            )
         }
     }
 

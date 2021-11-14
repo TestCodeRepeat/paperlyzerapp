@@ -47,15 +47,17 @@ class AuthorStemSshTest {
             .countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED) shouldBe 423470L
     }
 
-    @Test
+//    @Test
     fun `should get unprocessed authors`() {
+        authorStemProcess.reset()
         authorRepo.getUnprocessedAuthorsByStemSsh(1).firstOrNull() shouldNotBe null
     }
 
 //    @Test
     fun `should reset author table for stem ssh`() {
+        authorStemProcess.reset()
         mongo.genderedAuthors
-            .countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED) shouldBe 423480L
+            .countDocuments(Author::disciplineScore eq -5.5) shouldBe 423480L
 
     }
 

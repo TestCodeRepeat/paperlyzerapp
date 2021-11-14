@@ -18,27 +18,39 @@ class AuthorRepository(val mongo: Mongo) {
     fun getStemSshAuthorStats(): StemSshAuthorProcessStats {
         val totalAuthors = mongo.genderedAuthors.countDocuments()
         val totalProcessed = mongo.genderedAuthors.countDocuments(Author::discipline ne DisciplineType.UNINITIALIZED)
+        val totalStem = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.STEM)
+        val totalSsh = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.SSH)
+        val totalM = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.M)
+        val totalUnidentified = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.NA)
+
         return StemSshAuthorProcessStats(
             totalProcessedWithStemSshData = totalProcessed,
-            totalUnprocessed = unprocessedCoAuthorsCount(),
-            totalStem = 0,
-            totalSsh = 0,
-            totalM = 0,
-            totalUnidentified = 0,
+            totalUnprocessed = getUnprocessedAuthorsByAStemSshCount(),
+            totalStem = totalStem,
+            totalSsh = totalSsh,
+            totalM = totalM,
+            totalUnidentified = totalUnidentified,
             totalAuthors = totalAuthors,
         )
     }
 
-    fun getUnprocessedAuthorsByAStemSshCount(): Long =
-        mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED)
-
     fun getUnprocessedAuthorsByStemSsh(batchSize: Int): List<Author> {
         val res = mongo.genderedAuthors.aggregate<Author>(
-            match(Author::discipline eq DisciplineType.UNINITIALIZED),
+            match(Author::disciplineScore eq -5.5),
             limit(batchSize)
         ).toList()
 
         return res
+    }
+
+    fun getUnprocessedAuthorsByAStemSshCount(): Long =
+        mongo.genderedAuthors.countDocuments(Author::disciplineScore eq -5.5)
+
+    fun resetStemSsh() {
+        mongo.genderedAuthors.updateMany(
+            Author::disciplineScore ne -5.5,
+            setValue(Author::disciplineScore, -5.5)
+        )
     }
 
     /** Co-Author */
@@ -268,12 +280,7 @@ class AuthorRepository(val mongo: Mongo) {
             setValue(Author::unprocessed, true)
         )
 
-    fun resetStemSsh() {
-        mongo.genderedAuthors.updateMany(
-            Author::discipline ne DisciplineType.UNINITIALIZED,
-            setValue(Author::discipline, DisciplineType.UNINITIALIZED)
-        )
-    }
+    fun updateAuthor(author: Author) = mongo.genderedAuthors.updateOne(author)
 
 
 }
