@@ -5,6 +5,7 @@ import com.flyingobjex.paperlyzer.parser.Discipline
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.parser.MatchingCriteria
 import com.flyingobjex.paperlyzer.parser.PLTopic
+import com.flyingobjex.paperlyzer.repo.IWosPaperWithStemSsh
 import kotlinx.serialization.Serializable
 
 data class LineItem(val key: String? = null, val body: String)
@@ -53,7 +54,7 @@ data class PaperMetatdata(
 
 @Serializable
 data class WosPaper(
-    val shortTitle: String,
+    override val shortTitle: String,
     val authors: List<Author>,
     val year: String,
     val title: String,
@@ -77,7 +78,7 @@ data class WosPaper(
     var ssProcessed: Boolean = false,
     var ssFailed: Boolean? = null,
     var citationsProcessed: Boolean? = null,
-    var discipline: DisciplineType? = null,
+    override var discipline: DisciplineType? = null,
     var score: Int? = null,
     var matchingCriteria: List<MatchingCriteria>? = null,
     var topStem: MatchingCriteria? = null,
@@ -85,9 +86,8 @@ data class WosPaper(
     var reported: Boolean? = null,
     var sjrRank: Int? = null,
     var hIndex: Int? = null,
-    val _id: String? = null,
-) {
-}
+    override val _id: String? = null,
+) : IWosPaperWithStemSsh
 
 private fun String.clean(): String {
     return trim()

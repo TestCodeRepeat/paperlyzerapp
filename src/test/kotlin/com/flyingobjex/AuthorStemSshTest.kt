@@ -3,14 +3,19 @@ package com.flyingobjex
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
 import com.flyingobjex.paperlyzer.entity.Author
+import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.AuthorStemSshProcess
+import com.flyingobjex.paperlyzer.process.DisciplineUtils
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.Test
+import org.litote.kmongo.aggregate
 import org.litote.kmongo.eq
+import org.litote.kmongo.limit
+import org.litote.kmongo.match
 
 
 /**
@@ -35,8 +40,26 @@ class AuthorStemSshTest {
     private val authorStemProcess = AuthorStemSshProcess(mongo)
     val app = PaperlyzerApp(mongo)
 
+    fun getStemSshPapers(): List<WosPaper> {
+        val ssh = mongo.genderedPapers.aggregate<WosPaper>(
+            match(WosPaper::discipline eq DisciplineType.SSH),
+            limit(10)
+        ).toList()
+        val stem = mongo.genderedPapers.aggregate<WosPaper>(
+            match(WosPaper::discipline eq DisciplineType.STEM),
+            limit(10)
+        ).toList()
 
-    @Test
+        return ssh + stem
+    }
+
+//    @Test
+//    fun `app should run process three times and stop`(){
+//
+//    }
+
+
+//    @Test
     fun `should check for unprocessed before continuing`(){
         authorStemProcess.reset()
         authorStemProcess.runProcess()
@@ -45,6 +68,16 @@ class AuthorStemSshTest {
 
         mongo.genderedAuthors
             .countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED) shouldBe 423470L
+    }
+
+    @Test
+    fun `should calculate a mix of SSH and STEM papers`(){
+
+        val papers = getStemSshPapers()
+        val a = papers.subList(0, 1)
+        val b = papers.subList(10, 11)
+        val res = a + b
+        DisciplineUtils.calculateStemSshScores(res) shouldBe 0.5
     }
 
 //    @Test

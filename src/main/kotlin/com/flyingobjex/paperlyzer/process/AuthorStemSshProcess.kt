@@ -8,6 +8,7 @@ import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.DisciplineUtils.calculateStemSshScores
 import com.flyingobjex.paperlyzer.process.DisciplineUtils.disciplineScoreToDiscipline
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
+import com.flyingobjex.paperlyzer.repo.IWosPaperWithStemSsh
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.repo.WosPaperWithStemSsh
 import io.ktor.http.cio.websocket.*
@@ -78,7 +79,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
 
         unprocessed.parallelStream().forEach { author ->
             val associatedPapers = author.papers?.mapNotNull {
-                getAssociatedPapersForStemSsh(allAssociatedPapers, it.doi)
+                getAssociatedPapersForStemSsh(allAssociatedPapers, it.shortTitle)
             } ?: emptyList()
 
             val stemSshScore = calculateStemSshScores(associatedPapers)
@@ -135,17 +136,20 @@ object DisciplineUtils {
         }
     }
 
-    fun calculateStemSshScores(associatedPapers: List<WosPaperWithStemSsh>): Double =
-        associatedPapers
+    fun calculateStemSshScores(associatedPapers: List<IWosPaperWithStemSsh>): Double {
+        val res = associatedPapers
             .mapNotNull { disciplineToScore(it.discipline) }
             .sumOf { it }
+        return res / associatedPapers.size
+    }
 
-    fun disciplineToScore(disciplineType: DisciplineType): Double? =
+    fun disciplineToScore(disciplineType: DisciplineType?): Double? =
         when (disciplineType) {
             DisciplineType.STEM -> 0.0
-            DisciplineType.SSH -> 0.5
-            DisciplineType.M -> 1.0
+            DisciplineType.SSH -> 1.0
+            DisciplineType.M -> 0.5
             DisciplineType.NA -> null
             DisciplineType.UNINITIALIZED -> null
+            null -> null
         }
 }

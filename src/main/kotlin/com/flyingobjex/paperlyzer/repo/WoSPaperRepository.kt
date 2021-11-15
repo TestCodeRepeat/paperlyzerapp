@@ -24,10 +24,16 @@ data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val tot
 
 @Serializable
 data class WosPaperWithStemSsh(
-    val shortTitle: String,
-    val discipline: DisciplineType,
-    val _id: String? = null,
-)
+    override val shortTitle: String,
+    override val discipline: DisciplineType,
+    override val _id: String? = null,
+) : IWosPaperWithStemSsh
+
+interface IWosPaperWithStemSsh {
+    val shortTitle: String
+    val discipline: DisciplineType?
+    val _id: String?
+}
 
 fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
     genderDetails.firstOrNull { it.firstName == name }
@@ -362,7 +368,6 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         return mongo.rawPaperFullDetails.find().toList()
     }
 
-
     fun clearPapers() {
         mongo.clearPapers()
     }
@@ -390,7 +395,17 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
     fun getPapersWithStemSsh(shortTitles: List<String>): List<WosPaperWithStemSsh> {
 
-        return mongo.genderedPapers.aggregate<WosPaperWithStemSsh>(
+        val ssh = mongo.genderedPapers.aggregate<WosPaperWithStemSsh>(
+            match(WosPaper::discipline eq DisciplineType.SSH),
+            project(
+                WosPaperWithStemSsh::_id from WosPaper::_id,
+                WosPaperWithStemSsh::shortTitle from WosPaper::shortTitle,
+                WosPaperWithStemSsh::discipline from WosPaper::discipline
+            ),
+            limit(10)
+        ).toList()
+
+        val res = mongo.genderedPapers.aggregate<WosPaperWithStemSsh>(
             match(WosPaper::shortTitle `in` shortTitles),
             project(
                 WosPaperWithStemSsh::_id from WosPaper::_id,
@@ -399,6 +414,8 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
             ),
         ).toList()
 
+        val combined = res + ssh
+        return combined
     }
 
     fun getPapers(shortTitles: List<String>): List<WosPaperWithAuthors> {
