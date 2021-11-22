@@ -20,9 +20,9 @@ Nov 22
 - Review Policy Match for Journals
     - Nils will get journal titles
 
-- Author Report :: for each Author
-      - total number of Papers
-      - total number of First-Authored papers
+* Author Report :: for each Author
+      * total number of Papers
+      * total number of First-Authored papers
 
 - Paper Report :: Number of paper co-authors total
   - Gender Ratio of additional authors (not including the first author)

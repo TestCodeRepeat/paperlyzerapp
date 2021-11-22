@@ -66,6 +66,7 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
                     author.gender.gender,
                     author.gender.probability,
                     author.paperCount,
+                    author.firstAuthorCount?.toInt() ?: 0,
                     years.joinToString(";"),
                     years.firstOrNull() ?: 0,
                     years.lastOrNull() ?: 0,
@@ -108,5 +109,5 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
         reportRepo.resetAuthorReport()
     }
 
-    override fun type(): ProcessType = ProcessType.sjr
+    override fun type(): ProcessType = ProcessType.authorReport
 }

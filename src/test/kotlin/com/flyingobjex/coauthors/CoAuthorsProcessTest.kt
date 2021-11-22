@@ -8,6 +8,10 @@ import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import org.junit.Test
 
+fun verifyProcessType(appProcessType:ProcessType, type:ProcessType){
+    if (appProcessType != type) throw Error("Wrong Process!!! : ${appProcessType} should be $type")
+}
+
 class CoAuthorsProcessTest {
     private val mongo = Mongo(false)
     private val wosRepo = WoSPaperRepository(mongo)
@@ -16,17 +20,15 @@ class CoAuthorsProcessTest {
     private val process = CoAuthorProcess(mongo)
     private val app = PaperlyzerApp(mongo)
 
-
     @Test
     fun `app should run coauthor proces`(){
-        if (app.process.type() != ProcessType.coauthor) throw Error("Wrong Process!!! : ${app.process.type()}")
+        val processType = app.process.type()
+        verifyProcessType(processType, ProcessType.coauthor)
         app.process.printStats()
         app.process.reset()
         app.process.printStats()
         app.start()
         app.process.printStats()
-
-
     }
 //    @Test
     fun `should run coauthor process`(){
