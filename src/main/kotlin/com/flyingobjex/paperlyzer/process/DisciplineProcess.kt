@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
@@ -99,6 +100,8 @@ class DisciplineProcess(
     }
 
     override fun reset() = wosRepo.resetDisciplineProcessed()
+
+    override fun type(): ProcessType = ProcessType.discipline
 
     override fun cancelJobs() {
         println("DisciplineProcess.kt :: cancelJobs :: ")

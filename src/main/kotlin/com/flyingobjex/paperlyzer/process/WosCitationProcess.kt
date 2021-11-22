@@ -3,6 +3,7 @@ package com.flyingobjex.paperlyzer.process
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
@@ -80,6 +81,8 @@ class WosCitationProcess(val mongo: Mongo, logMessage: (value: String) -> Unit) 
         val res = wosRepo.resetCitationProcessed()
         log.info("WosCitationProcess.reset() :: completed = ${res}" )
     }
+
+    override fun type(): ProcessType = ProcessType.citation
 
     override fun name(): String {
         return "Wos Citation Process"

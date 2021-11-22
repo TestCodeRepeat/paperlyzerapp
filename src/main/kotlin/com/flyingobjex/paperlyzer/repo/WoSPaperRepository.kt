@@ -20,7 +20,7 @@ data class AuthorResult(val _id: String, val shortTitle: String, val authors: Li
 data class WosPaperId(val doi: String, val _id: String? = null)
 
 @Serializable
-data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long)
+data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long, val authors:List<Author>)
 
 @Serializable
 data class WosPaperWithStemSsh(
@@ -37,7 +37,6 @@ interface IWosPaperWithStemSsh {
 
 fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
     genderDetails.firstOrNull { it.firstName == name }
-
 
 class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) -> Unit)? = null) {
 
@@ -281,6 +280,12 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         papers.parallelStream().forEach { paper ->
             val viableAuthors = paper.authors.filter { it.gender.gender == GenderIdentitiy.UNASSIGNED }
 
+            val allGenderShortkeys = toShortKeys(paper.authors)
+            val withoutFirstAuthor =
+                if (allGenderShortkeys.length > 1)
+                    allGenderShortkeys.subSequence(1, allGenderShortkeys.length - 1)
+                else "-"
+
             if (viableAuthors.isNotEmpty()) {
                 val matches = mongo.genderTable.find(
                     GenderDetails::firstName `in` paper.authors.mapNotNull { it.firstName },
@@ -291,12 +296,11 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
                     author.genderIdt = match?.genderIdentity
                     author.gender = Gender(match?.genderIdentity ?: GenderIdentitiy.NA, match?.probability ?: 0.0)
                 }
-                paper.authorGendersShortKey = paper.authors
-                    .map { it.genderIdt?.toShortKey() ?: "X" }
-                    .joinToString("")
+                paper.authorGendersShortKey = allGenderShortkeys
 
                 paper.firstAuthorGender = paper.authors.firstOrNull()?.gender?.gender?.toShortKey()
-                paper.lastAuthorGender = paper.authors.lastOrNull()?.gender?.gender?.toShortKey()
+                paper.withoutFirstAuthorGender = withoutFirstAuthor.toString()
+
                 val totalAuthors = paper.authors.size
                 paper.totalAuthors = totalAuthors
                 val identifiableAuthors = paper.authors
@@ -323,6 +327,9 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
 
     }
+
+    private fun toShortKeys(authors: List<Author>): String =
+        authors.joinToString("") { it.genderIdt?.toShortKey() ?: "X" }
 
     fun getPapersWithAuthors(batchSize: Int): List<WosPaper> {
         return mongo.rawPaperFullDetails.aggregate<WosPaper>(
@@ -395,16 +402,6 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
     fun getPapersWithStemSsh(shortTitles: List<String>): List<WosPaperWithStemSsh> {
 
-        val ssh = mongo.genderedPapers.aggregate<WosPaperWithStemSsh>(
-            match(WosPaper::discipline eq DisciplineType.SSH),
-            project(
-                WosPaperWithStemSsh::_id from WosPaper::_id,
-                WosPaperWithStemSsh::shortTitle from WosPaper::shortTitle,
-                WosPaperWithStemSsh::discipline from WosPaper::discipline
-            ),
-            limit(10)
-        ).toList()
-
         val res = mongo.genderedPapers.aggregate<WosPaperWithStemSsh>(
             match(WosPaper::shortTitle `in` shortTitles),
             project(
@@ -414,8 +411,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
             ),
         ).toList()
 
-        val combined = res + ssh
-        return combined
+        return res
     }
 
     fun getPapers(shortTitles: List<String>): List<WosPaperWithAuthors> {
@@ -425,7 +421,8 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
             project(
                 WosPaperWithAuthors::_id from WosPaper::_id,
                 WosPaperWithAuthors::doi from WosPaper::doi,
-                WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors
+                WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors,
+                WosPaperWithAuthors::authors from WosPaper::authors,
             ),
         ).toList()
 

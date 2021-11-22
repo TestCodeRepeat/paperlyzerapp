@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
@@ -45,6 +46,15 @@ fun getAssociatedPapersForStemSsh(papers: List<WosPaperWithStemSsh>, shortTitle:
 fun getAssociatedPaper(papers: List<WosPaperWithAuthors>, doi: String) =
     papers.firstOrNull { it.doi == doi }
 
+
+/**
+ *  Determines an Author's average # of co-authors
+ *  Determines # of times Author is First Author from WoS Papers
+ *
+ * uses
+ *  Wos Paper Collection
+ *  Author Collection
+ * */
 @DelicateCoroutinesApi
 class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
@@ -79,18 +89,38 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         log.info("CoAuthorProcess.runProcess()   allAssociatedPapers: ${allAssociatedPapers.size}")
 
         unprocessed.parallelStream().forEach { author ->
-            val associatedPapers = author.papers?.map { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
+            val associatedPapers =
+                author.papers?.mapNotNull { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
             val totalPapers = associatedPapers.size
-            val totalAllAuthors = associatedPapers.sumOf { it?.totalAuthors ?: 0 }
+            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors ?: 0 }
+            val totalPapersAsFirstAuthor =
+                firstAuthorCount(associatedPapers, author.lastName, author.firstName.toString())
             val totalCoAuthors = totalAllAuthors - totalPapers
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
             authorRepo.updateAuthorCoAuthors(
                 author.copy(
                     totalPapers = totalPapers,
-                    averageCoAuthors = averageCoAuthors
+                    averageCoAuthors = averageCoAuthors,
+                    firstAuthorCount = totalPapersAsFirstAuthor.toLong()
                 )
             )
         }
+    }
+
+    private fun firstAuthorCount(
+        associatedPapers: List<WosPaperWithAuthors?>,
+        lastName: String,
+        firstName: String
+    ): Int {
+        val res = associatedPapers.filter { paper ->
+            paper?.authors?.firstOrNull()?.let { first ->
+                return@filter first.firstName?.trim()?.lowercase().equals(firstName.trim().lowercase())
+                    && first.lastName.trim().lowercase() == lastName.trim().lowercase()
+            } ?: run {
+                false
+            }
+        }
+        return res.size
     }
 
     override fun shouldContinueProcess(): Boolean {
@@ -126,5 +156,5 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         log.info("CoAuthorProcess.reset()  completed in $time ms")
     }
 
-
+    override fun type(): ProcessType = ProcessType.coauthor
 }

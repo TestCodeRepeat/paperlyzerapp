@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.process.reports
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.entity.WosPaper
@@ -47,6 +48,8 @@ class PaperReportProcess(
         log.info("ReportProcess.reset()  ")
         wosRepo.resetReportLines()
     }
+
+    override fun type(): ProcessType = ProcessType.paperReport
 
     override fun runProcess() {
         log.info("ReportProcess.runProcess()  ")

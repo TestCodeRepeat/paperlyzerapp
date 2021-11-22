@@ -110,7 +110,6 @@ class Mongo(useLiveDatabase: Boolean = false) {
         genderedAuthors.ensureIndex(Author::discipline)
         genderedAuthors.ensureIndex(Author::disciplineScore)
 
-
         authorsCollection.ensureIndex(Author::firstName)
         authorsCollection.ensureIndex(Author::lastName)
         authorsCollection.ensureIndex(Author::lastName, Author::firstName)

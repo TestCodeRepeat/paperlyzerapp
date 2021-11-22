@@ -61,6 +61,7 @@ data class Author(
     var ssProcessedYearsPub: Boolean = false,
     val totalPapers: Int? = null,
     val averageCoAuthors: Double? = null,
+    val firstAuthorCount: Long? = null,
     val unprocessed: Boolean? = false,
     val disciplineScore: Double? = null,
     val discipline: DisciplineType? = null,

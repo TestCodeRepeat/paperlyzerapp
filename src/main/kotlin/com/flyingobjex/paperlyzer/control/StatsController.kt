@@ -52,6 +52,8 @@ data class AuthorReportLine(
     val publishedTitles: String,
     val orcID: String?,
     val coAuthorAverage:Double,
+    val discipline: DisciplineType,
+    val disciplineScore:Double,
 )
 
 @Serializable
@@ -169,7 +171,7 @@ class StatsController(val mongo: Mongo) {
             doi = it.doi,
             gendersShortKey = it.authorGendersShortKey,
             firstAuthorGender = it.firstAuthorGender,
-            lastAuthorGender = it.lastAuthorGender,
+            lastAuthorGender = it.withoutFirstAuthorGender,
             genderCompletenessScore = it.genderCompletenessScore,
             totalAuthors = it.totalAuthors,
             totalIdentifiableAuthors = it.totalIdentifiableAuthors,
@@ -227,7 +229,9 @@ class StatsController(val mongo: Mongo) {
                     years.lastOrNull() ?: 0,
                     author.publishedTitles().joinToString(";"),
                     author.orcIDString,
-                    author.averageCoAuthors ?: -5.5
+                    author.averageCoAuthors ?: -5.5,
+                    author.discipline ?: DisciplineType.NA,
+                    author.disciplineScore ?: -5.5
                 )
             )
         }

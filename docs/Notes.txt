@@ -13,6 +13,57 @@ heroku link:
 The API key needs to be sent in the header of the request as x-api-key directed at https://api.semanticscholar.org
 Max requests - 100/sec
 
+Nov 22
+
+- Previous Data for testing against
+
+- Review Policy Match for Journals
+    - Nils will get journal titles
+
+- Author Report :: for each Author
+      - total number of Papers
+      - total number of First-Authored papers
+
+- Paper Report :: Number of paper co-authors total
+  - Gender Ratio of additional authors (not including the first author)
+  - Gender ratio w/o first
+  - Gender ratio w/o last
+  - Gender ratio
+
+  - String search matching library? - match by
+
+  - Last Author column
+    - Gender ratio of everyone excluding the last author
+      - if no Gender of first author - NA
+      - if no Gender of last author - NA
+
+    total_number_of_coauthor - per paper (authors count - 1)
+
+    genderratio_withoutfirst
+    Numeric, e.g. 0.333
+    “Mean value gender”: without first author, 1:male, 0:female
+
+    gender_count
+    Numeric, e.g. 3
+    # of genders found, usually lower than author_count
+
+    gender_first
+    Character, e.g. “male”
+    Gender of first author
+
+    gender_last
+    Character, e.g. “female”
+    Gender of last author
+
+    genderratio_withoutlast
+    Numeric, e.g. 0.5
+    “Mean value gender”: without last author, 1:male, 0:female
+
+    Calculate Mean:   MMF = 1 + 1 + 0 / 3
+
+
+
+
 Nov 10
   :: Apply STEM/SSH/M to the author table.
      I calculated the coding by defining
@@ -151,8 +202,6 @@ June 23, 2021
 June 22, 2021
     Journals Table :: 1m 40sec to parse from Raw Papers table
         ~ 22,000 journals
-
-
 
 June 21 2021
     Raw Papers Table :: 1m 14sec to parse from csv

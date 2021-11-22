@@ -9,6 +9,7 @@ import com.flyingobjex.paperlyzer.process.AuthorStemSshProcess
 import com.flyingobjex.paperlyzer.process.DisciplineUtils
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.Test
@@ -17,17 +18,16 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.limit
 import org.litote.kmongo.match
 
-
 /**
  *
  *  Apply STEM/SSH/M to the author table.
-I calculated the coding by defining
-STEM = 0, M = .5, SSH = 1
-Then I took the discipline from the papers of every
-single author and took the mean value.
-E.g. Jane Smith had 2 STEM and a M paper: 0 + 0 + .5 / 3 = .16
-resulting in Jane Smith being STEM.
-I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1.
+    I calculated the coding by defining
+    STEM = 0, M = .5, SSH = 1
+    Then I took the discipline from the papers of every
+    single author and took the mean value.
+    E.g. Jane Smith had 2 STEM and a M paper: 0 + 0 + .5 / 3 = .16
+    resulting in Jane Smith being STEM.
+    I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1.
  *
  * */
 
@@ -53,13 +53,20 @@ class AuthorStemSshTest {
         return ssh + stem
     }
 
-//    @Test
-//    fun `app should run process three times and stop`(){
-//
-//    }
+    @Test
+    fun `app should run process three times and stop`(){
+        app.process.printStats()
+        app.process.reset()
+        app.process.printStats()
+
+        app.runProcess()
+
+        mongo.genderedAuthors
+            .countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED) shouldBeLessThan 420000
+    }
 
 
-//    @Test
+    @Test
     fun `should check for unprocessed before continuing`(){
         authorStemProcess.reset()
         authorStemProcess.runProcess()

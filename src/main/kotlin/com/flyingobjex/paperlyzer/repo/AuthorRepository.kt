@@ -44,12 +44,15 @@ class AuthorRepository(val mongo: Mongo) {
     }
 
     fun getUnprocessedAuthorsByAStemSshCount(): Long =
-        mongo.genderedAuthors.countDocuments(Author::disciplineScore eq -5.5)
+        mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED)
 
     fun resetStemSsh() {
         mongo.genderedAuthors.updateMany(
-            Author::disciplineScore ne -5.5,
-            setValue(Author::disciplineScore, -5.5)
+            Author::discipline ne DisciplineType.UNINITIALIZED,
+            listOf(
+                setValue(Author::disciplineScore, -5.5),
+                setValue(Author::discipline, DisciplineType.UNINITIALIZED)
+            )
         )
     }
 
@@ -270,6 +273,7 @@ class AuthorRepository(val mongo: Mongo) {
             listOf(
                 setValue(Author::totalPapers, author.totalPapers),
                 setValue(Author::averageCoAuthors, author.averageCoAuthors),
+                setValue(Author::firstAuthorCount, author.firstAuthorCount),
             )
         )
     }

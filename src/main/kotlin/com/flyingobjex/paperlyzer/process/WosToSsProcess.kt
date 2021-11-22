@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.control.SSPaperController
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.channels.SendChannel
@@ -27,7 +28,7 @@ class WosToSsProcess(val mongo: Mongo, val logMessage: (value: String) -> Unit) 
         val processedCount = ssController.getProcessedWosPaperCount()
         val res = processedCount >= processedWosPaperGoal
         println("Should Start Process: $res")
-        println("PaperlyzerApp.kt :: processedCount = " + processedCount)
+        println("PaperlyzerApp.kt :: processedCount = $processedCount")
         println("PaperlyzerApp.kt :: shouldStartWosProcess() :: processedWosPaperGoal = " + processedWosPaperGoal)
         return res
     }
@@ -48,6 +49,8 @@ class WosToSsProcess(val mongo: Mongo, val logMessage: (value: String) -> Unit) 
         ssController.reset()
         println("WosToSsProcess.kt :: reset :: ")
     }
+
+    override fun type(): ProcessType = ProcessType.sjr
 
     override fun name(): String {
         return "Web of Science to Semantic Scholar Process"

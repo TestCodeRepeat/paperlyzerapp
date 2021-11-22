@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.SJRModel
@@ -104,4 +105,6 @@ class SJRProcess(val mongo: Mongo) : IProcess {
     }
 
     override fun reset() = wosRepo.resetSJRIndexProcessed()
+
+    override fun type(): ProcessType = ProcessType.sjr
 }

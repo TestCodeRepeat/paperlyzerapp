@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.process
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.parser.DisciplineType
@@ -39,6 +40,7 @@ data class StemSshAuthorProcessStats(
             "totalStem: $totalStem \n" +
             "totalSsh: $totalSsh \n" +
             "totalAuthors: $totalAuthors \n" +
+            "totalM: $totalM \n" +
             "totalUnidentified: $totalUnidentified \n" +
             "UNPROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
@@ -119,14 +121,16 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
 
     override fun reset() {
         authorRepo.resetStemSsh()
+        printStats()
     }
+
+    override fun type(): ProcessType = ProcessType.stemssh
 
 }
 
 object DisciplineUtils {
     fun disciplineScoreToDiscipline(score: Double?): DisciplineType {
         if (score == null) return DisciplineType.NA
-
         return if (score <= .45) {
             DisciplineType.STEM
         } else if (score > .45 && score <= .55) {
@@ -136,11 +140,12 @@ object DisciplineUtils {
         }
     }
 
-    fun calculateStemSshScores(associatedPapers: List<IWosPaperWithStemSsh>): Double {
+    fun calculateStemSshScores(associatedPapers: List<IWosPaperWithStemSsh>): Double? {
         val res = associatedPapers
             .mapNotNull { disciplineToScore(it.discipline) }
-            .sumOf { it }
-        return res / associatedPapers.size
+
+        return if (res.isEmpty()) null
+        else res.sumOf { it } / associatedPapers.size
     }
 
     fun disciplineToScore(disciplineType: DisciplineType?): Double? =

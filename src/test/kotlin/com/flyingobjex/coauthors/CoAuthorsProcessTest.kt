@@ -2,6 +2,7 @@ package com.flyingobjex.coauthors
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.process.CoAuthorProcess
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
@@ -18,6 +19,7 @@ class CoAuthorsProcessTest {
 
     @Test
     fun `app should run coauthor proces`(){
+        if (app.process.type() != ProcessType.coauthor) throw Error("Wrong Process!!! : ${app.process.type()}")
         app.process.printStats()
         app.process.reset()
         app.process.printStats()

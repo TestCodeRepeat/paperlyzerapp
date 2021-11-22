@@ -25,7 +25,7 @@ val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toStrin
 var BASE_URL = "localhost:8080"
 
 enum class ProcessType {
-    citation, discipline, wostoss, report, sjr, coauthor, authorReport
+    citation, discipline, wostoss, paperReport, sjr, coauthor, authorReport, stemssh,
 }
 
 const val BUILD_VERSION = 3
@@ -66,7 +66,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
 
-        initProcess(ProcessType.authorReport)
+        initProcess(ProcessType.coauthor)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")
@@ -96,10 +96,11 @@ class PaperlyzerApp(val mongo: Mongo) {
             ProcessType.citation -> WosCitationProcess(mongo, ::logMessage)
             ProcessType.discipline -> DisciplineProcess(mongo, matcher)
             ProcessType.wostoss -> WosToSsProcess(mongo, ::logMessage)
-            ProcessType.report -> PaperReportProcess(mongo)
+            ProcessType.paperReport -> PaperReportProcess(mongo)
             ProcessType.sjr -> SJRProcess(mongo)
             ProcessType.coauthor -> CoAuthorProcess(mongo)
             ProcessType.authorReport -> AuthorReportProcess(mongo)
+            ProcessType.stemssh -> AuthorStemSshProcess(mongo)
         }
 
         process.init()

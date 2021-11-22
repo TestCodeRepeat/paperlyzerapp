@@ -2,8 +2,10 @@ package com.flyingobjex.paperlyzer.process.reports
 
 import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.control.AuthorReportLine
+import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.IProcess
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.ReportRepository
@@ -36,7 +38,7 @@ data class AuthorReportStats(
     }
 }
 
-class AuthorReportProcess(val mongo:Mongo) : IProcess {
+class AuthorReportProcess(val mongo: Mongo) : IProcess {
 
     val log: Logger = Logger.getAnonymousLogger()
 
@@ -69,7 +71,9 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
                     years.lastOrNull() ?: 0,
                     author.publishedTitles().joinToString(";"),
                     author.orcIDString,
-                    author.averageCoAuthors ?: -9.9
+                    author.averageCoAuthors ?: -9.9,
+                    author.discipline ?: DisciplineType.NA,
+                    author.disciplineScore ?: -5.5
                 )
             )
 
@@ -103,4 +107,6 @@ class AuthorReportProcess(val mongo:Mongo) : IProcess {
         authorRepo.resetAuthorReport()
         reportRepo.resetAuthorReport()
     }
+
+    override fun type(): ProcessType = ProcessType.sjr
 }

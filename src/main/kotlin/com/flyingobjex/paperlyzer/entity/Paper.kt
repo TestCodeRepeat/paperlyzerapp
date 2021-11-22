@@ -69,7 +69,7 @@ data class WosPaper(
     val processed: Boolean? = false,
     var authorGendersShortKey: String? = null,
     var firstAuthorGender: String? = null,
-    var lastAuthorGender: String? = null,
+    var withoutFirstAuthorGender: String? = null,
     var genderCompletenessScore: Double? = null,
     var totalAuthors: Int? = null,
     var totalIdentifiableAuthors: Int? = null,
