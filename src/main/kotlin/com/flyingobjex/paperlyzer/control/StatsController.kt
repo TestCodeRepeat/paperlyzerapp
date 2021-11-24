@@ -4,14 +4,18 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.entity.*
 import com.flyingobjex.paperlyzer.parser.CSVHelper
 import com.flyingobjex.paperlyzer.parser.DisciplineType
+import com.flyingobjex.paperlyzer.process.reports.AuthorReportLine
+import com.flyingobjex.paperlyzer.process.reports.PaperReportLine
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.JournalTableRepo
+import com.flyingobjex.paperlyzer.repo.toShortKeys
+import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutFirst
+import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutLast
 import java.io.File
 import java.text.NumberFormat
 import java.util.*
 import java.util.logging.Logger
 import kotlin.streams.asSequence
-import kotlinx.serialization.Serializable
 import org.litote.kmongo.*
 
 data class YearsPublishedResult(val _id: String, val papers: List<String>)
@@ -37,54 +41,6 @@ data class JournalCount(val name: String, val numOfCitations: Int)
 data class JournalTableStats(
     val totalJournals: Int,
     val top50Journals: List<JournalCount>,
-)
-
-@Serializable
-data class AuthorReportLine(
-    val firstName: String,
-    val lastName: String,
-    val gender: GenderIdentitiy,
-    val genderProbability: Double,
-    val totalPapers: Int,
-    val totalFirstAuthored:Int,
-    val yearsPublished: String,
-    val firstYearPublished: Int,
-    val lastYearPublished: Int,
-    val publishedTitles: String,
-    val orcID: String?,
-    val coAuthorAverage:Double,
-    val discipline: DisciplineType,
-    val disciplineScore:Double,
-)
-
-@Serializable
-data class PaperReportLine(
-    val shortTitle: String,
-    val authors: String,
-    val year: String,
-    val title: String,
-    val journal: String,
-    val text_type: String,
-    val keywords: String,
-    val emails: String,
-    val orcIds: String,
-    val doi: String,
-    val diszOrigTopic: String,
-    var gendersShortKey: String? = null,
-    var firstAuthorGender: String? = null,
-    var lastAuthorGender: String? = null,
-    var genderCompletenessScore: Double? = null,
-    var totalAuthors: Int? = null,
-    var totalIdentifiableAuthors: Int? = null,
-    var citationsCount: Int? = null,
-    var influentialCitationsCount: Int? = null,
-    var discipline: DisciplineType? = null,
-    var discScore: Int? = null,
-    val discTopic: String?,
-    val sjrRank:Int? = null,
-    val hIndex:Int? = null,
-//    var discTopSSH: String? = null,
-//    val discTopSTEM: String? = null,
 )
 
 fun Int.read(): String {
@@ -142,7 +98,6 @@ class StatsController(val mongo: Mongo) {
         statsJournalTable()
     )
 
-
     fun getUnprocessedPapersByReport(batchSize: Int) =
         mongo.genderedPapers.find(WosPaper::reported ne true).limit(batchSize).toList()
 
@@ -158,7 +113,27 @@ class StatsController(val mongo: Mongo) {
         )
     }
 
+    private fun toGenderRatio(shortKeys: String, numAuthors: Int): Double {
+        val res = shortKeys.sumOf {
+            val res = when (it.toString()) {
+                "M" -> 1
+                "F" -> 0
+                else -> -99999
+            }
+            res
+        }.toDouble() / numAuthors.toDouble()
+
+        return if (res >= 0) res else -5.0
+    }
+
     fun papersToReportLines(papers: List<WosPaper>): List<PaperReportLine> = papers.map {
+
+        val genderRatio = toGenderRatio(toShortKeys(it.authors), it.authors.size)
+        val genderRatioWithoutFirst = toGenderRatio(toShortKeys(withoutFirst(it.authors)), it.authors.size)
+        val genderRatioWithoutLast = toGenderRatio(toShortKeys(withoutLast(it.authors)), it.authors.size)
+
+        val lastAuthorGender = toShortKeys(it.authors).last().toString()
+
         PaperReportLine(
             shortTitle = it.shortTitle,
             authors = it.authors.map { "${it.firstName} ${it.lastName} " }.joinToString(", "),
@@ -170,22 +145,29 @@ class StatsController(val mongo: Mongo) {
             emails = it.emails,
             orcIds = it.orcid,
             doi = it.doi,
-            gendersShortKey = it.authorGendersShortKey,
-            firstAuthorGender = it.firstAuthorGender,
-            lastAuthorGender = it.withoutFirstAuthorGender,
-            genderCompletenessScore = it.genderCompletenessScore,
-            totalAuthors = it.totalAuthors,
-            totalIdentifiableAuthors = it.totalIdentifiableAuthors,
-            citationsCount = it.citationsCount,
-            influentialCitationsCount = it.influentialCitationsCount,
-            discipline = it.discipline,
-            discScore = it.score,
+            gendersShortKey = it.authorGendersShortKey ?: "",
+            firstAuthorGender = it.firstAuthorGender ?: "",
+            lastAuthorGender = lastAuthorGender,
+            genderCompletenessScore = it.genderCompletenessScore ?: -5.0,
+            genderCount = it.totalIdentifiableAuthors?.toLong() ?: -5,
+            genderRatio = genderRatio,
+            genderRatioWithoutFirst = genderRatioWithoutFirst,
+            genderRatioWithoutLast = genderRatioWithoutLast,
+            genderRatioOfCoAuthors = genderRatioWithoutFirst,
+            totalAuthors = it.totalAuthors ?: -5,
+            totalCoAuthors = (it.totalAuthors ?: -5) - 1,
+            totalIdentifiableAuthors = it.totalIdentifiableAuthors ?: -5,
+            citationsCount = it.citationsCount ?: -5,
+            influentialCitationsCount = it.influentialCitationsCount ?: -5,
+            discipline = it.discipline ?: DisciplineType.NA,
+            discScore = it.score ?: -5,
             discTopic = it.matchingCriteria?.sortedByDescending { it.score }?.firstOrNull()?.term,
-            diszOrigTopic = it.topics.joinToString("; "),
-            sjrRank = it.sjrRank,
-            hIndex = it.hIndex,
+            disipOrigTopic = it.topics.joinToString("; "),
+            sjrRank = it.sjrRank ?: -5,
+            hIndex = it.hIndex ?: -5,
         )
     }
+
 
     /** Disciplines */
     fun resetDisciplinesReport() {
@@ -220,20 +202,22 @@ class StatsController(val mongo: Mongo) {
 
             report.add(
                 AuthorReportLine(
-                    author.firstName ?: "",
-                    author.lastName,
-                    author.gender.gender,
-                    author.gender.probability,
-                    author.paperCount,
-                    author.firstAuthorCount?.toInt() ?: 0,
-                    years.joinToString(";"),
-                    years.firstOrNull() ?: 0,
-                    years.lastOrNull() ?: 0,
-                    author.publishedTitles().joinToString(";"),
-                    author.orcIDString,
-                    author.averageCoAuthors ?: -5.5,
-                    author.discipline ?: DisciplineType.NA,
-                    author.disciplineScore ?: -5.5
+                    firstName = author.firstName ?: "",
+                    lastName = author.lastName,
+                    gender = author.gender.gender,
+                    genderProbability = author.gender.probability,
+                    totalPapers = author.paperCount,
+                    totalAsFirstAuthor = author.firstAuthorCount?.toInt() ?: 0,
+                    yearsPublished = years.joinToString(";"),
+                    firstYearPublished = years.firstOrNull() ?: 0,
+                    lastYearPublished = years.lastOrNull() ?: 0,
+                    publishedTitles = author.publishedTitles().joinToString(";"),
+                    orcID = author.orcIDString,
+                    coAuthorMean = author.averageCoAuthors ?: -5.5,
+                    discipline = author.discipline ?: DisciplineType.NA,
+                    disciplineScore = author.disciplineScore ?: -5.5,
+                    sjrScores = "NA",
+                    hIndexes = "NA"
                 )
             )
         }

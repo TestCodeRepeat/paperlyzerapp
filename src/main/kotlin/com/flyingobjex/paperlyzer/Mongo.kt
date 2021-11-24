@@ -1,14 +1,12 @@
 package com.flyingobjex.paperlyzer
 
 import com.flyingobjex.paperlyzer.api.SemanticScholarPaper
-import com.flyingobjex.paperlyzer.control.AuthorReportLine
-import com.flyingobjex.paperlyzer.control.PaperReportLine
 import com.flyingobjex.paperlyzer.entity.*
-import com.flyingobjex.paperlyzer.parser.MatchingCriteria
+import com.flyingobjex.paperlyzer.process.reports.AuthorReportLine
+import com.flyingobjex.paperlyzer.process.reports.PaperReportLine
 import com.flyingobjex.paperlyzer.repo.FirstName
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import org.litote.kmongo.*
-
 
 
 data class OrcIdDuplicate(val firstName: String, val lastName: String, val orcIds: List<OrcID>)

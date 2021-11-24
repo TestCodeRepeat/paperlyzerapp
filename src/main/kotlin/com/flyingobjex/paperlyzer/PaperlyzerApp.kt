@@ -33,11 +33,8 @@ const val BUILD_VERSION = 3
 class PaperlyzerApp(val mongo: Mongo) {
 
     var port: String = "na"
-
     val log: Logger = Logger.getAnonymousLogger()
-
     var matcher = TopicMatcher(topics)
-
     var hIndexModel = SJRModel()
 
     lateinit var process: IProcess
@@ -66,7 +63,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
 
-        initProcess(ProcessType.authorReport)
+        initProcess(ProcessType.paperReport)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")

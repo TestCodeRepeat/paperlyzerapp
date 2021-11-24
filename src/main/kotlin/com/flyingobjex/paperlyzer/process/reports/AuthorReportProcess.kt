@@ -4,7 +4,6 @@ import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
-import com.flyingobjex.paperlyzer.control.AuthorReportLine
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.IProcess
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
@@ -61,20 +60,22 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
 
             reportRepo.addAuthorReportLine(
                 AuthorReportLine(
-                    author.firstName ?: "",
-                    author.lastName,
-                    author.gender.gender,
-                    author.gender.probability,
-                    author.paperCount,
-                    author.firstAuthorCount?.toInt() ?: 0,
-                    years.joinToString(";"),
-                    years.firstOrNull() ?: 0,
-                    years.lastOrNull() ?: 0,
-                    author.publishedTitles().joinToString(";"),
-                    author.orcIDString,
-                    author.averageCoAuthors ?: -9.9,
-                    author.discipline ?: DisciplineType.NA,
-                    author.disciplineScore ?: -5.5
+                    firstName = author.firstName ?: "",
+                    lastName = author.lastName,
+                    gender = author.gender.gender,
+                    genderProbability = author.gender.probability,
+                    totalPapers = author.paperCount,
+                    totalAsFirstAuthor = author.firstAuthorCount?.toInt() ?: 0,
+                    yearsPublished = years.joinToString(";"),
+                    firstYearPublished = years.firstOrNull() ?: 0,
+                    lastYearPublished = years.lastOrNull() ?: 0,
+                    publishedTitles = author.publishedTitles().joinToString(";"),
+                    orcID = author.orcIDString,
+                    coAuthorMean = author.averageCoAuthors ?: -9.9,
+                    discipline = author.discipline ?: DisciplineType.NA,
+                    disciplineScore = author.disciplineScore ?: -5.5,
+                    sjrScores = "",
+                    hIndexes = ""
                 )
             )
 

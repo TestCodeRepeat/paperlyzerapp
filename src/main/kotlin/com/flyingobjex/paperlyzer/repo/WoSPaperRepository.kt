@@ -309,7 +309,12 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
                     }
                     .size
                 paper.totalIdentifiableAuthors = identifiableAuthors
-                paper.genderCompletenessScore = identifiableAuthors.toDouble() / totalAuthors.toDouble()
+                val genderCompletenessScore = identifiableAuthors.toDouble() / totalAuthors.toDouble()
+                paper.genderCompletenessScore = genderCompletenessScore
+
+                if (genderCompletenessScore == 1.0){
+                    paper.genderCompletenessScore
+                }
 
                 mongo.genderedPapers.insertOne(paper)
                 mongo.rawPaperFullDetails.updateOne(
@@ -327,9 +332,6 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
 
     }
-
-    private fun toShortKeys(authors: List<Author>): String =
-        authors.joinToString("") { it.genderIdt?.toShortKey() ?: "X" }
 
     fun getPapersWithAuthors(batchSize: Int): List<WosPaper> {
         return mongo.rawPaperFullDetails.aggregate<WosPaper>(
@@ -451,3 +453,6 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 }
 
 data class WosPaperReduced(val doi: String)
+
+fun toShortKeys(authors: List<Author>): String =
+    authors.joinToString("") { it.genderIdt?.toShortKey() ?: "X" }

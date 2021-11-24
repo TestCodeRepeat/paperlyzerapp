@@ -13,6 +13,14 @@ heroku link:
 The API key needs to be sent in the header of the request as x-api-key directed at https://api.semanticscholar.org
 Max requests - 100/sec
 
+
+================
+- Gender Ratio of additional authors (not including the first author)
+  - Gender ratio w/o first
+  - Gender ratio w/o last
+  - Gender ratio
+===============
+
 Nov 22
 
 - Previous Data for testing against
