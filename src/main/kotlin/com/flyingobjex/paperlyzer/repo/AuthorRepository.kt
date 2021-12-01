@@ -274,6 +274,9 @@ class AuthorRepository(val mongo: Mongo) {
                 setValue(Author::totalPapers, author.totalPapers),
                 setValue(Author::averageCoAuthors, author.averageCoAuthors),
                 setValue(Author::firstAuthorCount, author.firstAuthorCount),
+                setValue(Author::averageGenderRatioOfPapers, author.averageGenderRatioOfPapers),
+                setValue(Author::genderRatioOfAllCoAuthors, author.genderRatioOfAllCoAuthors),
+
             )
         )
     }

@@ -63,7 +63,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
 
-        initProcess(ProcessType.paperReport)
+        initProcess(ProcessType.coauthor)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")
@@ -157,11 +157,26 @@ class PaperlyzerApp(val mongo: Mongo) {
                 "Canceling Jobs"
             }
             SocketAction.STATS -> {
+                GlobalScope.launch {
+                    outgoing.send(
+                        Frame.Text(
+                            "::::::::::::::::::::::::::::::::::::::::::::::::\n" +
+                                "STATS -> Printing Stats for ${process.name()} \n" +
+                                ":::::::::::::::::::::::::::::::::::::::::::::::: \n"
+                        )
+                    )
+                }
+                log.info(
+                    "::::::::::::::::::::::::::::::::::::::::::::::::\n" +
+                        "STATS -> Printing Stats for ${process.name()} \n" +
+                        "::::::::::::::::::::::::::::::::::::::::::::::::\n"
+                )
+
                 process.printStats(outgoing)
                 "Fetched Stats"
             }
             SocketAction.RESET -> {
-                log.info("PaperlyzerApp.handleCommand()  RESET")
+                log.info("PaperlyzerApp.handleCommand()  RESET ${process.name()}")
                 process.reset()
                 forceCancel = false
                 process.printStats(outgoing)

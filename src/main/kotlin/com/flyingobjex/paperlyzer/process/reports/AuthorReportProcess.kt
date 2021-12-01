@@ -69,13 +69,13 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
                     yearsPublished = years.joinToString(";"),
                     firstYearPublished = years.firstOrNull() ?: 0,
                     lastYearPublished = years.lastOrNull() ?: 0,
-                    publishedTitles = author.publishedTitles().joinToString(";"),
+                    publishedShortTitles = author.publishedShortTitles().joinToString(";"),
                     orcID = author.orcIDString,
                     coAuthorMean = author.averageCoAuthors ?: -9.9,
                     discipline = author.discipline ?: DisciplineType.NA,
                     disciplineScore = author.disciplineScore ?: -5.5,
                     sjrScores = "",
-                    hIndexes = ""
+                    hIndexes = "",
                 )
             )
 
@@ -106,6 +106,7 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
     override fun cancelJobs() {}
 
     override fun reset() {
+        log.info("AuthorReportProcess.reset()  process = ${name()}" )
         authorRepo.resetAuthorReport()
         reportRepo.resetAuthorReport()
     }

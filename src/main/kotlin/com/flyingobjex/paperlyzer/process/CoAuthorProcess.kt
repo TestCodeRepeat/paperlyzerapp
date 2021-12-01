@@ -5,10 +5,9 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.Author
-import com.flyingobjex.paperlyzer.repo.AuthorRepository
-import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
-import com.flyingobjex.paperlyzer.repo.WosPaperWithAuthors
-import com.flyingobjex.paperlyzer.repo.WosPaperWithStemSsh
+import com.flyingobjex.paperlyzer.repo.*
+import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatio
+import com.flyingobjex.paperlyzer.util.GenderUtils.toGenderRatio
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
@@ -84,9 +83,20 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
         log.info("CoAuthorProcess.runProcess()  allDOis.size = ${allShortTitles.size}")
 
-        val allAssociatedPapers = wosRepo.getPapers(allShortTitles)
+        val allAssociatedPapers:List<WosPaperWithAuthors> = wosRepo.getPapers(allShortTitles)
 
         log.info("CoAuthorProcess.runProcess()   allAssociatedPapers: ${allAssociatedPapers.size}")
+
+        val averageGenderRatioOfPapers = averageGenderRatio(allAssociatedPapers)
+
+        val totalAuthors = allAssociatedPapers.map { it.authors.size }.sum()
+        val genderRatioOfAllCoAuthors = allAssociatedPapers
+            .map {
+                it.authors
+            }.map {
+                toGenderRatio(toShortKeys(it), it.size)
+            }
+            .sum() / totalAuthors
 
         unprocessed.parallelStream().forEach { author ->
             val associatedPapers =
@@ -101,7 +111,9 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
                 author.copy(
                     totalPapers = totalPapers,
                     averageCoAuthors = averageCoAuthors,
-                    firstAuthorCount = totalPapersAsFirstAuthor.toLong()
+                    firstAuthorCount = totalPapersAsFirstAuthor.toLong(),
+                    averageGenderRatioOfPapers = averageGenderRatioOfPapers,
+                    genderRatioOfAllCoAuthors = genderRatioOfAllCoAuthors,
                 )
             )
         }

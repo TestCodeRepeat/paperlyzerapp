@@ -1,7 +1,7 @@
 package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.control.AuthorReportLine
+import com.flyingobjex.paperlyzer.process.reports.AuthorReportLine
 import com.flyingobjex.paperlyzer.process.reports.AuthorReportStats
 
 class ReportRepository(val mongo: Mongo) {
@@ -10,7 +10,7 @@ class ReportRepository(val mongo: Mongo) {
         mongo.authorReport.insertMany(reportLines)
     }
 
-    fun addAuthorReportLine(line:AuthorReportLine){
+    fun addAuthorReportLine(line: AuthorReportLine){
         mongo.authorReport.insertOne(line)
     }
 

@@ -13,6 +13,17 @@ heroku link:
 The API key needs to be sent in the header of the request as x-api-key directed at https://api.semanticscholar.org
 Max requests - 100/sec
 
+===========================
+===========================
+SESSION START
+
+brew services restart mongodb-community
+ws://localhost:8080/allthethings
+
+===========================
+===========================
+
+
 
 ================
 - Gender Ratio of additional authors (not including the first author)

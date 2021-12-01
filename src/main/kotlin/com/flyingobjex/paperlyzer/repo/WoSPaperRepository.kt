@@ -16,24 +16,6 @@ import org.litote.kmongo.*
 
 data class AuthorResult(val _id: String, val shortTitle: String, val authors: List<Author>)
 
-@Serializable
-data class WosPaperId(val doi: String, val _id: String? = null)
-
-@Serializable
-data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long, val authors:List<Author>)
-
-@Serializable
-data class WosPaperWithStemSsh(
-    override val shortTitle: String,
-    override val discipline: DisciplineType,
-    override val _id: String? = null,
-) : IWosPaperWithStemSsh
-
-interface IWosPaperWithStemSsh {
-    val shortTitle: String
-    val discipline: DisciplineType?
-    val _id: String?
-}
 
 fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
     genderDetails.firstOrNull { it.firstName == name }
@@ -321,6 +303,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
                     WosPaper::_id eq paper._id,
                     setValue(WosPaper::processed, true)
                 )
+
             } else {
                 mongo.genderedPapers.insertOne(paper)
                 mongo.rawPaperFullDetails.updateOne(
@@ -425,6 +408,21 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
                 WosPaperWithAuthors::doi from WosPaper::doi,
                 WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors,
                 WosPaperWithAuthors::authors from WosPaper::authors,
+            ),
+        ).toList()
+
+    }
+
+    fun getPapersWithCoAuthors(shortTitles: List<String>): List<WosPaperWithAuthors> {
+
+        return mongo.genderedPapers.aggregate<WosPaperWithAuthors>(
+            match(WosPaper::shortTitle `in` shortTitles),
+            project(
+                WosPaperWithAuthors::_id from WosPaper::_id,
+                WosPaperWithAuthors::doi from WosPaper::doi,
+                WosPaperWithAuthors::totalAuthors from WosPaper::totalAuthors,
+                WosPaperWithAuthors::authors from WosPaper::authors,
+
             ),
         ).toList()
 

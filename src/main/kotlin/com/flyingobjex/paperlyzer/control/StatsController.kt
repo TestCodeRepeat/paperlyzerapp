@@ -8,9 +8,11 @@ import com.flyingobjex.paperlyzer.process.reports.AuthorReportLine
 import com.flyingobjex.paperlyzer.process.reports.PaperReportLine
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.JournalTableRepo
+import com.flyingobjex.paperlyzer.repo.WosPaperWithAuthors
 import com.flyingobjex.paperlyzer.repo.toShortKeys
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutFirst
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutLast
+import com.flyingobjex.paperlyzer.util.GenderUtils.toGenderRatio
 import java.io.File
 import java.text.NumberFormat
 import java.util.*
@@ -113,19 +115,6 @@ class StatsController(val mongo: Mongo) {
         )
     }
 
-    private fun toGenderRatio(shortKeys: String, numAuthors: Int): Double {
-        val res = shortKeys.sumOf {
-            val res = when (it.toString()) {
-                "M" -> 1
-                "F" -> 0
-                else -> -99999
-            }
-            res
-        }.toDouble() / numAuthors.toDouble()
-
-        return if (res >= 0) res else -5.0
-    }
-
     fun papersToReportLines(papers: List<WosPaper>): List<PaperReportLine> = papers.map {
 
         val genderRatio = toGenderRatio(toShortKeys(it.authors), it.authors.size)
@@ -149,6 +138,7 @@ class StatsController(val mongo: Mongo) {
             firstAuthorGender = it.firstAuthorGender ?: "",
             lastAuthorGender = lastAuthorGender,
             genderCompletenessScore = it.genderCompletenessScore ?: -5.0,
+            genders = toShortKeys(it.authors),
             genderCount = it.totalIdentifiableAuthors?.toLong() ?: -5,
             genderRatio = genderRatio,
             genderRatioWithoutFirst = genderRatioWithoutFirst,
@@ -162,7 +152,7 @@ class StatsController(val mongo: Mongo) {
             discipline = it.discipline ?: DisciplineType.NA,
             discScore = it.score ?: -5,
             discTopic = it.matchingCriteria?.sortedByDescending { it.score }?.firstOrNull()?.term,
-            disipOrigTopic = it.topics.joinToString("; "),
+            originalTopics = it.topics.joinToString("; "),
             sjrRank = it.sjrRank ?: -5,
             hIndex = it.hIndex ?: -5,
         )
@@ -211,7 +201,7 @@ class StatsController(val mongo: Mongo) {
                     yearsPublished = years.joinToString(";"),
                     firstYearPublished = years.firstOrNull() ?: 0,
                     lastYearPublished = years.lastOrNull() ?: 0,
-                    publishedTitles = author.publishedTitles().joinToString(";"),
+                    publishedShortTitles = author.publishedShortTitles().joinToString(";"),
                     orcID = author.orcIDString,
                     coAuthorMean = author.averageCoAuthors ?: -5.5,
                     discipline = author.discipline ?: DisciplineType.NA,

@@ -40,6 +40,9 @@ fun Application.configureSockets() {
         webSocket("/allthethings") { // websocketSession
             for (frame in incoming) {
                 when (frame) {
+                    is Frame.Ping -> {
+                        log.info("Sockets.configureSockets()  PING = ${app.process.name()}" )
+                    }
                     is Frame.Text -> {
                         val text = frame.readText()
                         val response = app.handleSocketCommand(SocketAction.toType(text.uppercase(Locale.getDefault())), outgoing)

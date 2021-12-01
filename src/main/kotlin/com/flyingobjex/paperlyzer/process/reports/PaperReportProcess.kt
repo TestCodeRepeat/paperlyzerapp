@@ -45,23 +45,26 @@ class PaperReportProcess(
     private val stats = StatsController(mongo)
 
     override fun reset() {
-        log.info("ReportProcess.reset()  ")
+        log.info("PaperReportProcess.reset()  ")
         wosRepo.resetReportLines()
     }
 
     override fun type(): ProcessType = ProcessType.paperReport
 
     override fun runProcess() {
-        log.info("ReportProcess.runProcess()  ")
+        log.info("PaperReportProcess.runProcess()  ")
         val unprocessed = stats.getUnprocessedPapersByReport(API_BATCH_SIZE)
         val asReportLines = stats.papersToReportLines(unprocessed)
         stats.addReports(asReportLines)
         stats.markAsReported(unprocessed)
     }
 
-    override fun shouldContinueProcess(): Boolean =
-        (mongo.genderedPapers.countDocuments(WosPaper::reported ne true) > UNPROCESSED_RECORDS_GOAL)
-
+    override fun shouldContinueProcess(): Boolean {
+        val unprocessedCount = mongo.genderedPapers.countDocuments(WosPaper::reported ne true)
+        log.info("PaperReportProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
+        val res = (unprocessedCount > UNPROCESSED_RECORDS_GOAL)
+        return res
+    }
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
         val stats = wosRepo.getReportStats()
@@ -73,12 +76,12 @@ class PaperReportProcess(
     }
 
     override fun cancelJobs() {
-        log.info("ReportProcess.cancelJobs()  ")
+        log.info("PaperReportProcess.cancelJobs()  ")
     }
 
-    override fun name(): String = "Report Process"
+    override fun name(): String = "Paper Report Process"
 
     override fun init() {
-        log.info("ReportProcess.init()  ")
+        log.info("PaperReportProcess.init()  ")
     }
 }

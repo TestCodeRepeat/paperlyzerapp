@@ -1,11 +1,8 @@
 package com.flyingobjex.paperlyzer.entity
 
 import com.flyingobjex.paperlyzer.api.SemanticScholarPaper
-import com.flyingobjex.paperlyzer.parser.Discipline
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.parser.MatchingCriteria
-import com.flyingobjex.paperlyzer.parser.PLTopic
-import com.flyingobjex.paperlyzer.repo.IWosPaperWithStemSsh
 import kotlinx.serialization.Serializable
 
 data class LineItem(val key: String? = null, val body: String)
@@ -51,6 +48,28 @@ data class PaperMetatdata(
     val firstAuthorGender: GenderIdentitiy? = null,
     val _id: String? = null,
 )
+
+@Serializable
+data class WosPaperId(val doi: String, val _id: String? = null)
+
+@Serializable
+data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long, val authors:List<Author>)
+
+@Serializable
+data class WosPaperWithCoAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long, val authors:List<Author>)
+
+@Serializable
+data class WosPaperWithStemSsh(
+    override val shortTitle: String,
+    override val discipline: DisciplineType,
+    override val _id: String? = null,
+) : IWosPaperWithStemSsh
+
+interface IWosPaperWithStemSsh {
+    val shortTitle: String
+    val discipline: DisciplineType?
+    val _id: String?
+}
 
 @Serializable
 data class WosPaper(
