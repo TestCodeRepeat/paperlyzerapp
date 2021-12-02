@@ -5,8 +5,12 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.Author
+import com.flyingobjex.paperlyzer.entity.WosPaperWithAuthors
+import com.flyingobjex.paperlyzer.entity.WosPaperWithStemSsh
 import com.flyingobjex.paperlyzer.repo.*
+import com.flyingobjex.paperlyzer.util.GenderUtils.allPapersAreGenderComplete
 import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatio
+import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatioOfAuthors
 import com.flyingobjex.paperlyzer.util.GenderUtils.toGenderRatio
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
@@ -80,23 +84,22 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         val allShortTitles =
             unprocessed.map { unProcessedAuthor -> unProcessedAuthor.papers?.map { it.shortTitle } ?: emptyList() }
                 .flatten()
-
         log.info("CoAuthorProcess.runProcess()  allDOis.size = ${allShortTitles.size}")
 
-        val allAssociatedPapers:List<WosPaperWithAuthors> = wosRepo.getPapers(allShortTitles)
-
+        val allAssociatedPapers: List<WosPaperWithAuthors> = wosRepo.getPapers(allShortTitles)
         log.info("CoAuthorProcess.runProcess()   allAssociatedPapers: ${allAssociatedPapers.size}")
 
-        val averageGenderRatioOfPapers = averageGenderRatio(allAssociatedPapers)
-
-        val totalAuthors = allAssociatedPapers.map { it.authors.size }.sum()
-        val genderRatioOfAllCoAuthors = allAssociatedPapers
-            .map {
-                it.authors
-            }.map {
-                toGenderRatio(toShortKeys(it), it.size)
-            }
-            .sum() / totalAuthors
+        val averageGenderRatioOfPapers: Double?
+        val genderRatioOfAllCoAuthors: Double?
+        if (allPapersAreGenderComplete(allAssociatedPapers)) {
+            averageGenderRatioOfPapers = averageGenderRatio(allAssociatedPapers)
+            genderRatioOfAllCoAuthors = averageGenderRatioOfAuthors(
+                allAssociatedPapers.map { it.authors }.flatten()
+            )
+        } else {
+            averageGenderRatioOfPapers = -5.0
+            genderRatioOfAllCoAuthors = -5.0
+        }
 
         unprocessed.parallelStream().forEach { author ->
             val associatedPapers =

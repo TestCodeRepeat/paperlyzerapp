@@ -4,8 +4,8 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
 import com.flyingobjex.paperlyzer.control.SSPaperController
 import com.flyingobjex.paperlyzer.entity.WosPaper
+import com.flyingobjex.paperlyzer.entity.WosPaperId
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
-import com.flyingobjex.paperlyzer.repo.WosPaperId
 import java.util.logging.Logger
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

@@ -53,10 +53,23 @@ data class PaperMetatdata(
 data class WosPaperId(val doi: String, val _id: String? = null)
 
 @Serializable
-data class WosPaperWithAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long, val authors:List<Author>)
+data class WosPaperWithAuthors(
+    val doi: String,
+    val _id: String? = null,
+    val totalAuthors: Long,
+    override val authors: List<Author>
+) : IWosPaperWithAuthors {
+    override val genderCompletenessScore: Double?
+        get() = TODO("Not yet implemented")
+}
 
 @Serializable
-data class WosPaperWithCoAuthors(val doi: String, val _id: String? = null, val totalAuthors: Long, val authors:List<Author>)
+data class WosPaperWithCoAuthors(
+    val doi: String,
+    val _id: String? = null,
+    val totalAuthors: Long,
+    val authors: List<Author>
+)
 
 @Serializable
 data class WosPaperWithStemSsh(
@@ -71,10 +84,15 @@ interface IWosPaperWithStemSsh {
     val _id: String?
 }
 
+interface IWosPaperWithAuthors {
+    val authors: List<Author>
+    val genderCompletenessScore: Double?
+}
+
 @Serializable
 data class WosPaper(
     override val shortTitle: String,
-    val authors: List<Author>,
+    override val authors: List<Author>,
     val year: String,
     val title: String,
     val journal: String,
@@ -89,7 +107,7 @@ data class WosPaper(
     var authorGendersShortKey: String? = null,
     var firstAuthorGender: String? = null,
     var withoutFirstAuthorGender: String? = null,
-    var genderCompletenessScore: Double? = null,
+    override var genderCompletenessScore: Double? = null,
     var totalAuthors: Int? = null,
     var totalIdentifiableAuthors: Int? = null,
     var citationsCount: Int? = null,
@@ -106,7 +124,7 @@ data class WosPaper(
     var sjrRank: Int? = null,
     var hIndex: Int? = null,
     override val _id: String? = null,
-) : IWosPaperWithStemSsh
+) : IWosPaperWithStemSsh, IWosPaperWithAuthors
 
 private fun String.clean(): String {
     return trim()

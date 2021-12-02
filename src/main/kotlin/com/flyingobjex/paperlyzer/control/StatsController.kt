@@ -1,14 +1,15 @@
 package com.flyingobjex.paperlyzer.control
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.entity.*
+import com.flyingobjex.paperlyzer.entity.Author
+import com.flyingobjex.paperlyzer.entity.PaperMetatdata
+import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.CSVHelper
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.reports.AuthorReportLine
 import com.flyingobjex.paperlyzer.process.reports.PaperReportLine
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.JournalTableRepo
-import com.flyingobjex.paperlyzer.repo.WosPaperWithAuthors
 import com.flyingobjex.paperlyzer.repo.toShortKeys
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutFirst
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutLast

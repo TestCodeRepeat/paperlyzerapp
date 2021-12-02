@@ -4,9 +4,9 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.api.SEMANTIC_SCHOLAR_API_KEY
 import com.flyingobjex.paperlyzer.api.SemanticScholarAPI
 import com.flyingobjex.paperlyzer.entity.WosPaper
+import com.flyingobjex.paperlyzer.entity.WosPaperId
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
-import com.flyingobjex.paperlyzer.repo.WosPaperId
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlinx.coroutines.Dispatchers.IO
