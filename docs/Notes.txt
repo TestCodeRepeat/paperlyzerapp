@@ -23,10 +23,22 @@ ws://localhost:8080/allthethings
 ===========================
 ===========================
 
+28k papers with 1 author
+48k papers with 2 authors
+53k papers with 3 authors
+155k papers with > 3 authors
 
+220k papers with Gender Completeness score of 1.0
+104k papers with more than 3 authors & Gender Completeness Score of 1.0
+42k  papers with more than 5 authors & Gender Completeness Score of 1.0
+
+72k papers more than 5 authors
+
+???? authors with 100% of papers with gender completeness score
 
 ================
 - Gender Ratio of additional authors (not including the first author)
+  - Dependent upon Papers having a gender completeness score
   - Gender ratio w/o first
   - Gender ratio w/o last
   - Gender ratio
@@ -244,7 +256,6 @@ June 21 2021
 
 
 June 1, 2021
-
     Gendered Authors Table :: 38sec to parse from Gender API & Authors Tables
         ~ 252,000 unique authors
         ~ 230,000 authors with distinguishable m/f names

@@ -46,7 +46,12 @@ Where once a process is started, it continually checks for a condition to if it 
 These primary functions can be triggered via Websocket connection & text commands.
 
 
-
+### Steps to Process Data
+1. Load CSV file w/ Web of Science data (executable via test)
+2. Extract Authors into Raw Author table
+3. Build Author table from  Raw Author table (by removing duplicates, initials only)
+4. Build First Names table from Author table (by removing duplicates, unidentifiable)
+5. 
 
 
 

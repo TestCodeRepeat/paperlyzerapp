@@ -26,7 +26,6 @@ class MainCoordinatorTest {
     private val paperRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
 
-
     init {
         setMongoDbLogsToErrorOnly()
     }
@@ -121,7 +120,7 @@ class MainCoordinatorTest {
         log.info("CoordinatorTest.extract authors from raw papers into author table()  parseTime = $parseTime")
     }
 
-    //    @Test
+//        @Test
     fun `parse initial csv file into paper table`() {
         val clearTime = measureTimeMillis {
             paperRepo.clearPapers()

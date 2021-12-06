@@ -27,11 +27,12 @@ class CoAuthorsProcessTest {
     private val wosRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
 
+
     private val process = CoAuthorProcess(mongo)
     private val app = PaperlyzerApp(mongo)
 
 
-    @Test
+//    @Test
     fun `should calculate average gender ratio of papers`() {
         val papers = mongo.genderedPapers.aggregate<WosPaper>(
             match(WosPaper::authors ne null),
@@ -44,10 +45,9 @@ class CoAuthorsProcessTest {
         val res = averageGenderRatio(papers)
         res!! shouldBeGreaterThan 0.0
         res shouldBeLessThan 1.0
-
     }
 
-    //    @Test
+        @Test
     fun `app should run coauthor proces`() {
         val processType = app.process.type()
         verifyProcessType(processType, ProcessType.coauthor)

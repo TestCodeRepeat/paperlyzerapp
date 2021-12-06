@@ -57,11 +57,9 @@ data class WosPaperWithAuthors(
     val doi: String,
     val _id: String? = null,
     val totalAuthors: Long,
-    override val authors: List<Author>
-) : IWosPaperWithAuthors {
-    override val genderCompletenessScore: Double?
-        get() = TODO("Not yet implemented")
-}
+    override val authors: List<Author>,
+    override val genderCompletenessScore: Double? = null,
+) : IWosPaperWithAuthors
 
 @Serializable
 data class WosPaperWithCoAuthors(

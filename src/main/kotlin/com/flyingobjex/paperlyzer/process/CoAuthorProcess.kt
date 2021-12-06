@@ -93,9 +93,8 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         val genderRatioOfAllCoAuthors: Double?
         if (allPapersAreGenderComplete(allAssociatedPapers)) {
             averageGenderRatioOfPapers = averageGenderRatio(allAssociatedPapers)
-            genderRatioOfAllCoAuthors = averageGenderRatioOfAuthors(
-                allAssociatedPapers.map { it.authors }.flatten()
-            )
+            genderRatioOfAllCoAuthors =
+                averageGenderRatioOfAuthors(allAssociatedPapers.map { it.authors }.flatten())
         } else {
             averageGenderRatioOfPapers = -5.0
             genderRatioOfAllCoAuthors = -5.0

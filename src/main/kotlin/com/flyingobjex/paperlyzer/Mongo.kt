@@ -18,7 +18,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
 
     val mongoDbUri: String = System.getenv("MONGODB_URI") ?: "mongodb://localhost:27017"
 
-    private val dbName = if (isLocalDb(mongoDbUri)) "paperlyzer-green" else "green"
+    private val dbName = if (isLocalDb(mongoDbUri)) "paperlyzer" else "green"
 
     private val client = KMongo.createClient(mongoDbUri) //get com.mongodb.MongoClient new instance
     private val database = client.getDatabase(dbName) //normal java driver usage
