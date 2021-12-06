@@ -23,8 +23,6 @@ class AuthorRepoTest {
         val batchSize = 100000
         println("${Date()} clearAuthors()")
         dbLive.clearAuthors()
-        println("${Date()} clearOrcidDuplicates()")
-//        dbLive.clearOrcidDuplicates()
         println("${Date()} resetRawAuthors()")
         authorRepo.resetRawAuthors()
         println("${Date()} authorTableRepo.buildAuthorTableInParallel()")

@@ -7,6 +7,7 @@ import com.flyingobjex.paperlyzer.parser.CSVParser
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
+import java.security.ProtectionDomain
 import java.util.*
 import java.util.logging.Logger
 import kotlinx.coroutines.channels.SendChannel
@@ -17,25 +18,23 @@ class InitializationProcess(mongo: Mongo) : IProcess {
     private val wosRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
 
-    private val samplePath = "../tbl_cli_sample.tsv"
-    private val livePath = "../tbl_cli_full.tsv"
-
-    val tsvFilePath: String = samplePath
+    var tsvFilePath: String = "no_path_specified"
+        set(value) {
+            field = value
+        }
 
     override fun init() {
         TODO("Not yet implemented")
     }
 
-    override fun name(): String {
-        TODO("Not yet implemented")
-    }
+    override fun name(): String = "Initialization Process"
 
     override fun runProcess() {
         val rawCsvPapers = CSVParser.csvFileToRawPapers(tsvFilePath)
         wosRepo.insertRawCsvPapers(rawCsvPapers)
 
-        CSVParser.csvFileToAuthors(tsvFilePath)
-
+        val rawAuthors = CSVParser.csvFileToAuthors(tsvFilePath)
+        authorRepo.insertManyAuthors(rawAuthors)
     }
 
     override fun shouldContinueProcess(): Boolean {
@@ -56,16 +55,11 @@ class InitializationProcess(mongo: Mongo) : IProcess {
     }
 
     override fun reset() {
-        TODO("Not yet implemented")
         println("${Date()} resetRawAuthors()")
-        authorRepo.resetRawAuthors()
-        authorRepo.mongo.resetIndexes()
+//        authorRepo.clearRawData()
     }
 
-    override fun type(): ProcessType {
-        TODO("Not yet implemented")
-
-    }
+    override fun type(): ProcessType = ProcessType.initialization
 
     private fun resetForBuildRawAuthorTable() {
         println("${Date()} resetRawAuthors()")

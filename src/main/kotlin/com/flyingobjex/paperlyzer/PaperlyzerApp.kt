@@ -25,7 +25,7 @@ val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toStrin
 var BASE_URL = "localhost:8080"
 
 enum class ProcessType {
-    citation, discipline, wostoss, paperReport, sjr, coauthor, authorReport, stemssh,
+    citation, discipline, wostoss, paperReport, sjr, coauthor, authorReport, stemssh, initialization
 }
 
 const val BUILD_VERSION = 3
@@ -98,6 +98,7 @@ class PaperlyzerApp(val mongo: Mongo) {
             ProcessType.coauthor -> CoAuthorProcess(mongo)
             ProcessType.authorReport -> AuthorReportProcess(mongo)
             ProcessType.stemssh -> AuthorStemSshProcess(mongo)
+            ProcessType.initialization -> InitializationProcess(mongo)
         }
 
         process.init()

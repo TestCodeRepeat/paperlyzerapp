@@ -296,6 +296,12 @@ class AuthorRepository(val mongo: Mongo) {
         )
     }
 
+    fun clearRawData(){
+        log.info("AuthorRepository.clearRawData()  DATA CLEARING !!!  dropping Raw Author & Raw Paper Details" )
+        mongo.rawAuthors.drop()
+        mongo.rawPaperFullDetails.drop()
+    }
+
 }
 
 fun isAbbreviation(value: String): Boolean {

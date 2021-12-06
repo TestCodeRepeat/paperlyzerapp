@@ -16,6 +16,24 @@ class InitializationProcessTest {
     val process: InitializationProcess = InitializationProcess(mongo)
 
     @Test
+    fun `should run process with sample file`(){
+        process.tsvFilePath = samplePath
+        val res = process.printStats()
+        res shouldNotBe null
+
+        process.runProcess()
+//        log.info("InitializationProcessTest.should run process with sample file()   = ${process.printStats()}" )
+        process.printStats()
+    }
+
+//    @Test
+    fun `should reset initialization process`(){
+        process.printStats()
+        process.reset()
+        process.printStats()
+    }
+
+//    @Test
     fun `should initialize raw papers and raw authors from csv`() {
         val res = process.printStats()
         res shouldNotBe null
