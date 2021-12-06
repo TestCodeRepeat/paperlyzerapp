@@ -30,6 +30,7 @@ object CSVParser {
                         row[8],
                         row[9],
                         row[10],
+                        rawAuthorsText = row[1]
                     )
                     val paper = rawCsvLinePaperToPaper(csvLine)
                     res.add(paper)
@@ -41,7 +42,7 @@ object CSVParser {
     }
 
     fun csvFileToAuthors(path: String): List<Author> {
-        val res = mutableListOf<Author>()
+        val rawAuthors = mutableListOf<Author>()
         csvReader() {
             delimiter = '\t'
             escapeChar = '\\'
@@ -62,16 +63,16 @@ object CSVParser {
                         row[8],
                         row[9],
                         row[10],
+                        rawAuthorsText = row[1],
                     )
                     val paper = rawCsvLinePaperToPaper(csvLine)
-
-                    res.addAll(paper.authors)
+                    rawAuthors.addAll(paper.authors)
 //                    res.addAll(paper.authors.filter{it.gender.gender != GenderIdentitiy.NOFIRSTNAME})
                 }
             }
         }
 
-        return res.toList()
+        return rawAuthors.toList()
     }
 
     fun rawCsvLinePaperToPaper(line: RawCsvPaper): WosPaper {
@@ -88,6 +89,7 @@ object CSVParser {
             line.authors,
         )
         val authors = authorsCellToAuthors(line.authors, paperMetaData)
+
         return WosPaper(
             line.shortTitle,
             authors,
@@ -101,6 +103,7 @@ object CSVParser {
             orcIds,
             line.doi,
             line.topic.split(";"),
+            rawAuthorsText = line.authors
         )
     }
 
@@ -149,22 +152,23 @@ object CSVParser {
     }
 
     fun csvRowToRawPapers(rows: List<List<String>>): List<RawCsvPaper> {
-        return rows.mapIndexedNotNull { index, list ->
+        return rows.mapIndexedNotNull { index, headers ->
             if (index == 0) {
                 return@mapIndexedNotNull null
             } else {
                 return@mapIndexedNotNull RawCsvPaper(
-                    list[0],
-                    list[1],
-                    list[2],
-                    list[3],
-                    list[4],
-                    list[5],
-                    list[6],
-                    list[7],
-                    list[8],
-                    list[9],
-                    list[10],
+                    shortTitle = headers[0],
+                    authors = headers[1],
+                    year = headers[2],
+                    title = headers[3],
+                    journal = headers[4],
+                    text_type = headers[5],
+                    keywords = headers[6],
+                    emails = headers[7],
+                    orcid = headers[8],
+                    doi = headers[9],
+                    topic = headers[10],
+                    rawAuthorsText = headers[1],
                 )
             }
         }

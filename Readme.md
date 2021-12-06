@@ -45,13 +45,17 @@ interface IProcess {
 Where once a process is started, it continually checks for a condition to if it should continue or terminate.
 These primary functions can be triggered via Websocket connection & text commands.
 
-
 ### Steps to Process Data
-1. Load CSV file w/ Web of Science data (executable via test)
-2. Extract Authors into Raw Author table
-3. Build Author table from  Raw Author table (by removing duplicates, initials only)
+1. Load CSV file w/ Web of Science data & build Raw Paper table
+2. Build Raw Authors table by extracting author data from Raw Paper Table
+   1. 
+3. Build Author table by refining Raw Author table by removing duplicates, initials only, unidentifiable 
+   1. for each Raw Author
+      1. check if 'duplicate check' has already been run
 4. Build First Names table from Author table (by removing duplicates, unidentifiable)
-5. 
+5. Build Gender Table from First Names table using www.gender-api.com 
+6. Build a Gendered Author table by applying gender data from API
+7. 
 
 
 

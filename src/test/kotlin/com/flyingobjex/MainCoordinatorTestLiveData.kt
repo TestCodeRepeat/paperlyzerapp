@@ -48,7 +48,7 @@ class MainCoordinatorTestLiveData {
 
     }
 
-        @Test
+//        @Test
     fun `build a raw journal table`(){
         coordinator.resetJournalTable()
         coordinator.buildJournalTable()
@@ -121,10 +121,10 @@ class MainCoordinatorTestLiveData {
         log.info("CoordinatorTest.extract authors from raw papers into author table()  parseTime = $parseTime")
     }
 
-//    @Test
+    @Test
     fun `LIVE DATA !!! parse initial csv file into paper table`() {
         val clearTime = measureTimeMillis {
-            paperRepo.clearPapers()
+            paperRepo.clearRawPapers()
         }
         log.info("CoordinatorTest.parse initial csv file into paper table()  clearTime = $clearTime")
 
@@ -132,7 +132,6 @@ class MainCoordinatorTestLiveData {
             val res = coordinator.runParseCsvToRawPapers()
             assertEquals(399893, res.size)
         }
-
         log.info("CoordinatorTest.parse initial csv file into paper table()  parseTime = $parseTime")
     }
 }

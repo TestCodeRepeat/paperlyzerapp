@@ -1,4 +1,4 @@
-package com.flyingobjex.coauthors
+package com.flyingobjex.process.coauthors
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp

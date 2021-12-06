@@ -97,7 +97,7 @@ data class OrcID(
 )
 
 @Serializable
-data class GenderDetails(
+data class GenderedNameDetails(
     val firstName: String,
     val genderIdentity: GenderIdentitiy,
     val probability: Double = -1.0,

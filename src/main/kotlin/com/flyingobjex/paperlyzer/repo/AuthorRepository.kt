@@ -178,8 +178,8 @@ class AuthorRepository(val mongo: Mongo) {
         ).limit(batchSize).toList()
 
         batch.parallelStream().forEach { targetAuthor ->
-            mongo.genderTable.findOne(
-                GenderDetails::firstName eq targetAuthor.firstName
+            mongo.genderedNameDetails.findOne(
+                GenderedNameDetails::firstName eq targetAuthor.firstName
             )
                 ?.let { matchingGender ->
                     targetAuthor.gender.gender = matchingGender.genderIdentity
@@ -289,6 +289,12 @@ class AuthorRepository(val mongo: Mongo) {
 
     fun updateAuthor(author: Author) = mongo.genderedAuthors.updateOne(author)
 
+    fun resetRawAuthors() {
+        mongo.rawAuthors.updateMany(
+            Author::duplicateCheck eq true,
+            setValue(Author::duplicateCheck, false)
+        )
+    }
 
 }
 

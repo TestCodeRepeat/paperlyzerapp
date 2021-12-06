@@ -13,10 +13,10 @@ import java.util.*
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class BuildAuthorTableTest {
+class AuthorRepoTest {
 
     private val dbLive = Mongo(true)
-    private val authorTableRepo = AuthorRepository(dbLive)
+    private val authorRepo = AuthorRepository(dbLive)
 
 //    @Test
     fun `should build author table from raw authors`(){
@@ -24,13 +24,13 @@ class BuildAuthorTableTest {
         println("${Date()} clearAuthors()")
         dbLive.clearAuthors()
         println("${Date()} clearOrcidDuplicates()")
-        dbLive.clearOrcidDuplicates()
+//        dbLive.clearOrcidDuplicates()
         println("${Date()} resetRawAuthors()")
-        dbLive.resetRawAuthors()
+        authorRepo.resetRawAuthors()
         println("${Date()} authorTableRepo.buildAuthorTableInParallel()")
         dbLive.resetIndexes()
         println("${Date()} dbLive.resetIndexes()")
-        authorTableRepo.buildAuthorTableInParallel(batchSize)
+        authorRepo.buildAuthorTableInParallel(batchSize)
         println("${Date()} :: done ")
         val totalAuthors = dbLive.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
         println("totalAuthors = $totalAuthors")
@@ -46,7 +46,7 @@ class BuildAuthorTableTest {
         println("undetermined = $undetermined")
         println()
     }
-    
+
 //    @Test
     fun `should count unassigned raw authors`() {
 

@@ -5,7 +5,7 @@ import com.flyingobjex.paperlyzer.api.GenderApiRequest
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.api.GENDER_API_KEY
 import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
-import com.flyingobjex.paperlyzer.entity.GenderDetails
+import com.flyingobjex.paperlyzer.entity.GenderedNameDetails
 import org.litote.kmongo.*
 
 class GenderRepo(val mongo: Mongo) {
@@ -64,7 +64,7 @@ class GenderRepo(val mongo: Mongo) {
         val res = genderApi.fetchGenderMultipleFirstNames(firstNamesBatch)
         val matches = res.mapIndexed { index, apiResponse ->
 
-            GenderDetails(
+            GenderedNameDetails(
                 apiResponse.first_name.toString(),
                 GenderIdentitiy.toType(apiResponse.gender.toString()),
                 apiResponse.probability ?: 0.0,
@@ -72,7 +72,7 @@ class GenderRepo(val mongo: Mongo) {
                 firstNamesBatch[index]
             )
         }
-        mongo.genderTable.insertMany(matches)
+        mongo.genderedNameDetails.insertMany(matches)
         mongo.firstNameTable.updateMany(
             FirstName::_id `in` batch.map { it._id },
             setValue(FirstName::done, true)

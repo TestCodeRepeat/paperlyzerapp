@@ -35,7 +35,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
     private val genderedAuthorsCollection = database.getCollection<Author>("genderedAuthors")
     private val genderedPapersCollection = database.getCollection<WosPaper>("genderedPapersCollection")
     val orcidDuplicates = database.getCollection<OrcIdDuplicate>("orcidDuplicates")
-    val genderTable = database.getCollection<GenderDetails>("genderTable")
+    val genderedNameDetails = database.getCollection<GenderedNameDetails>("genderedNameDetails")
     val firstNameTable = database.getCollection<FirstName>("firstNameTable")
 
     val rawAuthors = rawAuthorsCollection
@@ -117,10 +117,10 @@ class Mongo(useLiveDatabase: Boolean = false) {
         authorsCollection.ensureIndex(Author::gender / Gender::gender)
         authorsCollection.ensureIndex(Author::gender / Gender::gender, Author::duplicateCheck)
 
-        genderTable.ensureIndex(GenderDetails::firstName)
-        genderTable.ensureIndex(GenderDetails::firstName, GenderDetails::genderIdentity)
-        genderTable.ensureIndex(GenderDetails::probability)
-        genderTable.ensureIndex(GenderDetails::probability, GenderDetails::genderIdentity)
+        genderedNameDetails.ensureIndex(GenderedNameDetails::firstName)
+        genderedNameDetails.ensureIndex(GenderedNameDetails::firstName, GenderedNameDetails::genderIdentity)
+        genderedNameDetails.ensureIndex(GenderedNameDetails::probability)
+        genderedNameDetails.ensureIndex(GenderedNameDetails::probability, GenderedNameDetails::genderIdentity)
     }
 
 
@@ -143,13 +143,6 @@ class Mongo(useLiveDatabase: Boolean = false) {
         )
     }
 
-    fun resetRawAuthors() {
-        rawAuthors.updateMany(
-            Author::duplicateCheck eq true,
-            setValue(Author::duplicateCheck, false)
-        )
-    }
-
     fun clearFirstNameTable() {
         firstNameTable.drop()
         firstNameTable.ensureIndex(FirstName::firstName)
@@ -160,9 +153,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
 
     fun clearAuthors() = authors.drop()
 
-    fun clearPapers() = rawPaperFullDetails.drop()
-
-    fun clearOrcidDuplicates() = orcidDuplicates.drop()
+    fun clearRawPapers() = rawPaperFullDetails.drop()
 
     fun clearRawAuthors() = rawAuthorsCollection.drop()
 

@@ -1,4 +1,4 @@
-package com.flyingobjex.discipline
+package com.flyingobjex.process.discipline
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
@@ -20,7 +20,7 @@ import org.litote.kmongo.ne
 import kotlin.test.Test
 import kotlinx.serialization.encodeToString
 
-class DisciplineTest {
+class DisciplineProcessTest {
 
     private val mongo = Mongo(false)
     private val wosRepo = WoSPaperRepository(mongo)

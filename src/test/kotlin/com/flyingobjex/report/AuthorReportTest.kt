@@ -1,10 +1,9 @@
 package com.flyingobjex.report
 
-import com.flyingobjex.coauthors.verifyProcessType
+import com.flyingobjex.process.coauthors.verifyProcessType
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
 import com.flyingobjex.paperlyzer.ProcessType
-import com.flyingobjex.paperlyzer.process.reports.PaperReportProcess
 import org.junit.Test
 
 class AuthorReportTest {

@@ -4,6 +4,7 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.CSVParser
+import com.flyingobjex.paperlyzer.process.InitializationProcess
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.JournalTableRepo
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository
@@ -18,6 +19,8 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
     private val authorRepo = AuthorRepository(mongo)
     private val journalRepo = JournalTableRepo(mongo)
     private val ssPaperRepo = SemanticScholarPaperRepository(mongo)
+
+    val initProcess:InitializationProcess = InitializationProcess(mongo)
 
     init {
         (LoggerFactory.getLogger("org.mongodb.driver") as ch.qos.logback.classic.Logger).setLevel(ch.qos.logback.classic.Level.OFF)
@@ -93,10 +96,8 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
     fun resetForAuthorTable() {
         println("${Date()} clearAuthors()")
         mongo.clearAuthors()
-        println("${Date()} clearOrcidDuplicates()")
-        mongo.clearOrcidDuplicates()
         println("${Date()} resetRawAuthors()")
-        mongo.resetRawAuthors()
+        authorRepo.resetRawAuthors()
         mongo.resetIndexes()
 
     }
@@ -110,10 +111,9 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
 
     fun resetForBuildRawAuthorTable() {
         println("${Date()} resetRawAuthors()")
-        mongo.resetRawAuthors()
+        authorRepo.resetRawAuthors()
         println("${Date()} authorTableRepo.buildAuthorTableInParallel()")
         mongo.resetIndexes()
-
     }
 
     fun runParseCsvToRawPapers(): List<WosPaper> {

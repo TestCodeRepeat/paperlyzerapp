@@ -1,4 +1,4 @@
-package com.flyingobjex.sjr
+package com.flyingobjex.process.sjr
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp

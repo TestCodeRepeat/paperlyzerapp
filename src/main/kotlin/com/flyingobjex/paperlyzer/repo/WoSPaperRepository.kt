@@ -11,13 +11,12 @@ import com.flyingobjex.paperlyzer.process.WosCitationStats
 import com.mongodb.client.result.UpdateResult
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
-import kotlinx.serialization.Serializable
 import org.litote.kmongo.*
 
 data class AuthorResult(val _id: String, val shortTitle: String, val authors: List<Author>)
 
 
-fun matchGender(name: String?, genderDetails: List<GenderDetails>): GenderDetails? =
+fun matchGender(name: String?, genderDetails: List<GenderedNameDetails>): GenderedNameDetails? =
     genderDetails.firstOrNull { it.firstName == name }
 
 class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) -> Unit)? = null) {
@@ -269,8 +268,8 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
                 else "-"
 
             if (viableAuthors.isNotEmpty()) {
-                val matches = mongo.genderTable.find(
-                    GenderDetails::firstName `in` paper.authors.mapNotNull { it.firstName },
+                val matches = mongo.genderedNameDetails.find(
+                    GenderedNameDetails::firstName `in` paper.authors.mapNotNull { it.firstName },
                 ).toList()
 
                 paper.authors.forEach { author ->
@@ -360,8 +359,8 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
         return mongo.rawPaperFullDetails.find().toList()
     }
 
-    fun clearPapers() {
-        mongo.clearPapers()
+    fun clearRawPapers() {
+        mongo.clearRawPapers()
     }
 
     fun getCitationStats(): WosCitationStats {

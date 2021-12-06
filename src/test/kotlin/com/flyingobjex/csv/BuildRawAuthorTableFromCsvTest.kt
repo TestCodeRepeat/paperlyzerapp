@@ -35,7 +35,7 @@ class BuildRawAuthorTableFromCsvTest {
         println("done")
     }
 
-    @Test
+//    @Test
     fun `should apply orchid building author table`(){
         println("done")
     }
