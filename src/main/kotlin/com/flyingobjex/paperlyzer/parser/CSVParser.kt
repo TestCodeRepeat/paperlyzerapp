@@ -18,20 +18,7 @@ object CSVParser {
         }.open(path) {
             readAllAsSequence().forEachIndexed { index, row ->
                 if (index > 0) {
-                    val csvLine = RawCsvPaper(
-                        row[0],
-                        row[1],
-                        row[2],
-                        row[3],
-                        row[4],
-                        row[5],
-                        row[6],
-                        row[7],
-                        row[8],
-                        row[9],
-                        row[10],
-                        rawAuthorsText = row[1]
-                    )
+                    val csvLine = rowToRawPaper(row)
                     val paper = rawCsvLinePaperToPaper(csvLine)
                     res.add(paper)
                 }
@@ -40,6 +27,21 @@ object CSVParser {
 
         return res.toList()
     }
+
+    private fun rowToRawPaper(row: List<String>) = RawCsvPaper(
+        row[0],
+        row[1],
+        row[2],
+        row[3],
+        row[4],
+        row[5],
+        row[6],
+        row[7],
+        row[8],
+        row[9],
+        row[10],
+        rawAuthorsText = row[1]
+    )
 
 
     fun csvFileToAuthors(path: String): List<Author> {
@@ -52,27 +54,12 @@ object CSVParser {
         }.open(path) {
             readAllAsSequence().forEachIndexed { index, row ->
                 if (index > 0) {
-                    val csvLine = RawCsvPaper(
-                        row[0],
-                        row[1],
-                        row[2],
-                        row[3],
-                        row[4],
-                        row[5],
-                        row[6],
-                        row[7],
-                        row[8],
-                        row[9],
-                        row[10],
-                        rawAuthorsText = row[1],
-                    )
+                    val csvLine = rowToRawPaper(row)
                     val paper = rawCsvLinePaperToPaper(csvLine)
                     rawAuthors.addAll(paper.authors)
-//                    res.addAll(paper.authors.filter{it.gender.gender != GenderIdentitiy.NOFIRSTNAME})
                 }
             }
         }
-
         return rawAuthors.toList()
     }
 
@@ -90,7 +77,6 @@ object CSVParser {
             line.authors,
         )
         val authors = authorsCellToAuthors(line.authors, paperMetaData)
-
         return WosPaper(
             line.shortTitle,
             authors,
@@ -104,6 +90,7 @@ object CSVParser {
             orcIds,
             line.doi,
             line.topic.split(";"),
+            totalAuthors = authors.size,
             rawAuthorsText = line.authors
         )
     }
@@ -123,10 +110,14 @@ object CSVParser {
                 } else {
                     firstMiddleNames
                 }
+                val middleNamesCombinedAfterSplit =
+                    listOf(firstMiddleNames.split(" ").getOrNull(1), firstMiddleNames.split(" ").getOrNull(2))
+                        .filterNotNull()
+                val joinedToString = middleNamesCombinedAfterSplit.joinToString(" ")
 
-                val middleName = initials?.first ?: "${firstMiddleNames.split(" ").getOrNull(1).toString()} ${
-                    firstMiddleNames.split(" ").getOrNull(2) ?: ""
-                }".trim()
+                val middleNameFromInitials = initials?.first
+                val middleName =
+                    middleNameFromInitials ?: if (middleNamesCombinedAfterSplit.isNotEmpty()) joinedToString else null
 
                 val firstNameIsAbbreviated = (isAbbreviation(firstMiddleNames))
                 val orcid = metadata.orcidForNames(lastName, firstName)
