@@ -318,8 +318,6 @@ Stats:: data from orcIDs now applied
     First Names Table :: ~45sec to build from Authors table
     ~ 64,000 unique first names
 
-
-
 Stats for raw author table - CLEAN DATA (after fix)
     ~ 1,204,000 "unassigned" first names, i.e. names that could be run against gender API
         - this will decrease when rules for capitalization are applied

@@ -122,11 +122,11 @@ class MainCoordinatorTest {
         log.info("CoordinatorTest.extract authors from raw papers into author table()  parseTime = $parseTime")
     }
 
-    @Test
+//    @Test
     fun `convert full csv file to authors`() {
-        val authors = CSVParser.csvFileToAuthors(samplePath)
-        assertTrue(authors.size > 80000)
-        println("done")
+//        val authors = CSVParser.csvFileToAuthors(samplePath)
+//        assertTrue(authors.size > 80000)
+//        println("done")
     }
 
     @Test

@@ -1,14 +1,7 @@
 package com.flyingobjex.csv
 
-import com.flyingobjex.paperlyzer.*
-import com.flyingobjex.paperlyzer.entity.Author
-import com.flyingobjex.paperlyzer.entity.Gender
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.parser.CSVParser
-import com.flyingobjex.paperlyzer.repo.CsvParserRepo
-import org.junit.Test
-import org.litote.kmongo.div
-import org.litote.kmongo.eq
 import kotlin.test.assertTrue
 
 class BuildRawAuthorTableFromCsvTest {
@@ -19,20 +12,20 @@ class BuildRawAuthorTableFromCsvTest {
     private val livePath = "../tbl_cli_full.tsv"
     private val dbLive = Mongo(true)
 
-    @Test
+//    @Test
     fun `parse live csv file into author live database table`(){
-        dbLive.clearRawAuthors()
-        dbLive.clearAuthors()
-        val repo = CsvParserRepo(dbLive)
-        val authors = repo.liveCsvFileToAuthorTable(livePath)
-        assertTrue(authors.size > 40)
-        val unassigned = dbLive.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
-        val initialsOnly = dbLive.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.INITIALS)
-        val undetermined = dbLive.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NOFIRSTNAME)
-        println("unassigned = $unassigned")
-        println("initialsOnly = $initialsOnly")
-        println("undetermined = $undetermined")
-        println("done")
+//        dbLive.clearRawAuthors()
+//        dbLive.clearAuthors()
+//        val repo = CsvParserRepo(dbLive)
+//        val authors = repo.liveCsvFileToAuthorTable(livePath)
+//        assertTrue(authors.size > 40)
+//        val unassigned = dbLive.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
+//        val initialsOnly = dbLive.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.INITIALS)
+//        val undetermined = dbLive.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NOFIRSTNAME)
+//        println("unassigned = $unassigned")
+//        println("initialsOnly = $initialsOnly")
+//        println("undetermined = $undetermined")
+//        println("done")
     }
 
 //    @Test

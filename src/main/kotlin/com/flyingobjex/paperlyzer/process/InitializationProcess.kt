@@ -7,7 +7,6 @@ import com.flyingobjex.paperlyzer.parser.CSVParser
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import io.ktor.http.cio.websocket.*
-import java.security.ProtectionDomain
 import java.util.*
 import java.util.logging.Logger
 import kotlinx.coroutines.channels.SendChannel
@@ -33,8 +32,8 @@ class InitializationProcess(mongo: Mongo) : IProcess {
         val rawCsvPapers = CSVParser.csvFileToRawPapers(tsvFilePath)
         wosRepo.insertRawCsvPapers(rawCsvPapers)
 
-        val rawAuthors = CSVParser.csvFileToAuthors(tsvFilePath)
-        authorRepo.insertManyAuthors(rawAuthors)
+        val authorsFromPaperTable = wosRepo.getAllRawAuthors()
+        authorRepo.insertManyAuthors(authorsFromPaperTable)
     }
 
     override fun shouldContinueProcess(): Boolean {
@@ -56,7 +55,7 @@ class InitializationProcess(mongo: Mongo) : IProcess {
 
     override fun reset() {
         println("${Date()} resetRawAuthors()")
-//        authorRepo.clearRawData()
+        authorRepo.clearRawData()
     }
 
     override fun type(): ProcessType = ProcessType.initialization

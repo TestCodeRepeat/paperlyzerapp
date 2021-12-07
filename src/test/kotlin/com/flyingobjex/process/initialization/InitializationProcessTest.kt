@@ -1,5 +1,6 @@
 package com.flyingobjex.process.initialization
 
+import com.flyingobjex.builders.fullNames
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.process.InitializationProcess
 import io.kotest.matchers.shouldNotBe
@@ -15,14 +16,15 @@ class InitializationProcessTest {
 
     val process: InitializationProcess = InitializationProcess(mongo)
 
-    @Test
-    fun `should run process with sample file`(){
-        process.tsvFilePath = samplePath
+//    @Test
+    fun `should run process with full file`(){
+//        process.reset()
+        process.tsvFilePath = livePath
+
         val res = process.printStats()
         res shouldNotBe null
 
         process.runProcess()
-//        log.info("InitializationProcessTest.should run process with sample file()   = ${process.printStats()}" )
         process.printStats()
     }
 
@@ -30,6 +32,17 @@ class InitializationProcessTest {
     fun `should reset initialization process`(){
         process.printStats()
         process.reset()
+        process.printStats()
+    }
+
+//    @Test
+    fun `should run process with sample file`(){
+        process.tsvFilePath = samplePath
+
+        val res = process.printStats()
+        res shouldNotBe null
+
+        process.runProcess()
         process.printStats()
     }
 

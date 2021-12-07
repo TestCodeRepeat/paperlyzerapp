@@ -121,7 +121,7 @@ class MainCoordinatorTestLiveData {
         log.info("CoordinatorTest.extract authors from raw papers into author table()  parseTime = $parseTime")
     }
 
-    @Test
+//    @Test
     fun `LIVE DATA !!! parse initial csv file into paper table`() {
         val clearTime = measureTimeMillis {
             paperRepo.clearRawPapers()

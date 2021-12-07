@@ -23,12 +23,12 @@ fun cleanFirstName(firstName: String): String? {
     return regexAlphaNumeric.replace(res, "")
 }
 
-class CsvParserRepo(val mongo: Mongo) {
-
-    fun liveCsvFileToAuthorTable(path: String): List<Author> {
-        val authors = CSVParser.csvFileToAuthors(path)
-        mongo.addToRawAuthorsCollection(authors)
-        return authors
-    }
-
-}
+//class CsvParserRepo(val mongo: Mongo) {
+//
+//    fun liveCsvFileToAuthorTable(path: String): List<Author> {
+//        val authors = CSVParser.csvFileToAuthors(path)
+//        mongo.addToRawAuthorsCollection(authors)
+//        return authors
+//    }
+//
+//}

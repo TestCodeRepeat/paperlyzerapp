@@ -41,6 +41,7 @@ object CSVParser {
         return res.toList()
     }
 
+
     fun csvFileToAuthors(path: String): List<Author> {
         val rawAuthors = mutableListOf<Author>()
         csvReader() {
@@ -114,6 +115,8 @@ object CSVParser {
             if (rawName.contains(",")) {
                 val splitName = rawName.split(",")
                 val lastName = splitName[0].trim()
+                val initials = middleInitialFromLastName(lastName)
+
                 val firstMiddleNames = splitName.getOrNull(1)?.trim() ?: "X"
                 val firstName = if (firstMiddleNames.contains(" ")) {
                     firstMiddleNames.split(" ")[0]
@@ -121,13 +124,15 @@ object CSVParser {
                     firstMiddleNames
                 }
 
-                val middleName = firstMiddleNames.split(" ").getOrNull(1).toString()
-                val firstNameIsAbbreviated = (isAbbreviation(firstMiddleNames))
+                val middleName = initials?.first ?: "${firstMiddleNames.split(" ").getOrNull(1).toString()} ${
+                    firstMiddleNames.split(" ").getOrNull(2) ?: ""
+                }".trim()
 
+                val firstNameIsAbbreviated = (isAbbreviation(firstMiddleNames))
                 val orcid = metadata.orcidForNames(lastName, firstName)
 
                 Author(
-                    lastName,
+                    initials?.second ?: lastName,
                     if (firstNameIsAbbreviated) orcid?.firstName else firstName,
                     middleName,
                     if (firstNameIsAbbreviated) Gender.initials else Gender.unassigned,
@@ -135,7 +140,9 @@ object CSVParser {
                     orcID = orcid,
                     orcIDString = orcid?.id,
                 )
+
             } else {
+
                 val orcid = metadata.orcidForNames(rawName.trim(), "")
                 return@map Author(
                     rawName,
@@ -149,6 +156,13 @@ object CSVParser {
                 )
             }
         }
+    }
+
+    private fun middleInitialFromLastName(lastName: String): Pair<String, String>? {
+        if (!lastName.contains(".")) return null
+        val initial = lastName.split(".")[0]
+        val lastName = lastName.split(".")[1].trim()
+        return Pair("${initial}.", lastName)
     }
 
     fun csvRowToRawPapers(rows: List<List<String>>): List<RawCsvPaper> {
