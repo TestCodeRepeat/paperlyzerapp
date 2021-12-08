@@ -1,19 +1,15 @@
 package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.api.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.entity.Author
+import com.flyingobjex.paperlyzer.entity.SemanticScholarPaper
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
-import org.bson.BsonDocument
-import org.litote.kmongo.div
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
-import org.litote.kmongo.util.KMongoUtil
 
-typealias SsAuthor = com.flyingobjex.paperlyzer.api.Author
 typealias SsPaper = SemanticScholarPaper
 
 class SemanticScholarPaperRepository(val mongo: Mongo) {

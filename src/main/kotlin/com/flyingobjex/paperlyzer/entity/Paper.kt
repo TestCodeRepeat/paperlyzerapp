@@ -1,6 +1,5 @@
 package com.flyingobjex.paperlyzer.entity
 
-import com.flyingobjex.paperlyzer.api.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.parser.MatchingCriteria
 import kotlinx.serialization.Serializable

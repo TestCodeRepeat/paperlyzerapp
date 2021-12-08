@@ -2,9 +2,9 @@ package com.flyingobjex
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
-import com.flyingobjex.paperlyzer.api.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.control.MainCoordinator
 import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.entity.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository

@@ -181,11 +181,4 @@ class SSPaperController(val mongo: Mongo, logMessage: (message: String) -> Unit)
 
     fun getSsPapersCount(): Int = mongo.ssPapers.countDocuments().toInt()
 
-//    fun resetWosPaperTable() {
-//        mongo.genderedPapers.updateMany(
-//            WosPaper::ssProcessed eq true,
-//            setValue(WosPaper::ssProcessed, false)
-//        )
-//    }
-
 }

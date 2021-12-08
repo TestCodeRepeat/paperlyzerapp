@@ -18,7 +18,7 @@ class InitializationProcessTest {
 
 //    @Test
     fun `should run process with full file`(){
-//        process.reset()
+        process.reset()
         process.tsvFilePath = livePath
 
         val res = process.printStats()

@@ -1,6 +1,5 @@
 package com.flyingobjex.paperlyzer
 
-import com.flyingobjex.paperlyzer.api.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.entity.*
 import com.flyingobjex.paperlyzer.process.reports.AuthorReportLine
 import com.flyingobjex.paperlyzer.process.reports.PaperReportLine
@@ -64,7 +63,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
     @Suppress("DuplicatedCode")
     private fun initIndexes() {
 
-        ssPapers.ensureIndex(SemanticScholarPaper::authors / com.flyingobjex.paperlyzer.api.Author::authorId)
+        ssPapers.ensureIndex(SemanticScholarPaper::authors / SsAuthorDetails::authorId)
         ssPapers.ensureIndex(SemanticScholarPaper::title)
         ssPapers.ensureIndex(SemanticScholarPaper::wosDoi)
 

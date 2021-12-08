@@ -48,14 +48,15 @@ These primary functions can be triggered via Websocket connection & text command
 ### Steps to Process Data
 1. Load CSV file w/ Web of Science data & build Raw Paper table
 2. Build Raw Authors table by extracting author data from Raw Paper Table
-   1. 
-3. Build Author table by refining Raw Author table by removing duplicates, initials only, unidentifiable 
+3. Run Papers against Semantic Scholar API to get 2nd data point per paper
+   1. extract semantic scholar authors
+4. Build Author table by refining Raw Author table by removing duplicates, initials only, unidentifiable 
    1. for each Raw Author
       1. check if 'duplicate check' has already been run
-4. Build First Names table from Author table (by removing duplicates, unidentifiable)
-5. Build Gender Table from First Names table using www.gender-api.com 
-6. Build a Gendered Author table by applying gender data from API
-7. 
+5. Build First Names table from Author table (by removing duplicates, unidentifiable)
+6. Build Gender Table from First Names table using www.gender-api.com 
+7. Build a Gendered Author table by applying gender data from API
+8. 
 
 
 
