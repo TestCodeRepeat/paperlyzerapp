@@ -52,16 +52,12 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
             mongo.ssAuthors.countDocuments(SemanticScholarAuthor::authorId ne null).toInt()
 
         val totalUnidentified =
-            mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthors eq null).toInt()
-
-        val totalUnidentifiedAsNA =
             mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthors eq emptyList<SsAuthorDetails>()).toInt()
 
         return SsAuthorProcessStats(
             totalRawPapersProcessed = totalRawPapersProcessed,
             totalRawPapersUnprocessed = totalRawPapersUnprocessed,
             totalUnidentified = totalUnidentified,
-            totalUnidentifiedAsNA = totalUnidentifiedAsNA,
             totalWosPapers = totalWosPapers,
             totalSsAuthorsFound = totalSsAuthorsFound,
         )

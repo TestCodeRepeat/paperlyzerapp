@@ -16,7 +16,6 @@ data class SsAuthorProcessStats(
     val totalRawPapersProcessed: Int,
     val totalRawPapersUnprocessed: Int,
     val totalUnidentified: Int,
-    val totalUnidentifiedAsNA: Int,
     val totalWosPapers: Int,
     val totalSsAuthorsFound: Int,
 ) {
@@ -29,7 +28,6 @@ data class SsAuthorProcessStats(
             "\n\ntotalRawPapersProcessed: $totalRawPapersProcessed \n" +
             "totalRawPapersUnprocessed: $totalRawPapersUnprocessed \n" +
             "totalUnidentified: $totalUnidentified \n" +
-            "totalUnidentifiedAsNA: $totalUnidentifiedAsNA \n" +
             "totalWosPapers: $totalWosPapers \n" +
             "totalSsAuthorsFound: $totalSsAuthorsFound \n" +
             "UNPROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
