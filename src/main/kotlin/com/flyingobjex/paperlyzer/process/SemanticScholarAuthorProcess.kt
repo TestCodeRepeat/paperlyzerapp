@@ -1,11 +1,16 @@
 package com.flyingobjex.paperlyzer.process
 
+import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
+import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.repo.SemanticScholarAuthorRepo
 import io.ktor.http.cio.websocket.*
+import kotlin.system.measureTimeMillis
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.launch
 
 data class SsAuthorProcessStats(
     val totalRawPapersProcessed: Int,
@@ -45,6 +50,32 @@ class SemanticScholarAuthorProcess(val mongo: Mongo) : IProcess {
     }
 
     override fun runProcess() {
+        val batchSize = API_BATCH_SIZE
+        var unprocessed = emptyList<WosPaper>()
+        val time = measureTimeMillis {
+            unprocessed = authorRepo.getUnprocessedRawPapers(batchSize)
+        }
+
+        unprocessed.parallelStream().forEach { wosPaper ->
+            // get matching SsPaper
+            authorRepo.getSsPaperByWosDoi(wosPaper.doi)?.let { matchinSsPaper ->
+                // apply SsAuthors to Raw Paper record
+                authorRepo.upadteRawPaperWithSsAuthor(wosPaper._id ?: "", matchinSsPaper.authors ?: emptyList())
+                val wosPaperAuthorCount = wosPaper.authors.size
+                val ssPaperAuthorCount = matchinSsPaper.authors?.size ?: 0
+                if (wosPaperAuthorCount != ssPaperAuthorCount) {
+                    println(
+                        "SemanticScholarAuthorProcess.kt ::\n " +
+                            "!! Author Counts Not Equal !!  " +
+                            "wosPaperAuthorCount = ${wosPaperAuthorCount}" +
+                            "ssPaperAuthorCount = ${ssPaperAuthorCount}" +
+                            ""
+                    )
+                }
+            } ?: run {
+                authorRepo.upadteRawPaperWithSsAuthor(wosPaper._id ?: "", emptyList())
+            }
+        }
 
     }
 
@@ -53,12 +84,15 @@ class SemanticScholarAuthorProcess(val mongo: Mongo) : IProcess {
     }
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
-        val res = authorRepo.getSsAuthorStats().toString()
+        val stats = authorRepo.getSsAuthorStats().toString()
         println(
-            "SemanticScholarAuthorProcess.kt :: printStats() :: res = \n ${res} \n" +
+            "SemanticScholarAuthorProcess.kt :: printStats() :: res = \n ${stats} \n" +
                 "========================================= \n"
         )
-        return res
+        GlobalScope.launch {
+            outgoing?.send(Frame.Text(stats))
+        }
+        return stats
     }
 
 

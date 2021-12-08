@@ -78,7 +78,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
         rawAuthorsCollection.ensureIndex(Author::duplicateCheck)
 
         rawPaperFullDetails.ensureIndex(WosPaper::processed)
-        rawPaperFullDetails.ensureIndex(WosPaper::ssAuthorProcessed)
+        rawPaperFullDetails.ensureIndex(WosPaper::ssAuthorProcessedStep1)
         rawPaperFullDetails.ensureIndex(WosPaper::ssProcessed)
 
         genderedPapersCollection.ensureIndex(WosPaper::doi)

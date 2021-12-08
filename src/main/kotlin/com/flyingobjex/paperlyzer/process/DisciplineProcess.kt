@@ -92,12 +92,12 @@ class DisciplineProcess(
     }
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
-        val stats = wosRepo.getDisciplineStats()
+        val stats = wosRepo.getDisciplineStats().toString()
         log.info("WosCitationProcess.printStats()  stats = ${stats}")
         GlobalScope.launch {
-            outgoing?.send(Frame.Text(stats.toString()))
+            outgoing?.send(Frame.Text(stats))
         }
-        return stats.toString()
+        return stats
     }
 
     override fun reset() = wosRepo.resetDisciplineProcessed()

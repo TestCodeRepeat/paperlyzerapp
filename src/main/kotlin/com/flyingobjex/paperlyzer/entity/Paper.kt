@@ -28,7 +28,7 @@ data class RawCsvPaper(
     val doi: String,
     val topic: String,
     val processed: Boolean = false,
-    val rawAuthorsText:String,
+    val rawAuthorsText: String,
     val _id: String? = null,
 )
 
@@ -122,7 +122,9 @@ data class WosPaper(
     var sjrRank: Int? = null,
     var hIndex: Int? = null,
     var rawAuthorsText: String? = null,
-    val ssAuthorProcessed: Boolean? = false,
+    val ssAuthorProcessedStep1: Boolean? = false,
+    val ssAuthorProcessedStep2: Boolean? = false,
+    val ssAuthors: List<SsAuthorDetails>? = null,
     override val _id: String? = null,
 ) : IWosPaperWithStemSsh, IWosPaperWithAuthors
 
