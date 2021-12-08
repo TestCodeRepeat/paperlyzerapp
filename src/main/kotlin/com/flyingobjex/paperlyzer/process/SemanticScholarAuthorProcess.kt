@@ -16,6 +16,7 @@ data class SsAuthorProcessStats(
     val totalRawPapersProcessed: Int,
     val totalRawPapersUnprocessed: Int,
     val totalUnidentified: Int,
+    val totalUnidentifiedAsNA: Int,
     val totalWosPapers: Int,
     val totalSsAuthorsFound: Int,
 ) {
@@ -23,11 +24,12 @@ data class SsAuthorProcessStats(
         return ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
-            "!!     Discipline Process      !!" +
-            "!!     Discipline Process      !!" +
+            "!!     SemanticScholarAuthorProcess Process      !!" +
+            "!!     SemanticScholarAuthorProcess Process      !!" +
             "\n\ntotalRawPapersProcessed: $totalRawPapersProcessed \n" +
             "totalRawPapersUnprocessed: $totalRawPapersUnprocessed \n" +
             "totalUnidentified: $totalUnidentified \n" +
+            "totalUnidentifiedAsNA: $totalUnidentifiedAsNA \n" +
             "totalWosPapers: $totalWosPapers \n" +
             "totalSsAuthorsFound: $totalSsAuthorsFound \n" +
             "UNPROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
@@ -54,6 +56,7 @@ class SemanticScholarAuthorProcess(val mongo: Mongo) : IProcess {
         var unprocessed = emptyList<WosPaper>()
         val time = measureTimeMillis {
             unprocessed = authorRepo.getUnprocessedRawPapers(batchSize)
+
         }
 
         unprocessed.parallelStream().forEach { wosPaper ->
@@ -80,7 +83,9 @@ class SemanticScholarAuthorProcess(val mongo: Mongo) : IProcess {
     }
 
     override fun shouldContinueProcess(): Boolean {
-        TODO("Not yet implemented")
+        val res = authorRepo.getUnprocessedRawPapersCount()
+        println("SemanticScholarAuthorProcess.kt :: shouldContinueProcess() :: UnProcessed Records Count  = ${res}")
+        return res > UNPROCESSED_RECORDS_GOAL
     }
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {

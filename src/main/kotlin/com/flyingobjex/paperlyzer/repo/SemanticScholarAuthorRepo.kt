@@ -51,10 +51,17 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
         val totalSsAuthorsFound =
             mongo.ssAuthors.countDocuments(SemanticScholarAuthor::authorId ne null).toInt()
 
+        val totalUnidentified =
+            mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthors eq null).toInt()
+
+        val totalUnidentifiedAsNA =
+            mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthors eq emptyList<SsAuthorDetails>()).toInt()
+
         return SsAuthorProcessStats(
             totalRawPapersProcessed = totalRawPapersProcessed,
             totalRawPapersUnprocessed = totalRawPapersUnprocessed,
-            totalUnidentified = -5,
+            totalUnidentified = totalUnidentified,
+            totalUnidentifiedAsNA = totalUnidentifiedAsNA,
             totalWosPapers = totalWosPapers,
             totalSsAuthorsFound = totalSsAuthorsFound,
         )
@@ -65,7 +72,7 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
             match(SemanticScholarPaper::wosDoi eq doi)
         ).firstOrNull()
 
-    fun upadteRawPaperWithSsAuthor(_id: String, ssAuthors: List<SsAuthorDetails>): UpdateResult =
+    fun upadteRawPaperWithSsAuthor(_id: String, ssAuthors: List<SsAuthorDetails>? = null): UpdateResult =
         mongo.rawPaperFullDetails.updateOne(
             WosPaper::_id eq _id,
             listOf(
