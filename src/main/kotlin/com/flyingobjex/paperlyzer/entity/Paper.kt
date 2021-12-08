@@ -122,6 +122,7 @@ data class WosPaper(
     var sjrRank: Int? = null,
     var hIndex: Int? = null,
     var rawAuthorsText: String? = null,
+    val ssAuthorProcessed: Boolean? = false,
     override val _id: String? = null,
 ) : IWosPaperWithStemSsh, IWosPaperWithAuthors
 

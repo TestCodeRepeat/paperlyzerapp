@@ -21,6 +21,8 @@ class SemanticApiTest {
     private val api = SemanticScholarAPI(SEMANTIC_SCHOLAR_API_KEY)
     private val doi = "10.1016/j.apenergy.2011.12.064"
     private val authorId = "145631702"
+
+
     @Test
     fun `API should load author data by id`(){
         runBlocking {

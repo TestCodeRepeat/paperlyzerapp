@@ -30,12 +30,15 @@ class Mongo(useLiveDatabase: Boolean = false) {
     private val journalCollection = database.getCollection<Journal>("journals")
     private val reportCollection = database.getCollection<PaperReportLine>("reports")
     private val authorReportCollection = database.getCollection<AuthorReportLine>("authorReportCollection")
+    private val semanticScholarAuthorCollection = database.getCollection<AuthorReportLine>("semanticScholarAuthorCollection")
 
     private val genderedAuthorsCollection = database.getCollection<Author>("genderedAuthors")
     private val genderedPapersCollection = database.getCollection<WosPaper>("genderedPapersCollection")
     val orcidDuplicates = database.getCollection<OrcIdDuplicate>("orcidDuplicates")
     val genderedNameDetails = database.getCollection<GenderedNameDetails>("genderedNameDetails")
     val firstNameTable = database.getCollection<FirstName>("firstNameTable")
+
+
 
     val rawAuthors = rawAuthorsCollection
     val authors = authorsCollection
@@ -45,6 +48,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
     val ssPapers = semanticScholarPaperCollection
     val reports = reportCollection
     val authorReport = authorReportCollection
+    val ssAuthors = semanticScholarAuthorCollection
 
     init {
         setMongoDbLogsToErrorOnly()
@@ -63,6 +67,8 @@ class Mongo(useLiveDatabase: Boolean = false) {
     @Suppress("DuplicatedCode")
     private fun initIndexes() {
 
+        ssAuthors.ensureIndex(SemanticScholarAuthor::authorId)
+
         ssPapers.ensureIndex(SemanticScholarPaper::authors / SsAuthorDetails::authorId)
         ssPapers.ensureIndex(SemanticScholarPaper::title)
         ssPapers.ensureIndex(SemanticScholarPaper::wosDoi)
@@ -72,12 +78,9 @@ class Mongo(useLiveDatabase: Boolean = false) {
         rawAuthorsCollection.ensureIndex(Author::duplicateCheck)
 
         rawPaperFullDetails.ensureIndex(WosPaper::processed)
-//        rawPaperFullDetails.ensureIndex(WosPaper::shortTitle)
+        rawPaperFullDetails.ensureIndex(WosPaper::ssAuthorProcessed)
+        rawPaperFullDetails.ensureIndex(WosPaper::ssProcessed)
 
-//        genderedPapersCollection.ensureIndex(WosPaper::processed)
-//        genderedPapersCollection.ensureIndex(WosPaper::title)
-//        genderedPapersCollection.ensureIndex(WosPaper::citationsCount)
-//        genderedPapersCollection.ensureIndex(WosPaper::citationsProcessed)
         genderedPapersCollection.ensureIndex(WosPaper::doi)
         genderedPapersCollection.ensureUniqueIndex(WosPaper::shortTitle)
 //        genderedPapersCollection.ensureIndex(WosPaper::discipline)
