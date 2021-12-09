@@ -51,6 +51,9 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
                             launch(IO) {
                                 api.authorById(authorId)?.let { ssAuthorDetails ->
                                     authorRepo.addSsAuthorDetails(ssAuthorDetails)
+                                } ?: kotlin.run {
+                                    println("SsApiAuthorDetailsProcess.kt :: API ERROR() :: authorId = $authorId")
+
                                 }
                             }
                         }
