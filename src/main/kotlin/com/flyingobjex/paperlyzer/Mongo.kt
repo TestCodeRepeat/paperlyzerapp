@@ -83,13 +83,8 @@ class Mongo(useLiveDatabase: Boolean = false) {
 
         genderedPapersCollection.ensureIndex(WosPaper::doi)
         genderedPapersCollection.ensureUniqueIndex(WosPaper::shortTitle)
-//        genderedPapersCollection.ensureIndex(WosPaper::discipline)
-//        genderedPapersCollection.ensureIndex(WosPaper::reported)
-//        genderedPapersCollection.ensureIndex(WosPaper::score)
         genderedPapersCollection.ensureIndex(WosPaper::sjrRank)
         genderedPapersCollection.ensureIndex(WosPaper::hIndex)
-//        genderedPapersCollection.ensureIndex(WosPaper::topStem / MatchingCriteria::score)
-//        genderedPapersCollection.ensureIndex(WosPaper::topSSH / MatchingCriteria::score)
 
         journals.ensureIndex(Journal::journalName)
         journals.ensureIndex(Journal::doi)

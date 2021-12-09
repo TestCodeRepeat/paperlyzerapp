@@ -16,8 +16,8 @@ class SemanticScholarAPI(semanticScholarApiKey: String) {
     private val apiKey = semanticScholarApiKey
     private val baseUrl = "https://api.semanticscholar.org/v1/paper"
 
-    private var count = 0
-    private var fetchCount = 0
+    private var apiSuccessCount = 0
+    private var apiFetchCount = 0
 
     val client = HttpClient(CIO) {
         install(JsonFeature) {
@@ -30,8 +30,8 @@ class SemanticScholarAPI(semanticScholarApiKey: String) {
     }
 
     init {
-        count = 0
-        fetchCount = 0
+        apiSuccessCount = 0
+        apiFetchCount = 0
     }
 
     suspend fun authorById(authorId: String): SemanticScholarAuthor? {
@@ -39,14 +39,14 @@ class SemanticScholarAPI(semanticScholarApiKey: String) {
             "https://api.semanticscholar.org/graph/v1/author/$authorId?fields=aliases,papers,papers.year,papers.citationCount,papers.influentialCitationCount,hIndex,papers.fieldsOfStudy,papers.title"
 
         try {
-            fetchCount += 1
+            apiFetchCount += 1
             val res = client.request<SemanticScholarAuthor>(authorUrl) {
                 header("x-api-key", apiKey)
             }
             val mesB =
-                "SemanticScholarAPI.kt :: SemanticScholarAPI :: success = $count :: fetechCount = $fetchCount :: $authorId ::"
+                "SemanticScholarAPI.kt :: SemanticScholarAPI :: success count = $apiSuccessCount :: fetchCount = $apiFetchCount :: $authorId ::"
             println(mesB)
-            count += 1
+            apiSuccessCount += 1
             return res
 
         } catch (e: Exception) {
@@ -59,14 +59,14 @@ class SemanticScholarAPI(semanticScholarApiKey: String) {
 
     suspend fun fetchSsPaperByDoi(doi: String): SemanticScholarPaper? {
         try {
-            fetchCount += 1
+            apiFetchCount += 1
             val res = client.request<SemanticScholarPaper>("$baseUrl/$doi") {
                 header("x-api-key", apiKey)
             }
             val mesB =
-                "SemanticScholarAPI.kt :: SemanticScholarAPI :: success = $count :: fetechCount = $fetchCount :: $doi ::"
+                "SemanticScholarAPI.kt :: SemanticScholarAPI :: success = $apiSuccessCount :: fetechCount = $apiFetchCount :: $doi ::"
             println(mesB)
-            count += 1
+            apiSuccessCount += 1
             return res
 
         } catch (e: Exception) {

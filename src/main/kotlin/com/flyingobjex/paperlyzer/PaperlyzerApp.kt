@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-val API_BATCH_SIZE = System.getenv("API_BATCH_SIZE").toString().toInt()
-val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toString().toInt()
+var API_BATCH_SIZE = System.getenv("API_BATCH_SIZE").toString().toInt()
+var UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toString().toInt()
 var BASE_URL = "localhost:8080"
 
 enum class ProcessType {
@@ -48,7 +48,6 @@ class PaperlyzerApp(val mongo: Mongo) {
     private var forceCancel = false
 
     init {
-//        val apiBatchSize = System.getenv("API_BATCH_SIZE").toString().toInt()
         try {
             BASE_URL = System.getenv("BASE_URL").toString()
         } catch (e: Exception) {
@@ -56,7 +55,6 @@ class PaperlyzerApp(val mongo: Mongo) {
         }
 
         println("PaperlyzerApp.kt :: PaperlyzerApp :: init()")
-//        println("PaperlyzerApp.kt :: API() :: apiBatchSize = $apiBatchSize")
         println("PaperlyzerApp.kt :: API() :: API_BATCH_SIZE = $API_BATCH_SIZE")
         println("PaperlyzerApp.kt :: API() :: PROCESSED_RECORDS_GOAL = $UNPROCESSED_RECORDS_GOAL")
 
@@ -73,6 +71,20 @@ class PaperlyzerApp(val mongo: Mongo) {
 
         log.info("\n\n build version: $BUILD_VERSION \n\n ")
         log.info("PaperlyzerApp.()  url = ${url()}")
+    }
+
+    fun manuallySetUnprocessedRecordsGoal(goal: Int) {
+        UNPROCESSED_RECORDS_GOAL = goal
+        log.info(
+            "PaperlyzerApp.manuallySetUnprocessedRecordsGoal()" +
+                "\n !! MANUALLY UPDATED UNPROCESSED_RECORDS_GOAL !!" +
+                "\n UNPROCESSED_RECORDS_GOAL = $UNPROCESSED_RECORDS_GOAL" +
+                "\n"
+        )
+    }
+
+    fun maunallySetApiBatchSize(batchSize: Int) {
+        API_BATCH_SIZE = batchSize
     }
 
     fun initData() {
@@ -125,6 +137,7 @@ class PaperlyzerApp(val mongo: Mongo) {
 
         println("PaperlyzerApp.kt :: PaperlyzerApp :: runProcess :: time = $time \n")
         if (!forceCancel && process.shouldContinueProcess()) {
+            println("PaperlyzerApp.kt :: runProcess() :: +++ SHOULD CONTINUE +++  ")
             runProcess()
         } else {
             println("PaperlyzerApp.kt :: runProcess() :: SHOULD NOT CONTINUE !!!  ")

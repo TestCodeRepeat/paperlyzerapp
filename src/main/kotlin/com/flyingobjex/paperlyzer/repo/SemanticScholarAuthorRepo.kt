@@ -1,15 +1,40 @@
 package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.SemanticScholarAuthor
 import com.flyingobjex.paperlyzer.entity.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.entity.SsAuthorDetails
 import com.flyingobjex.paperlyzer.entity.WosPaper
-import com.flyingobjex.paperlyzer.process.SsApiAuthorDetailsStats
 import com.flyingobjex.paperlyzer.process.SsAuthorProcessStats
 import com.mongodb.client.result.InsertOneResult
 import com.mongodb.client.result.UpdateResult
 import org.litote.kmongo.*
+
+data class SsApiAuthorDetailsStats(
+    val totalRawPapersProcessed: Int,
+    val totalRawPapersUnprocessed: Int,
+    val totalSsAuthorsFound: Int,
+    val totalWosDoiUnidentified: Int,
+    val totalWosPapers: Int,
+) {
+    override fun toString(): String {
+        return ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  \n" +
+            "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
+            "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
+            "!!     SsApiAuthorDetailsStats Process      !!" +
+            "!!     SsApiAuthorDetailsStats Process      !!" +
+            "\n\ntotalRawPapersProcessed: $totalRawPapersProcessed \n" +
+            "totalRawPapersUnprocessed: $totalRawPapersUnprocessed \n" +
+            "totalWosDoiUnidentified: $totalWosDoiUnidentified \n" +
+            "totalWosPapers: $totalWosPapers \n" +
+            "totalSsAuthorsFound: $totalSsAuthorsFound \n" +
+            "UNPROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
+            "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
+            "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
+            "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n"
+    }
+}
 
 class SemanticScholarAuthorRepo(val mongo: Mongo) {
 
@@ -43,6 +68,9 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
         mongo.ssPapers.findOne(SemanticScholarPaper::wosDoi eq doi)
 
 
+    fun ssAuthorAlreadyExists(authorId: String): Boolean =
+        mongo.ssAuthors.findOne(SemanticScholarAuthor::authorId eq authorId) != null
+
     /** STATS */
     // Step 1
     fun getRawPaperWithSsAuthorStats(): SsAuthorProcessStats {
@@ -55,9 +83,6 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
         val totalWosPapers =
             mongo.rawPaperFullDetails.countDocuments(WosPaper::title ne null).toInt()
 
-//        val totalSsAuthorsFound =
-//            mongo.ssAuthors.countDocuments(SemanticScholarAuthor::authorId ne null).toInt()
-
         val totalUnidentified =
             mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthors eq emptyList<SsAuthorDetails>()).toInt()
 
@@ -68,6 +93,7 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
             totalWosPapers = totalWosPapers,
         )
     }
+
 
     // STEP 2
     fun getSsApiAuthorDetailsStats(): SsApiAuthorDetailsStats {
@@ -83,15 +109,17 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
         val totalWosPapers =
             mongo.rawPaperFullDetails.countDocuments(WosPaper::title ne null).toInt()
 
+        val totalUnidentified =
+            mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthors eq emptyList<SsAuthorDetails>()).toInt()
+
         return SsApiAuthorDetailsStats(
             totalRawPapersProcessed = totalRawPapersProcessed,
             totalRawPapersUnprocessed = totalRawPapersUnprocessed,
             totalSsAuthorsFound = totalSsAuthorsFound,
-            totalUnidentified = -5,
+            totalWosDoiUnidentified = totalUnidentified,
             totalWosPapers = totalWosPapers
         )
     }
-
 
     /** UNPROCESSED */
     // STEP 1
@@ -111,9 +139,9 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
             limit(batchSize)
         ).toList()
 
+
     fun getUnprocessedRawPapersBySsAuthorDetailsCount(): Int =
         mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthorProcessedStep2 ne true).toInt()
-
 
     /** RESET */
     fun resetSsAuthorDataStep1() {
@@ -138,5 +166,6 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
             setValue(WosPaper::ssAuthorProcessedStep2, false),
         )
     }
+
 
 }
