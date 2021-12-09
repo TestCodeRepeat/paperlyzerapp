@@ -16,7 +16,7 @@ class AuthorReportTest {
     @Test
     fun `app should run Author Report Process`() {
         val processType = app.process.type()
-        verifyProcessType(processType, ProcessType.authorReport)
+        verifyProcessType(processType, ProcessType.AuthorReport)
         app.process.printStats()
         app.process.reset()
         app.process.printStats()

@@ -123,7 +123,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
         printStats()
     }
 
-    override fun type(): ProcessType = ProcessType.stemssh
+    override fun type(): ProcessType = ProcessType.StemSsh
 
 }
 

@@ -7,6 +7,7 @@ import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.repo.SemanticScholarAuthorRepo
 import io.ktor.http.cio.websocket.*
+import kotlin.math.abs
 import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
@@ -17,19 +18,17 @@ data class SsAuthorProcessStats(
     val totalRawPapersUnprocessed: Int,
     val totalUnidentified: Int,
     val totalWosPapers: Int,
-    val totalSsAuthorsFound: Int,
 ) {
     override fun toString(): String {
         return ":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
-            "!!     SemanticScholarAuthorProcess Process      !!" +
-            "!!     SemanticScholarAuthorProcess Process      !!" +
+            "!!     SsAuthorToRawPaperProcess Process      !!" +
+            "!!     SsAuthorToRawPaperProcess Process      !!" +
             "\n\ntotalRawPapersProcessed: $totalRawPapersProcessed \n" +
             "totalRawPapersUnprocessed: $totalRawPapersUnprocessed \n" +
             "totalUnidentified: $totalUnidentified \n" +
             "totalWosPapers: $totalWosPapers \n" +
-            "totalSsAuthorsFound: $totalSsAuthorsFound \n" +
             "UNPROCESSED_RECORDS_GOAL: $UNPROCESSED_RECORDS_GOAL \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
             "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: \n" +
@@ -37,59 +36,54 @@ data class SsAuthorProcessStats(
     }
 }
 
-class SemanticScholarAuthorProcess(val mongo: Mongo) : IProcess {
+class SsAuthorToRawPaperProcess(val mongo: Mongo) : IProcess {
 
     val authorRepo = SemanticScholarAuthorRepo(mongo)
 
     override fun init() {
-        TODO("Not yet implemented")
+        println("SsAuthorToRawPaperProcess.kt :: init :: SsAuthorToRawPaperProcess init()")
     }
 
-    override fun name(): String {
-        TODO("Not yet implemented")
-    }
+    override fun name(): String = "SsAuthorToRawPaperProcess"
 
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
         var unprocessed = emptyList<WosPaper>()
         val time = measureTimeMillis {
             unprocessed = authorRepo.getUnprocessedRawPapers(batchSize)
-
         }
-
+        println("SsAuthorToRawPaperProcess.kt :: getUnprocessed() :: time = ${time}")
         unprocessed.parallelStream().forEach { wosPaper ->
-            // get matching SsPaper
+            // get matching SsPaper via doi
             authorRepo.getSsPaperByWosDoi(wosPaper.doi)?.let { matchinSsPaper ->
                 // apply SsAuthors to Raw Paper record
-                authorRepo.upadteRawPaperWithSsAuthor(wosPaper._id ?: "", matchinSsPaper.authors ?: emptyList())
                 val wosPaperAuthorCount = wosPaper.authors.size
-                val ssPaperAuthorCount = matchinSsPaper.authors?.size ?: 0
-                if (wosPaperAuthorCount != ssPaperAuthorCount) {
-                    println(
-                        "SemanticScholarAuthorProcess.kt ::\n " +
-                            "!! Author Counts Not Equal !!  " +
-                            "wosPaperAuthorCount = ${wosPaperAuthorCount}" +
-                            "ssPaperAuthorCount = ${ssPaperAuthorCount}" +
-                            ""
+                val ssPaperAuthorCount = matchinSsPaper.authors?.size ?: -5
+                authorRepo.updatePaper(
+                    wosPaper.copy(
+                        ssAuthors = matchinSsPaper.authors,
+                        ssAuthorProcessedStep1 = true,
+                        wosPaperAuthorCount = wosPaperAuthorCount,
+                        ssPaperAuthorCount = ssPaperAuthorCount,
+                        authorCountDifference = abs(wosPaperAuthorCount - ssPaperAuthorCount)
                     )
-                }
+                )
             } ?: run {
-                authorRepo.upadteRawPaperWithSsAuthor(wosPaper._id ?: "", emptyList())
+                authorRepo.updateRawPaperWithSsAuthor(wosPaper._id ?: "", emptyList())
             }
         }
-
     }
 
     override fun shouldContinueProcess(): Boolean {
         val res = authorRepo.getUnprocessedRawPapersCount()
-        println("SemanticScholarAuthorProcess.kt :: shouldContinueProcess() :: UnProcessed Records Count  = ${res}")
+        println("SsAuthorToRawPaperProcess.kt :: shouldContinueProcess() :: UnProcessed Records Count  = ${res}")
         return res > UNPROCESSED_RECORDS_GOAL
     }
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
-        val stats = authorRepo.getSsAuthorStats().toString()
+        val stats = authorRepo.getRawPaperWithSsAuthorStats().toString()
         println(
-            "SemanticScholarAuthorProcess.kt :: printStats() :: res = \n ${stats} \n" +
+            "SsAuthorToRawPaperProcess.kt :: printStats() :: res = \n ${stats} \n" +
                 "========================================= \n"
         )
         GlobalScope.launch {
@@ -104,11 +98,10 @@ class SemanticScholarAuthorProcess(val mongo: Mongo) : IProcess {
     }
 
     override fun reset() {
-        authorRepo.resetSsAuthorData()
+        println("SsAuthorToRawPaperProcess.reset()  !!!!!!!! RESET !!!!!!!!")
+        authorRepo.resetSsAuthorDataStep1()
     }
 
-    override fun type(): ProcessType {
-        TODO("Not yet implemented")
-    }
+    override fun type(): ProcessType = ProcessType.SsAuthor
 
 }

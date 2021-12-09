@@ -111,5 +111,5 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
         reportRepo.resetAuthorReport()
     }
 
-    override fun type(): ProcessType = ProcessType.authorReport
+    override fun type(): ProcessType = ProcessType.AuthorReport
 }

@@ -82,7 +82,7 @@ class WosCitationProcess(val mongo: Mongo, logMessage: (value: String) -> Unit) 
         log.info("WosCitationProcess.reset() :: completed = ${res}" )
     }
 
-    override fun type(): ProcessType = ProcessType.citation
+    override fun type(): ProcessType = ProcessType.Citation
 
     override fun name(): String {
         return "Wos Citation Process"

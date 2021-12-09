@@ -102,7 +102,7 @@ class DisciplineProcess(
 
     override fun reset() = wosRepo.resetDisciplineProcessed()
 
-    override fun type(): ProcessType = ProcessType.discipline
+    override fun type(): ProcessType = ProcessType.Discipline
 
     override fun cancelJobs() {
         println("DisciplineProcess.kt :: cancelJobs :: ")

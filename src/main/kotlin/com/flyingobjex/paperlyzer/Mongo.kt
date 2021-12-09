@@ -30,7 +30,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
     private val journalCollection = database.getCollection<Journal>("journals")
     private val reportCollection = database.getCollection<PaperReportLine>("reports")
     private val authorReportCollection = database.getCollection<AuthorReportLine>("authorReportCollection")
-    private val semanticScholarAuthorCollection = database.getCollection<AuthorReportLine>("semanticScholarAuthorCollection")
+    private val semanticScholarAuthorCollection = database.getCollection<SemanticScholarAuthor>("semanticScholarAuthorCollection")
 
     private val genderedAuthorsCollection = database.getCollection<Author>("genderedAuthors")
     private val genderedPapersCollection = database.getCollection<WosPaper>("genderedPapersCollection")

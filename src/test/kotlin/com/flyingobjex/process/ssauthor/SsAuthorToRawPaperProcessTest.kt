@@ -1,8 +1,10 @@
 package com.flyingobjex.process.ssauthor
 
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.PaperlyzerApp
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.entity.WosPaper
-import com.flyingobjex.paperlyzer.process.SemanticScholarAuthorProcess
+import com.flyingobjex.paperlyzer.process.SsAuthorToRawPaperProcess
 import com.flyingobjex.paperlyzer.repo.SemanticScholarAuthorRepo
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
@@ -10,13 +12,21 @@ import io.kotest.matchers.shouldNotBe
 import org.junit.Test
 import org.litote.kmongo.eq
 
-class SemanticScholarAuthorProcessTest {
+class SsAuthorToRawPaperProcessTest {
 
     val mongo = Mongo()
     val authorRepo = SemanticScholarAuthorRepo(mongo)
-    val process = SemanticScholarAuthorProcess(mongo)
+    val process = SsAuthorToRawPaperProcess(mongo)
+    private val app = PaperlyzerApp(mongo)
 
     @Test
+    fun `app should process 10k records`(){
+        app.process.type() shouldBe ProcessType.SsAuthor
+        app.process.reset()
+        app.start()
+    }
+
+//    @Test
     fun `should run process for batch of 10`() {
         process.printStats()
         process.reset()

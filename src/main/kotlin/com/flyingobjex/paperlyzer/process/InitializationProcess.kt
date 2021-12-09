@@ -58,7 +58,7 @@ class InitializationProcess(mongo: Mongo) : IProcess {
         authorRepo.clearRawData()
     }
 
-    override fun type(): ProcessType = ProcessType.initialization
+    override fun type(): ProcessType = ProcessType.Initialization
 
     private fun resetForBuildRawAuthorTable() {
         println("${Date()} resetRawAuthors()")

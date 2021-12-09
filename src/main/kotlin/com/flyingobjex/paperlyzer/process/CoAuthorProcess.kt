@@ -11,7 +11,6 @@ import com.flyingobjex.paperlyzer.repo.*
 import com.flyingobjex.paperlyzer.util.GenderUtils.allPapersAreGenderComplete
 import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatio
 import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatioOfAuthors
-import com.flyingobjex.paperlyzer.util.GenderUtils.toGenderRatio
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
@@ -170,5 +169,5 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         log.info("CoAuthorProcess.reset()  completed in $time ms")
     }
 
-    override fun type(): ProcessType = ProcessType.coauthor
+    override fun type(): ProcessType = ProcessType.CoAuthor
 }

@@ -125,6 +125,9 @@ data class WosPaper(
     val ssAuthorProcessedStep1: Boolean? = false,
     val ssAuthorProcessedStep2: Boolean? = false,
     val ssAuthors: List<SsAuthorDetails>? = null,
+    val wosPaperAuthorCount: Int? = null,
+    val ssPaperAuthorCount: Int? = null,
+    val authorCountDifference: Int? = null,
     override val _id: String? = null,
 ) : IWosPaperWithStemSsh, IWosPaperWithAuthors
 

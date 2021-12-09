@@ -50,7 +50,7 @@ class WosToSsProcess(val mongo: Mongo, val logMessage: (value: String) -> Unit) 
         println("WosToSsProcess.kt :: reset :: ")
     }
 
-    override fun type(): ProcessType = ProcessType.sjr
+    override fun type(): ProcessType = ProcessType.SJR
 
     override fun name(): String {
         return "Web of Science to Semantic Scholar Process"

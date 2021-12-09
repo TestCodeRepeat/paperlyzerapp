@@ -49,7 +49,7 @@ class PaperReportProcess(
         wosRepo.resetReportLines()
     }
 
-    override fun type(): ProcessType = ProcessType.paperReport
+    override fun type(): ProcessType = ProcessType.PaperReport
 
     override fun runProcess() {
         log.info("PaperReportProcess.runProcess()  ")

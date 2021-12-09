@@ -25,7 +25,7 @@ val UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toStrin
 var BASE_URL = "localhost:8080"
 
 enum class ProcessType {
-    citation, discipline, wostoss, paperReport, sjr, coauthor, authorReport, stemssh, initialization
+    Citation, Discipline, WoSToSs, PaperReport, SJR, CoAuthor, AuthorReport, StemSsh, Initialization, SsAuthor, SsApiAuthor
 }
 
 const val BUILD_VERSION = 3
@@ -48,7 +48,7 @@ class PaperlyzerApp(val mongo: Mongo) {
     private var forceCancel = false
 
     init {
-        val sysApiSize = System.getenv("API_BATCH_SIZE").toString().toInt()
+//        val apiBatchSize = System.getenv("API_BATCH_SIZE").toString().toInt()
         try {
             BASE_URL = System.getenv("BASE_URL").toString()
         } catch (e: Exception) {
@@ -56,14 +56,14 @@ class PaperlyzerApp(val mongo: Mongo) {
         }
 
         println("PaperlyzerApp.kt :: PaperlyzerApp :: init()")
-        println("PaperlyzerApp.kt :: API() :: sysApiSize = $sysApiSize")
+//        println("PaperlyzerApp.kt :: API() :: apiBatchSize = $apiBatchSize")
         println("PaperlyzerApp.kt :: API() :: API_BATCH_SIZE = $API_BATCH_SIZE")
         println("PaperlyzerApp.kt :: API() :: PROCESSED_RECORDS_GOAL = $UNPROCESSED_RECORDS_GOAL")
 
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
 
-        initProcess(ProcessType.coauthor)
+        initProcess(ProcessType.SsAuthor)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")
@@ -88,19 +88,19 @@ class PaperlyzerApp(val mongo: Mongo) {
 
     fun initProcess(type: ProcessType) {
         matcher = TopicMatcher(topics)
-
         process = when (type) {
-            ProcessType.citation -> WosCitationProcess(mongo, ::logMessage)
-            ProcessType.discipline -> DisciplineProcess(mongo, matcher)
-            ProcessType.wostoss -> WosToSsProcess(mongo, ::logMessage)
-            ProcessType.paperReport -> PaperReportProcess(mongo)
-            ProcessType.sjr -> SJRProcess(mongo)
-            ProcessType.coauthor -> CoAuthorProcess(mongo)
-            ProcessType.authorReport -> AuthorReportProcess(mongo)
-            ProcessType.stemssh -> AuthorStemSshProcess(mongo)
-            ProcessType.initialization -> InitializationProcess(mongo)
+            ProcessType.Citation -> WosCitationProcess(mongo, ::logMessage)
+            ProcessType.Discipline -> DisciplineProcess(mongo, matcher)
+            ProcessType.WoSToSs -> WosToSsProcess(mongo, ::logMessage)
+            ProcessType.PaperReport -> PaperReportProcess(mongo)
+            ProcessType.SJR -> SJRProcess(mongo)
+            ProcessType.CoAuthor -> CoAuthorProcess(mongo)
+            ProcessType.AuthorReport -> AuthorReportProcess(mongo)
+            ProcessType.StemSsh -> AuthorStemSshProcess(mongo)
+            ProcessType.Initialization -> InitializationProcess(mongo)
+            ProcessType.SsAuthor -> SsAuthorToRawPaperProcess(mongo)
+            ProcessType.SsApiAuthor -> SsApiAuthorDetailsProcess(mongo)
         }
-
         process.init()
     }
 

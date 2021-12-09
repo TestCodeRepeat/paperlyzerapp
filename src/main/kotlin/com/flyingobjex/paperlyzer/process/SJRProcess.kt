@@ -106,5 +106,5 @@ class SJRProcess(val mongo: Mongo) : IProcess {
 
     override fun reset() = wosRepo.resetSJRIndexProcessed()
 
-    override fun type(): ProcessType = ProcessType.sjr
+    override fun type(): ProcessType = ProcessType.SJR
 }
