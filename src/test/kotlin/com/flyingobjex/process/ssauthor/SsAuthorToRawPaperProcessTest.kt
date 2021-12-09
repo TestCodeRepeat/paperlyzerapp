@@ -19,7 +19,7 @@ class SsAuthorToRawPaperProcessTest {
     val process = SsAuthorToRawPaperProcess(mongo)
     private val app = PaperlyzerApp(mongo)
 
-    @Test
+//    @Test
     fun `app should process 10k records`(){
         app.process.type() shouldBe ProcessType.SsAuthor
         app.process.reset()

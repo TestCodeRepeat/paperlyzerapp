@@ -69,7 +69,7 @@ class SsAuthorToRawPaperProcess(val mongo: Mongo) : IProcess {
                     )
                 )
             } ?: run {
-                authorRepo.updateRawPaperWithSsAuthor(wosPaper._id ?: "", emptyList())
+                authorRepo.updateRawPaperWithSsAuthorStep1(wosPaper._id ?: "", emptyList())
             }
         }
     }
