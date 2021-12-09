@@ -1,7 +1,6 @@
 package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.entity.SemanticScholarAuthor
 import com.flyingobjex.paperlyzer.entity.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.entity.SsAuthorDetails
 import com.flyingobjex.paperlyzer.entity.WosPaper

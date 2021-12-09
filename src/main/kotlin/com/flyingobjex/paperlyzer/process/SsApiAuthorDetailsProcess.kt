@@ -41,7 +41,7 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) :IProcess {
     val authorRepo = SemanticScholarAuthorRepo(mongo)
 
     override fun init() {
-
+        println("SsApiAuthorDetailsProcess.kt :: init :: ")
     }
 
     override fun name(): String = "SsApiAuthorDetailsProcess"
@@ -53,6 +53,8 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) :IProcess {
         val time = measureTimeMillis {
             unprocessed = authorRepo.getUnprocessedRawPapersBySsAuthorDetails(batchSize)
         }
+
+
     }
 
     override fun shouldContinueProcess(): Boolean {
