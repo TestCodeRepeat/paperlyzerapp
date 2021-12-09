@@ -22,6 +22,7 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
     val authorRepo = SemanticScholarAuthorRepo(mongo)
     val api = SemanticScholarAPI(SEMANTIC_SCHOLAR_API_KEY)
     var duplicatAuthorIdCount = 0
+    var currentUnprocessedCount = 0
 
     override fun init() {
         println("SsApiAuthorDetailsProcess.kt :: init :: ")
@@ -44,7 +45,7 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
                 ssAuthorData.authorId?.let { authorId ->
                     if (authorRepo.ssAuthorAlreadyExists(authorId)) {
                         duplicatAuthorIdCount++
-                        println("SsApiAuthorDetailsProcess.kt :: Ss Author Already Exists! :: $duplicatAuthorIdCount")
+                        println("SsApiAuthorDetailsProcess.kt :: Ss Author Already Exists! :: $duplicatAuthorIdCount :: UNPROCESSED COUNT = $currentUnprocessedCount")
                     } else {
                         runBlocking {
                             launch(IO) {
@@ -64,6 +65,7 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
     override fun shouldContinueProcess(): Boolean {
         println("SsApiAuthorDetailsProcess.kt :: shouldContinueProcess 0000 :: ?????? .........")
         val res = authorRepo.getUnprocessedRawPapersBySsAuthorDetailsCount()
+        currentUnprocessedCount = res
         println("SsApiAuthorDetailsProcess.kt :: shouldContinueProcess() 1111 :: res = $res")
         val shouldContinue = res > UNPROCESSED_RECORDS_GOAL
         if (!shouldContinue) {
