@@ -106,7 +106,10 @@ class SemanticScholarAuthorRepo(val mongo: Mongo) {
 
     // STEP 2
     fun getUnprocessedRawPapersBySsAuthorDetails(batchSize: Int): List<WosPaper> =
-        mongo.rawPaperFullDetails.aggregate<WosPaper>(WosPaper::ssAuthorProcessedStep2 ne true).toList()
+        mongo.rawPaperFullDetails.aggregate<WosPaper>(
+            match(WosPaper::ssAuthorProcessedStep2 ne true),
+            limit(batchSize)
+        ).toList()
 
     fun getUnprocessedRawPapersBySsAuthorDetailsCount(): Int =
         mongo.rawPaperFullDetails.countDocuments(WosPaper::ssAuthorProcessedStep2 ne true).toInt()

@@ -63,7 +63,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
 
-        initProcess(ProcessType.SsAuthor)
+        initProcess(ProcessType.SsApiAuthor)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")

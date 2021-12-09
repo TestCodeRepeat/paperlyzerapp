@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 data class SsApiAuthorDetailsStats(
     val totalRawPapersProcessed: Int,
@@ -66,13 +67,17 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
             println("SsApiAuthorDetailsProcess.kt :: runProcess :: 0000")
             wosPaper.ssAuthors?.parallelStream()?.forEach { ssAuthorData ->
                 ssAuthorData.authorId?.let { authorId ->
-                    MainScope().launch(IO) {
-                        api.authorById(authorId)?.let { ssAuthorDetails ->
-                            authorRepo.addSsAuthorDetails(ssAuthorDetails)
+                    runBlocking {
+                        launch(IO) {
+                            api.authorById(authorId)?.let { ssAuthorDetails ->
+                                println("SsApiAuthorDetailsProcess.kt :: runProcess() :: ssAuthorDetails.authorId = ${ssAuthorDetails.authorId}")
+                                authorRepo.addSsAuthorDetails(ssAuthorDetails)
+                            }
                         }
                     }
                 }
             }
+
             println("SsApiAuthorDetailsProcess.kt :: runProcess :: 1111")
             authorRepo.updateRawPaperWithSsAuthorStep2(wosPaper._id)
         }

@@ -29,6 +29,11 @@ class SemanticScholarAPI(semanticScholarApiKey: String) {
         }
     }
 
+    init {
+        count = 0
+        fetchCount = 0
+    }
+
     suspend fun authorById(authorId: String): SemanticScholarAuthor? {
         val authorUrl =
             "https://api.semanticscholar.org/graph/v1/author/$authorId?fields=aliases,papers,papers.year,papers.citationCount,papers.influentialCitationCount,hIndex,papers.fieldsOfStudy,papers.title"
