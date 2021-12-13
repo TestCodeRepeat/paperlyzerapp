@@ -80,18 +80,10 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
         authorRepo.buildGenderedAuthorsTable(batchSize)
     }
 
-    /** First Names Table */
-    fun buildFirstNamesTable() {
-        val batchSize = 2000000
-        println("${Date()} repo.buildFirstNameTable() 0000")
-        authorRepo.buildFirstNameTable(batchSize)
-        println("done")
-    }
-
-    /** Author Table */
-    fun buildAuthorTable(batchSize: Int) {
-        authorRepo.buildAuthorTableInParallel(batchSize)
-    }
+//    /** Author Table */
+//    fun buildAuthorTable(batchSize: Int) {
+//        authorRepo.buildAuthorTableInParallel(batchSize)
+//    }
 
     fun resetForAuthorTable() {
         println("${Date()} clearAuthors()")

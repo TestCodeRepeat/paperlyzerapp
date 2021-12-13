@@ -44,6 +44,24 @@ ws://localhost:8080/allthethings
   - Gender ratio
 ===============
 
+Dec 13
+- Build Author Table -
+
+  - Current Authors Table stats
+      ~ 445,000 Authors with first/last names
+      ~
+  - Previous stats from ::: May 28, 2021 :::
+        Author Table :: ~5min to parse from raw author table
+        * Each paper parsed and assigned to authors with matching First & Last name
+        * consists only of authors with a distinguishable first name
+        ~ 447,000 authors with first & last names
+        ~ 105,000 authors with > 3 papers
+        ~ 20,000 authors with > 10 papers
+        ~ 10,000 authors with > 15 papers
+        ~ 6,300 authors with > 20 papers
+
+
+
 Nov 22
 
 - Previous Data for testing against

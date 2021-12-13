@@ -6,7 +6,6 @@ import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
-import com.flyingobjex.paperlyzer.parser.CSVParser
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
@@ -16,7 +15,6 @@ import java.util.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class MainCoordinatorTest {
 
@@ -73,40 +71,6 @@ class MainCoordinatorTest {
         println("${Date()} done -- should copy author to new table & assign gender")
     }
 
-    //    @Test
-    fun `build first names table from author's table`() {
-        mongo.clearFirstNameTable()
-        println("${Date()} dbLive.clearFirstNameTable()")
-        coordinator.buildFirstNamesTable()
-        log.info("CoordinatorTest.build first names table from author's table()  res = ")
-
-        val stats = stats.firstNamesTableTotalNames()
-        log.info("CoordinatorTest.build first names table from author's table()  stats = $stats")
-    }
-
-    //        @Test
-    fun `build author table from raw author table`() {
-        val resetTime = measureTimeMillis {
-            coordinator.resetForAuthorTable()
-        }
-        log.info("CoordinatorTest.extract authors from raw papers into author table()  resetTime = $resetTime")
-
-        val parseTime = measureTimeMillis {
-            coordinator.buildAuthorTable(10000)
-        }
-        log.info("CoordinatorTest.build author table from raw author table()  parseTime = $parseTime")
-
-        val rawAuthorsUpdated = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq true)
-        println("rawAuthorsUpdated = $rawAuthorsUpdated")
-
-        val rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false)
-        println("rawAuthorsUpdated = $rawAuthorsPending")
-
-        val totalAuthors = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
-        println("totalAuthors = $totalAuthors")
-
-        assertEquals(9311, totalAuthors)
-    }
 
     //        @Test
     fun `extract authors from raw papers into raw author table`() {

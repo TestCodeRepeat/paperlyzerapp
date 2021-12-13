@@ -7,7 +7,6 @@ import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
-import org.junit.Test
 import org.litote.kmongo.div
 import org.litote.kmongo.eq
 import java.util.*
@@ -70,17 +69,6 @@ class MainCoordinatorTestLiveData {
         val res = stats.statsGenderedAuthorsTable()
         assertEquals(82802, res.totalAuthors)
         assertEquals(35234, res.totalWithNoAssignedGender)
-    }
-
-//    @Test
-    fun `build first names table from author's table`() {
-        mongo.clearFirstNameTable()
-        println("${Date()} dbLive.clearFirstNameTable()")
-        coordinator.buildFirstNamesTable()
-        log.info("CoordinatorTest.build first names table from author's table()  res = " )
-
-        val stats = stats.firstNamesTableTotalNames()
-        log.info("CoordinatorTest.build first names table from author's table()  stats = $stats")
     }
 
 //    @Test

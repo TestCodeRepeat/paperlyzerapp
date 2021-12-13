@@ -1,4 +1,4 @@
-package com.flyingobjex.builders
+package com.flyingobjex.tableBuilders
 
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.Mongo

@@ -159,23 +159,25 @@ class StatsController(val mongo: Mongo) {
         )
     }
 
+    fun authorTableStats(){
+        
+    }
 
     /** Disciplines */
-    fun resetDisciplinesReport() {
-        mongo.reports.drop()
-    }
-
-    fun runPapersWithDisciplinesReport() {
-        log.info("StatsCoordinator.runPapersWithDisciplinesReport()  START!")
-        val asReportLines = papersToReportLines(emptyList())
-        log.info("StatsCoordinator.runPapersWithDisciplinesReport()  UPDATE!")
-        asReportLines.parallelStream().forEach {
-            mongo.reports.insertOne(it)
-        }
-        log.info("StatsCoordinator.runPapersWithDisciplinesReport()  DONE!")
-    }
-
-
+//    fun resetDisciplinesReport() {
+//        mongo.reports.drop()
+//    }
+//
+//    fun runPapersWithDisciplinesReport() {
+//        log.info("StatsCoordinator.runPapersWithDisciplinesReport()  START!")
+//        val asReportLines = papersToReportLines(emptyList())
+//        log.info("StatsCoordinator.runPapersWithDisciplinesReport()  UPDATE!")
+//        asReportLines.parallelStream().forEach {
+//            mongo.reports.insertOne(it)
+//        }
+//        log.info("StatsCoordinator.runPapersWithDisciplinesReport()  DONE!")
+//    }
+//
     fun runGenderedPaperReport(): File {
         val reportLines = papersToReportLines(emptyList())
         return CSVHelper.writeCsvFile(reportLines.sortedByDescending { it.journal }, "genderedPapers")

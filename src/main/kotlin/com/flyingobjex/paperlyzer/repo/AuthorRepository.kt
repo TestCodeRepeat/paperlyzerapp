@@ -248,6 +248,21 @@ class AuthorRepository(val mongo: Mongo) {
         }
     }
 
+
+    /** Author Table Stats */
+    fun getAuhtorTableStats(): Long {
+        val rawAuthorsUpdated = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq true)
+        println("rawAuthorsUpdated = $rawAuthorsUpdated")
+
+        val rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false)
+        println("rawAuthorsUpdated = $rawAuthorsPending")
+
+        val totalAuthors = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
+        println("totalAuthors = $totalAuthors")
+
+        return totalAuthors
+    }
+
     /** General Accessors */
     fun getGenderedAuthors(querySize: Int): List<Author> =
         mongo.genderedAuthors.find(

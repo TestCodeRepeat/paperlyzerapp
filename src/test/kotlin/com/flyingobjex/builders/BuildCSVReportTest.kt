@@ -21,8 +21,8 @@ class BuildCSVReportTest {
 
     @Test
     fun `update report in database`(){
-        stats.resetDisciplinesReport()
-        stats.runPapersWithDisciplinesReport()
+//        stats.resetDisciplinesReport()
+//        stats.runPapersWithDisciplinesReport()
         log.info("BuildCSVReportTest.update report in database()  done!")
     }
 
