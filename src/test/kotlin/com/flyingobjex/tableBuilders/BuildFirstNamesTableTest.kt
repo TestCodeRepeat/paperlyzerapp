@@ -3,6 +3,7 @@ package com.flyingobjex.tableBuilders
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
+import com.flyingobjex.paperlyzer.usecase.FirstNamesUseCase
 import io.kotest.mpp.timeInMillis
 import java.util.*
 import java.util.logging.Logger
@@ -17,28 +18,28 @@ class BuildFirstNamesTableTest {
     private val mongo = Mongo(true)
     private val repo = AuthorRepository(mongo)
     private val statsController = StatsController(mongo)
+    private val firstNamesUseCase = FirstNamesUseCase(mongo)
 
-
-//    @Test
-    fun `should add to first names table from SS Author table`(){
+    //    @Test
+    fun `should add to first names table from SS Author table`() {
         val time = measureTimeMillis {
-            repo.buildFirstNameTableFromSsAuthorTable(500000)
+            firstNamesUseCase.buildFirstNameTableFromSsAuthorTable(500000)
             println("done")
         }
     }
 
 
-//    @Test
+    //    @Test
     fun `should build first name table from WoS Authors table`() {
         println("${Date()} dbLive.clearFirstNameTable()")
         mongo.clearFirstNameTable()
         println("${Date()} repo.buildFirstNameTable()")
         val time = measureTimeMillis {
-            repo.buildFirstNameTable(500000)
+            firstNamesUseCase.buildFirstNameTable(500000)
             println("done")
         }
 
-        log.info("BuildFirstNamesTableTest.should build first name table()  time = ${time}" )
+        log.info("BuildFirstNamesTableTest.should build first name table()  time = ${time}")
     }
 
     //    @Test

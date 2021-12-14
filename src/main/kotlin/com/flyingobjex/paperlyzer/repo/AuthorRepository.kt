@@ -135,45 +135,6 @@ class AuthorRepository(val mongo: Mongo) {
         )
     }
 
-    /** First Name Table */
-    fun buildFirstNameTableFromSsAuthorTable(batchSize: Int) {
-        val unprocessedBatch: List<Author> = mongo.authors.find(
-                SemanticScholarAuthor::firstNameProcessed ne true
-        ).limit(batchSize).toList()
-
-        unprocessedBatch.parallelStream().forEach { ssAuthor ->
-            // TODO - complete implementation
-        }
-    }
-
-    fun buildFirstNameTable(batchSize: Int) {
-        val batch: List<Author> = mongo.authors.find(
-            and(
-                Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED,
-            )
-        ).limit(batchSize).toList()
-
-        log.info("AuthorTableRepo.buildFirstNameTable()  batch.size = ${batch.size}")
-        batch.parallelStream().forEach { targetAuthor ->
-
-            if (targetAuthor?.firstName != null && !isAbbreviation(targetAuthor.firstName)) {
-                val potentialDuplicate = mongo.firstNameTable
-                    .findOne(FirstName::firstName eq targetAuthor.firstName)
-
-                if (potentialDuplicate == null) {
-                    mongo.firstNameTable.insertOne(
-                        FirstName(
-                            targetAuthor.firstName,
-                            targetAuthor.firstName,
-                            targetAuthor.lastName
-                        )
-                    )
-                }
-            }
-
-        }
-    }
-
     /** General Accessors */
     fun insertManyAuthors(authors: List<Author>) {
         mongo.rawAuthors.insertMany(authors)
