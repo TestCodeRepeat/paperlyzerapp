@@ -4,7 +4,6 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.GenderedAuthorTableStats
 import com.flyingobjex.paperlyzer.entity.*
 import com.flyingobjex.paperlyzer.parser.DisciplineType
-import com.flyingobjex.paperlyzer.process.CoAuthorProcessStats
 import com.flyingobjex.paperlyzer.process.StemSshAuthorProcessStats
 import com.mongodb.client.result.UpdateResult
 import org.litote.kmongo.*
@@ -27,7 +26,10 @@ data class AuthorTableStats(
         "rawAuthorsPending = $rawAuthorsPending \n" +
         "totalAuthors = $totalAuthors \n" +
         "initialsOnly = $initialsOnly \n" +
+        "noFirstName = $noFirstName \n" +
+        "na = $na \n" +
         "assignableNames = $assignableNames \n" +
+        "Authors Table combined total = ${assignableNames + na + noFirstName + initialsOnly} \n" +
         "================================================================\n " +
         "================================================================\n "
 }
@@ -37,86 +39,14 @@ class AuthorRepository(val mongo: Mongo) {
 
     /** Author STEM / SSH -  */
 
-    fun getStemSshAuthorStats(): StemSshAuthorProcessStats {
-        val totalAuthors = mongo.genderedAuthors.countDocuments()
-        val totalProcessed = mongo.genderedAuthors.countDocuments(Author::discipline ne DisciplineType.UNINITIALIZED)
-        val totalStem = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.STEM)
-        val totalSsh = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.SSH)
-        val totalM = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.M)
-        val totalUnidentified = mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.NA)
-
-        return StemSshAuthorProcessStats(
-            totalProcessedWithStemSshData = totalProcessed,
-            totalUnprocessed = getUnprocessedAuthorsByAStemSshCount(),
-            totalStem = totalStem,
-            totalSsh = totalSsh,
-            totalM = totalM,
-            totalUnidentified = totalUnidentified,
-            totalAuthors = totalAuthors,
-        )
-    }
-
-    fun getUnprocessedAuthorsByStemSsh(batchSize: Int): List<Author> {
-        val res = mongo.genderedAuthors.aggregate<Author>(
-            match(Author::disciplineScore eq -5.5),
-            limit(batchSize)
-        ).toList()
-
-        return res
-    }
-
-    fun getUnprocessedAuthorsByAStemSshCount(): Long =
-        mongo.genderedAuthors.countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED)
-
-    fun resetStemSsh() {
-        mongo.genderedAuthors.updateMany(
-            Author::discipline ne DisciplineType.UNINITIALIZED,
-            listOf(
-                setValue(Author::disciplineScore, -5.5),
-                setValue(Author::discipline, DisciplineType.UNINITIALIZED)
-            )
-        )
-    }
-
-    /** Co-Author */
-    fun resetCoAuthorData() {
-        mongo.genderedAuthors.updateMany(
-            Author::averageCoAuthors ne -5.5,
-            listOf(
-                setValue(Author::averageCoAuthors, -5.5),
-                setValue(Author::totalPapers, -5)
-            )
-        )
-    }
-
-    fun getCoAuthorStats(): CoAuthorProcessStats {
-        val totalAuthors = mongo.genderedAuthors.countDocuments()
-        val totalProcessed = mongo.genderedAuthors.countDocuments(Author::averageCoAuthors gt -5.0)
-        return CoAuthorProcessStats(
-            totalProcessedWithCoAuthorData = totalProcessed,
-            totalUnprocessed = unprocessedCoAuthorsCount(),
-            totalAuthors = totalAuthors,
-            0
-        )
-    }
-
-    fun unprocessedCoAuthorsCount(): Long = mongo.genderedAuthors.countDocuments(Author::averageCoAuthors eq -5.5)
-
-    fun getUnprocessedAuthorsByCoAuthors(batchSize: Int): List<Author> {
-        return mongo.genderedAuthors.aggregate<Author>(
-            match(Author::averageCoAuthors eq -5.5),
-            limit(batchSize)
-        ).toList()
-    }
-
     fun getUnprocessedAuthorsByAuthorReport(batchSize: Int): List<Author> =
         mongo.genderedAuthors.aggregate<Author>(
-            match(Author::unprocessed eq true),
+            match(Author::authorReportUnprocessed eq true),
             limit(batchSize)
         ).toList()
 
     fun unprocessedAuthorsByAuthorReportCount() =
-        mongo.genderedAuthors.countDocuments(Author::unprocessed eq true)
+        mongo.genderedAuthors.countDocuments(Author::authorReportUnprocessed eq true)
 
     /** Semantic Scholar  */
     fun getSsUnprocessedAuthors(batchSize: Int): List<Author> {
@@ -124,12 +54,11 @@ class AuthorRepository(val mongo: Mongo) {
             .limit(batchSize).toList()
     }
 
-    /** Gender */
+    /** Author Table */
     fun buildAuthorTableInParallel(batchSize: Int) {
         val batch = mongo.rawAuthors.find(
             and(
                 Author::duplicateCheck eq false,
-//                Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED
             )
         ).limit(batchSize).toList()
 
@@ -192,56 +121,31 @@ class AuthorRepository(val mongo: Mongo) {
         }
     }
 
-    fun buildGenderedAuthorsTable(batchSize: Int) {
-        val batch: List<Author> = mongo.authors.find(
-            and(
-                Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED,
-            )
-        ).limit(batchSize).toList()
+    /** Author Table Stats */
+    fun getAuthorTableStats(): AuthorTableStats {
 
-        batch.parallelStream().forEach { targetAuthor ->
-            mongo.genderedNameDetails.findOne(
-                GenderedNameDetails::firstName eq targetAuthor.firstName
-            )
-                ?.let { matchingGender ->
-                    targetAuthor.gender.gender = matchingGender.genderIdentity
-                    targetAuthor.gender.probability = matchingGender.probability
-                    targetAuthor.genderIdt = matchingGender.genderIdentity
-                    targetAuthor.probabilityStr = matchingGender.probability
-                    mongo.genderedAuthors.insertOne(targetAuthor)
-                }
-        }
-    }
-
-    fun statsGenderedAuthorsTable(): GenderedAuthorTableStats {
-        val totalAuthors = mongo.genderedAuthors.countDocuments()
-        val noAssignment = mongo.genderedAuthors.find(
-            or(
-                Author::genderIdt eq GenderIdentitiy.UNASSIGNED,
-                Author::genderIdt eq GenderIdentitiy.NOFIRSTNAME,
-                Author::genderIdt eq GenderIdentitiy.INITIALS,
-            )
-        ).count()
-        val totalFemaleNames = mongo.genderedAuthors.find(
-            or(
-                Author::genderIdt eq GenderIdentitiy.FEMALE
-            )
-        ).count()
-        val totalMaleNames = mongo.genderedAuthors.find(
-            or(
-                Author::genderIdt eq GenderIdentitiy.MALE
-            )
-        ).count()
-
-        return GenderedAuthorTableStats(
-            totalAuthors = totalAuthors,
-            totalFemaleAuthors = totalFemaleNames,
-            totalMaleAuthors = totalMaleNames,
-            totalWithNoAssignedGender = noAssignment
+        return AuthorTableStats(
+            rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false),
+            rawAuthorsUpdated = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq true),
+            totalAuthors = mongo.authors.countDocuments(),
+            initialsOnly = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.INITIALS),
+            noFirstName = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NOFIRSTNAME),
+            na = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NA),
+            assignableNames = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
         )
     }
 
     /** First Name Table */
+    fun buildFirstNameTableFromSsAuthorTable(batchSize: Int) {
+        val unprocessedBatch: List<Author> = mongo.authors.find(
+                SemanticScholarAuthor::firstNameProcessed ne true
+        ).limit(batchSize).toList()
+
+        unprocessedBatch.parallelStream().forEach { ssAuthor ->
+            // TODO - complete implementation
+        }
+    }
+
     fun buildFirstNameTable(batchSize: Int) {
         val batch: List<Author> = mongo.authors.find(
             and(
@@ -270,29 +174,7 @@ class AuthorRepository(val mongo: Mongo) {
         }
     }
 
-    /** Author Table Stats */
-    fun getAuthorTableStats(): AuthorTableStats {
-
-        return AuthorTableStats(
-            rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false),
-            rawAuthorsUpdated = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq true),
-            totalAuthors = mongo.authors.countDocuments(),
-            initialsOnly = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.INITIALS),
-            noFirstName = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NOFIRSTNAME),
-            na = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NA),
-            assignableNames = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
-        )
-    }
-
     /** General Accessors */
-    fun getGenderedAuthors(querySize: Int): List<Author> =
-        mongo.genderedAuthors.find(
-            or(
-                Author::gender / Gender::gender eq GenderIdentitiy.MALE,
-                Author::gender / Gender::gender eq GenderIdentitiy.FEMALE,
-            )
-        ).limit(querySize).toList()
-
     fun insertManyAuthors(authors: List<Author>) {
         mongo.rawAuthors.insertMany(authors)
     }
@@ -300,30 +182,16 @@ class AuthorRepository(val mongo: Mongo) {
     fun updateAuthorUnprocessedForAuthorReport(author: Author): UpdateResult =
         mongo.genderedAuthors.updateOne(
             Author::_id eq author._id,
-            setValue(Author::unprocessed, false)
+            setValue(Author::authorReportUnprocessed, false)
         )
-
-    fun updateAuthorCoAuthors(author: Author): UpdateResult {
-        return mongo.genderedAuthors.updateOne(
-            Author::_id eq author._id,
-            listOf(
-                setValue(Author::totalPapers, author.totalPapers),
-                setValue(Author::averageCoAuthors, author.averageCoAuthors),
-                setValue(Author::firstAuthorCount, author.firstAuthorCount),
-                setValue(Author::averageGenderRatioOfPapers, author.averageGenderRatioOfPapers),
-                setValue(Author::genderRatioOfAllCoAuthors, author.genderRatioOfAllCoAuthors),
-
-                )
-        )
-    }
 
     fun resetAuthorReport(): UpdateResult =
         mongo.genderedAuthors.updateMany(
-            Author::unprocessed ne true,
-            setValue(Author::unprocessed, true)
+            Author::authorReportUnprocessed ne true,
+            setValue(Author::authorReportUnprocessed, true)
         )
 
-    fun updateAuthor(author: Author) = mongo.genderedAuthors.updateOne(author)
+    fun updateGenderedAuthor(author: Author) = mongo.genderedAuthors.updateOne(author)
 
     fun resetRawAuthors() {
         mongo.rawAuthors.updateMany(
@@ -337,6 +205,8 @@ class AuthorRepository(val mongo: Mongo) {
         mongo.rawAuthors.drop()
         mongo.rawPaperFullDetails.drop()
     }
+
+
 
 }
 

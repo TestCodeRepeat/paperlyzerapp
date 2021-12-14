@@ -1,26 +1,47 @@
 package com.flyingobjex.tableBuilders
 
-import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.Mongo
-import org.junit.Test
+import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.repo.AuthorRepository
+import io.kotest.mpp.timeInMillis
 import java.util.*
+import java.util.logging.Logger
+import kotlin.system.measureTimeMillis
+import org.intellij.lang.annotations.JdkConstants
+import org.junit.Test
 
 class BuildFirstNamesTableTest {
 
+    val log: Logger = Logger.getAnonymousLogger()
     private val testName = "Chang Xinyu"
-    private val dbLive = Mongo(true)
-    private val repo = AuthorRepository(dbLive)
+    private val mongo = Mongo(true)
+    private val repo = AuthorRepository(mongo)
+    private val statsController = StatsController(mongo)
 
-    @Test
-    fun `should build first name table`() {
-        println("${Date()} dbLive.clearFirstNameTable()")
-        dbLive.clearFirstNameTable()
-        println("${Date()} repo.buildFirstNameTable()")
-        repo.buildFirstNameTable(500000)
-        println("done")
-    }
 
 //    @Test
+    fun `should add to first names table from SS Author table`(){
+        val time = measureTimeMillis {
+            repo.buildFirstNameTableFromSsAuthorTable(500000)
+            println("done")
+        }
+    }
+
+
+//    @Test
+    fun `should build first name table from WoS Authors table`() {
+        println("${Date()} dbLive.clearFirstNameTable()")
+        mongo.clearFirstNameTable()
+        println("${Date()} repo.buildFirstNameTable()")
+        val time = measureTimeMillis {
+            repo.buildFirstNameTable(500000)
+            println("done")
+        }
+
+        log.info("BuildFirstNamesTableTest.should build first name table()  time = ${time}" )
+    }
+
+    //    @Test
     fun `reset author table`() {
 
         println("done")

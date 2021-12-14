@@ -101,7 +101,7 @@ class Mongo(useLiveDatabase: Boolean = false) {
         genderedAuthors.ensureIndex(Author::gender / Gender::gender, Author::duplicateCheck)
         genderedAuthors.ensureIndex(Author::averageCoAuthors)
         genderedAuthors.ensureIndex(Author::totalPapers)
-        genderedAuthors.ensureIndex(Author::unprocessed)
+        genderedAuthors.ensureIndex(Author::authorReportUnprocessed)
         genderedAuthors.ensureIndex(Author::discipline)
         genderedAuthors.ensureIndex(Author::disciplineScore)
 

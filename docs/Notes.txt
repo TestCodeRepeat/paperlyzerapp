@@ -50,6 +50,16 @@ Dec 13
   - Current Authors Table stats
       ~ 445,000 Authors with first/last names
       ~ 102,000 WoS Authors with Initials Only
+      ~  rawAuthorsUpdated = 1,734,039
+
+  :: Author Table ::
+    ~ 12m30s :: build time from Raw Author Table
+        totalAuthors = 562,110
+        initials only = 102,582
+        no first name = 14,647
+        assignable first names = 444,881
+
+
   - Previous stats from ::: May 28, 2021 :::
         Author Table :: ~5min to parse from raw author table
         * Each paper parsed and assigned to authors with matching First & Last name

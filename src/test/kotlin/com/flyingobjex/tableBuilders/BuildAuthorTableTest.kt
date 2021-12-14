@@ -25,11 +25,11 @@ class BuildAuthorTableTest {
     private val samplePath = "../tbl_cli_sample.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
 
-    @Test
+//    @Test
     fun `get author table stats`() {
         val stats = authorRepo.getAuthorTableStats()
         log.info("BuildAuthorTableTest.get author table stats()  stats = ${stats}" )
-        stats.totalAuthors shouldBe 489324
+        stats.totalAuthors shouldBe 562110
     }
 
     //    @Test

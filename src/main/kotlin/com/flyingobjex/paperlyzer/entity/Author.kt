@@ -62,7 +62,7 @@ data class Author(
     val totalPapers: Int? = null,
     val averageCoAuthors: Double? = null,
     val firstAuthorCount: Long? = null,
-    val unprocessed: Boolean? = false,
+    val authorReportUnprocessed: Boolean? = false,
     val disciplineScore: Double? = null,
     val discipline: DisciplineType? = null,
     val averageGenderRatioOfPapers: Double? = null,

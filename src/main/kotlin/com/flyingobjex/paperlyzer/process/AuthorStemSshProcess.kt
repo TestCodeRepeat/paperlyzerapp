@@ -84,7 +84,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
             } ?: emptyList()
 
             val stemSshScore = calculateStemSshScores(associatedPapers)
-            authorRepo.updateAuthor(
+            authorRepo.updateGenderedAuthor(
                 author.copy(
                     disciplineScore = stemSshScore,
                     discipline = disciplineScoreToDiscipline(stemSshScore)

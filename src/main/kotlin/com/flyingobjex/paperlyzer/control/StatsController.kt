@@ -11,6 +11,8 @@ import com.flyingobjex.paperlyzer.process.reports.PaperReportLine
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.JournalTableRepo
 import com.flyingobjex.paperlyzer.repo.toShortKeys
+import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
+import com.flyingobjex.paperlyzer.usecase.StemSshUseCase
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutFirst
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutLast
 import com.flyingobjex.paperlyzer.util.GenderUtils.toGenderRatio
@@ -93,10 +95,12 @@ class StatsController(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
 
     private val authorRepo = AuthorRepository(mongo)
+    private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
+    private val stemSshUseCase = StemSshUseCase(mongo)
     private val journalRepo = JournalTableRepo(mongo)
 
     fun runGlobalStatsReport(): GlobalStats = GlobalStats.toStats(
-        statsGenderedAuthorsTable(),
+        genderedAuthorUseCase.statsGenderedAuthorsTable(),
         firstNamesTableTotalNames(),
         statsJournalTable()
     )
@@ -159,10 +163,6 @@ class StatsController(val mongo: Mongo) {
         )
     }
 
-    fun authorTableStats(){
-
-    }
-
     /** Disciplines */
 //    fun resetDisciplinesReport() {
 //        mongo.reports.drop()
@@ -185,7 +185,7 @@ class StatsController(val mongo: Mongo) {
 
     fun runGenderedAuthorReport(): File {
         val querySize = 500000
-        val batch: List<Author> = authorRepo.getGenderedAuthors(querySize)
+        val batch: List<Author> = genderedAuthorUseCase.getGenderedAuthors(querySize)
 
         val report = mutableListOf<AuthorReportLine>()
         batch.parallelStream().asSequence().filterNotNull().forEach { author ->
@@ -256,9 +256,9 @@ class StatsController(val mongo: Mongo) {
         return mongo.firstNameTable.countDocuments().toInt()
     }
 
-    fun statsGenderedAuthorsTable(): GenderedAuthorTableStats {
-        return authorRepo.statsGenderedAuthorsTable()
-    }
+//    fun statsGenderedAuthorsTable(): GenderedAuthorTableStats {
+//        return genderedAuthorUseCase.statsGenderedAuthorsTable()
+//    }
 
     fun statsAuthorTable(): AuthorYearsPublised {
         val yearsPublished = authorYearsPublishedStats()

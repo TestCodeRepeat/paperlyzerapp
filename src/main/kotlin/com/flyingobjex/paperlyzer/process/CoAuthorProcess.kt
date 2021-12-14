@@ -8,6 +8,7 @@ import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.WosPaperWithAuthors
 import com.flyingobjex.paperlyzer.entity.WosPaperWithStemSsh
 import com.flyingobjex.paperlyzer.repo.*
+import com.flyingobjex.paperlyzer.usecase.CoAuthorUseCase
 import com.flyingobjex.paperlyzer.util.GenderUtils.allPapersAreGenderComplete
 import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatio
 import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatioOfAuthors
@@ -63,6 +64,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
     val log: Logger = Logger.getAnonymousLogger()
     private val authorRepo = AuthorRepository(mongo)
     private val wosRepo = WoSPaperRepository(mongo)
+    private val coAuthorUseCase = CoAuthorUseCase(mongo)
 
     override fun init() {
         log.info("CoAuthorProcess.init()")
@@ -75,7 +77,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
         log.info("CoAuthorProcess.runProcess()  :: batchSize = $batchSize")
         var unprocessed = emptyList<Author>()
         val time = measureTimeMillis {
-            unprocessed = authorRepo.getUnprocessedAuthorsByCoAuthors(batchSize)
+            unprocessed = coAuthorUseCase.getUnprocessedAuthorsByCoAuthors(batchSize)
         }
 
         log.info("\n\nCoAuthorProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
@@ -108,7 +110,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
                 firstAuthorCount(associatedPapers, author.lastName, author.firstName.toString())
             val totalCoAuthors = totalAllAuthors - totalPapers
             val averageCoAuthors = totalCoAuthors.toDouble() / totalPapers.toDouble()
-            authorRepo.updateAuthorCoAuthors(
+            coAuthorUseCase.updateAuthorCoAuthors(
                 author.copy(
                     totalPapers = totalPapers,
                     averageCoAuthors = averageCoAuthors,
@@ -139,7 +141,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
     override fun shouldContinueProcess(): Boolean {
         var shouldContinue = false
         val time = measureTimeMillis {
-            val unprocessedCount = authorRepo.unprocessedCoAuthorsCount()
+            val unprocessedCount = coAuthorUseCase.unprocessedCoAuthorsCount()
             log.info("CoAuthorProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
             shouldContinue = unprocessedCount > UNPROCESSED_RECORDS_GOAL
         }
@@ -149,7 +151,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
         log.info("CoAuthorProcess.printStats()  Stats starting.... ")
-        val stats = authorRepo.getCoAuthorStats()
+        val stats = coAuthorUseCase.getCoAuthorStats()
         log.info("WosCitationProcess.printStats()  stats = $stats")
         GlobalScope.launch {
             outgoing?.send(Frame.Text(stats.toString()))
@@ -164,7 +166,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
     override fun reset() {
         log.info("CoAuthorProcess.reset()  ")
         val time = measureTimeMillis {
-            authorRepo.resetCoAuthorData()
+            coAuthorUseCase.resetCoAuthorData()
         }
         log.info("CoAuthorProcess.reset()  completed in $time ms")
     }
