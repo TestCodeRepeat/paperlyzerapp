@@ -11,6 +11,7 @@ import com.flyingobjex.paperlyzer.process.DisciplineUtils.calculateStemSshScores
 import com.flyingobjex.paperlyzer.process.DisciplineUtils.disciplineScoreToDiscipline
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.usecase.StemSshUseCase
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
@@ -54,6 +55,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
     val log: Logger = Logger.getAnonymousLogger()
     private val authorRepo = AuthorRepository(mongo)
     private val wosRepo = WoSPaperRepository(mongo)
+    private val stemSshUseCase = StemSshUseCase(mongo)
 
     override fun init() {
         log.info("AuthorStemSshProcess.init()")
@@ -65,7 +67,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
         log.info("AuthorStemSshProcess.runProcess()  :: batchSize = $API_BATCH_SIZE")
         var unprocessed = emptyList<Author>()
         val time = measureTimeMillis {
-            unprocessed = authorRepo.getUnprocessedAuthorsByStemSsh(API_BATCH_SIZE)
+            unprocessed = stemSshUseCase.getUnprocessedAuthorsByStemSsh(API_BATCH_SIZE)
         }
 
         log.info("\n\nAuthorStemSshProcess.runProcess() fetch unprocessed ::  time = $time \n\n")
@@ -96,7 +98,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
     override fun shouldContinueProcess(): Boolean {
         var shouldContinue: Boolean
         val time = measureTimeMillis {
-            val unprocessedCount = authorRepo.getUnprocessedAuthorsByAStemSshCount()
+            val unprocessedCount = stemSshUseCase.getUnprocessedAuthorsByAStemSshCount()
             log.info("AuthorStemSshProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
             shouldContinue = unprocessedCount > UNPROCESSED_RECORDS_GOAL
         }
@@ -106,7 +108,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
 
     override fun printStats(outgoing: SendChannel<Frame>?): String {
         log.info("CoAuthorProcess.printStats()  Stats starting.... ")
-        val stats = authorRepo.getStemSshAuthorStats()
+        val stats = stemSshUseCase.getStemSshAuthorStats()
         log.info("WosCitationProcess.printStats()  stats = $stats")
         GlobalScope.launch {
             outgoing?.send(Frame.Text(stats.toString()))
@@ -119,7 +121,7 @@ class AuthorStemSshProcess(val mongo: Mongo) : IProcess {
     }
 
     override fun reset() {
-        authorRepo.resetStemSsh()
+        stemSshUseCase.resetStemSsh()
         printStats()
     }
 

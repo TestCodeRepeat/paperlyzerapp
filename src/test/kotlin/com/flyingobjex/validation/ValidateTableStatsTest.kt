@@ -4,6 +4,7 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.MainCoordinator
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
 import org.junit.Test
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
@@ -17,6 +18,7 @@ class ValidateTableStatsTest {
     private val coordinator = MainCoordinator(mongo, samplePath)
     private val paperRepo = WoSPaperRepository(mongo)
     private val stats = StatsController(mongo)
+    private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
 
     @Test
     fun `should have stats on Journals table`() {
@@ -24,18 +26,18 @@ class ValidateTableStatsTest {
             val res = stats.statsJournalTable()
             print(res)
         }
-        log.info("ValidateTableStatsTest.should have stats on Journals table()  queryTime = ${queryTime}" )
+        log.info("ValidateTableStatsTest.should have stats on Journals table()  queryTime = ${queryTime}")
     }
 
     @Test
     fun `should have stats on GenderedAuthors table`() {
         val queryTime = measureTimeMillis {
 
-            val res = stats.statsGenderedAuthorsTable()
+            val res = genderedAuthorUseCase.statsGenderedAuthorsTable()
             assertEquals(405336, res.totalAuthors)
             assertEquals(467, res.totalWithNoAssignedGender)
         }
-        log.info("ValidateTableStatsTest.should have stats on GenderedAuthors table()  queryTime = ${queryTime}" )
+        log.info("ValidateTableStatsTest.should have stats on GenderedAuthors table()  queryTime = ${queryTime}")
     }
 
     @Test

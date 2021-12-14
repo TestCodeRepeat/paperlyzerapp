@@ -9,6 +9,7 @@ import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.JournalTableRepo
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
 import java.util.*
 import java.util.logging.Logger
 import org.slf4j.LoggerFactory
@@ -19,8 +20,9 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
     private val authorRepo = AuthorRepository(mongo)
     private val journalRepo = JournalTableRepo(mongo)
     private val ssPaperRepo = SemanticScholarPaperRepository(mongo)
+    private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
 
-    val initProcess:InitializationProcess = InitializationProcess(mongo)
+    val initProcess: InitializationProcess = InitializationProcess(mongo)
 
     init {
         (LoggerFactory.getLogger("org.mongodb.driver") as ch.qos.logback.classic.Logger).setLevel(ch.qos.logback.classic.Level.OFF)
@@ -49,9 +51,13 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
         val wosUnprocessedPapers = wosRepo.getUnprocessedByCitations(batchSize)
         wosUnprocessedPapers.parallelStream().forEach { wosPaper ->
             ssPaperRepo.paperByDoi(wosPaper.doi)?.let { matchingPaper ->
-                wosRepo.updateCitationsCount(wosPaper, matchingPaper.numCitedBy ?: 0, matchingPaper.influentialCitationCount ?: 0)
+                wosRepo.updateCitationsCount(
+                    wosPaper,
+                    matchingPaper.numCitedBy ?: 0,
+                    matchingPaper.influentialCitationCount ?: 0
+                )
             } ?: run {
-                log.warning("Coordinator.applyCitationsToGenderedPapers()  NO MATCHING PAPER wosPaper.doi = ${wosPaper.doi}" )
+                log.warning("Coordinator.applyCitationsToGenderedPapers()  NO MATCHING PAPER wosPaper.doi = ${wosPaper.doi}")
             }
         }
     }
@@ -77,7 +83,7 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
 
     /** Gendered Author Table */
     fun buildGenderedAuthorsTable(batchSize: Int) {
-        authorRepo.buildGenderedAuthorsTable(batchSize)
+        genderedAuthorUseCase.buildGenderedAuthorsTable(batchSize)
     }
 
 //    /** Author Table */

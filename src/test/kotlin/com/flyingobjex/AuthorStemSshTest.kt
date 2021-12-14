@@ -9,6 +9,7 @@ import com.flyingobjex.paperlyzer.process.AuthorStemSshProcess
 import com.flyingobjex.paperlyzer.process.DisciplineUtils
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.usecase.StemSshUseCase
 import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -21,13 +22,13 @@ import org.litote.kmongo.match
 /**
  *
  *  Apply STEM/SSH/M to the author table.
-    I calculated the coding by defining
-    STEM = 0, M = .5, SSH = 1
-    Then I took the discipline from the papers of every
-    single author and took the mean value.
-    E.g. Jane Smith had 2 STEM and a M paper: 0 + 0 + .5 / 3 = .16
-    resulting in Jane Smith being STEM.
-    I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1.
+I calculated the coding by defining
+STEM = 0, M = .5, SSH = 1
+Then I took the discipline from the papers of every
+single author and took the mean value.
+E.g. Jane Smith had 2 STEM and a M paper: 0 + 0 + .5 / 3 = .16
+resulting in Jane Smith being STEM.
+I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1.
  *
  * */
 
@@ -36,6 +37,7 @@ class AuthorStemSshTest {
     val mongo = Mongo(true)
     private val authorRepo = AuthorRepository(mongo)
     private val paperRepo = WoSPaperRepository(mongo)
+    private val stemSshUseCase = StemSshUseCase(mongo)
 
     private val authorStemProcess = AuthorStemSshProcess(mongo)
     val app = PaperlyzerApp(mongo)
@@ -54,7 +56,7 @@ class AuthorStemSshTest {
     }
 
     @Test
-    fun `app should run process three times and stop`(){
+    fun `app should run process three times and stop`() {
         app.process.printStats()
         app.process.reset()
         app.process.printStats()
@@ -67,7 +69,7 @@ class AuthorStemSshTest {
 
 
     @Test
-    fun `should check for unprocessed before continuing`(){
+    fun `should check for unprocessed before continuing`() {
         authorStemProcess.reset()
         authorStemProcess.runProcess()
         authorStemProcess.printStats()
@@ -78,7 +80,7 @@ class AuthorStemSshTest {
     }
 
     @Test
-    fun `should calculate a mix of SSH and STEM papers`(){
+    fun `should calculate a mix of SSH and STEM papers`() {
 
         val papers = getStemSshPapers()
         val a = papers.subList(0, 1)
@@ -87,13 +89,13 @@ class AuthorStemSshTest {
         DisciplineUtils.calculateStemSshScores(res) shouldBe 0.5
     }
 
-//    @Test
+    //    @Test
     fun `should get unprocessed authors`() {
         authorStemProcess.reset()
-        authorRepo.getUnprocessedAuthorsByStemSsh(1).firstOrNull() shouldNotBe null
+        stemSshUseCase.getUnprocessedAuthorsByStemSsh(1).firstOrNull() shouldNotBe null
     }
 
-//    @Test
+    //    @Test
     fun `should reset author table for stem ssh`() {
         authorStemProcess.reset()
         mongo.genderedAuthors
