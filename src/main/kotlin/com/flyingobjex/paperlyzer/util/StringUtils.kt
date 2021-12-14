@@ -20,6 +20,24 @@ object StringUtils {
 
     fun aliasesToName(aliases: List<String>): String = aliases.maxByOrNull { it.length } ?: ""
 
+    fun aliasToLongestMiddleName(aliases: List<String>): String? =
+        aliases
+            .map {
+                it.split(" ")
+            }
+            .map {
+                if (it.size > 2) {
+                    val start = 1
+                    val end = it.size - 1
+                    val middles = it.subList(start, end)
+                    return@map middles.joinToString(" ")
+                } else {
+                    null
+                }
+            }
+            .maxByOrNull { it?.length ?: 0 }
+
+
     fun aliasToLongestLastName(aliases: List<String>): String? =
         aliases.map {
             it.split(" ")

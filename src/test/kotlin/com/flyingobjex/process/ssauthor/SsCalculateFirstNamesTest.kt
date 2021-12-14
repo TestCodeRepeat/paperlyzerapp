@@ -4,6 +4,7 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.usecase.FirstNamesUseCase
 import com.flyingobjex.paperlyzer.util.StringUtils
 import com.flyingobjex.paperlyzer.util.StringUtils.aliasToLongestLastName
+import com.flyingobjex.paperlyzer.util.StringUtils.aliasToLongestMiddleName
 import com.flyingobjex.paperlyzer.util.StringUtils.aliasesToLongestFirstName
 import io.kotest.matchers.shouldBe
 import org.junit.Test
@@ -14,10 +15,10 @@ class SsCalculateFirstNamesTest {
     val firstNamesUseCase = FirstNamesUseCase(mongo)
 
     val aliases = listOf(
-        "R P",
-        "Roberta Pernetti",
+        "R K P",
+        "Roberta Kip Pernetti",
+        "Rob Kippington P.",
         "R. Pernetti",
-        "Rob K. P.",
     )
 
     val jCook = listOf(
@@ -35,6 +36,9 @@ class SsCalculateFirstNamesTest {
     fun `should get longest last name from aliases`(){
         aliasToLongestLastName(aliases) shouldBe "Pernetti"
         aliasToLongestLastName(jCook) shouldBe "Cook"
+
+        aliasToLongestMiddleName(jCook) shouldBe "J."
+        aliasToLongestMiddleName(aliases) shouldBe "Kippington"
     }
 
     @Test
