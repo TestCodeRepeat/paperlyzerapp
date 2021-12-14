@@ -27,10 +27,29 @@ class SsCalculateFirstNamesTest {
         "Chris Cook",
     )
 
+    val fourNames = listOf(
+        "P J Harvey Wallbanger",
+        "Pretoria James H. Wallbanger",
+        "Pamela Jons Harvey Wally",
+    )
+
+    val fourNamesB = listOf(
+        "P J Harvey Wallbanger",
+        "Pretoria James H. Wallbanger",
+        "Pamela Jamison Harvey Wally",
+    )
+
     //    @Test
     fun `should calculate full name from aliases & apply to ss authors`() {
         firstNamesUseCase.mapAliasToFullNamesOnSsAuthorTable(100000)
     }
+
+    @Test
+    fun `should get longest middle names combined`(){
+        aliasToLongestMiddleName(fourNames) shouldBe "Jons Harvey"
+        aliasToLongestMiddleName(fourNamesB) shouldBe "Jamison Harvey"
+    }
+
 
     @Test
     fun `should get longest last name from aliases`(){
