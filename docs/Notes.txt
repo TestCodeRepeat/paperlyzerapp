@@ -52,12 +52,16 @@ Dec 13
       ~ 102,000 WoS Authors with Initials Only
       ~  rawAuthorsUpdated = 1,734,039
 
-  :: Author Table ::
+  :: WoS Author Table ::
     ~ 12m30s :: build time from Raw Author Table
         totalAuthors = 562,110
         initials only = 102,582
         no first name = 14,647
         assignable first names = 444,881
+
+  :: Semantic Scholar Author Table ::
+    ~ 524,000 authors
+
 
 
   - Previous stats from ::: May 28, 2021 :::

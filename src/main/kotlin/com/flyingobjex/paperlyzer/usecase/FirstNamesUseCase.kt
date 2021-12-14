@@ -19,7 +19,6 @@ class FirstNamesUseCase(val mongo: Mongo) {
 
     val log: Logger = Logger.getAnonymousLogger()
 
-
     /** Apply calculated names to Semantic Scholar Authors */
     fun mapAliasToFullNamesOnSsAuthorTable(batchSize: Int) {
         val batch: List<SemanticScholarAuthor> = mongo.ssAuthors.find(
