@@ -14,9 +14,9 @@ class BuildFirstNamesTableTest {
     @Test
     fun `should build first name table`() {
         println("${Date()} dbLive.clearFirstNameTable()")
-//        dbLive.clearFirstNameTable()
+        dbLive.clearFirstNameTable()
         println("${Date()} repo.buildFirstNameTable()")
-//        repo.buildFirstNameTable()
+        repo.buildFirstNameTable(500000)
         println("done")
     }
 

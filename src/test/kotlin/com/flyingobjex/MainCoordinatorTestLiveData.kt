@@ -6,6 +6,7 @@ import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import org.litote.kmongo.div
 import org.litote.kmongo.eq
@@ -23,7 +24,7 @@ class MainCoordinatorTestLiveData {
     private val paperRepo = WoSPaperRepository(mongo)
     private val stats = StatsController(mongo)
 
-
+    private val authorRepo = AuthorRepository(mongo)
 
 //    @Test
     fun `apply genders to authors in paper`() {
@@ -79,7 +80,7 @@ class MainCoordinatorTestLiveData {
         log.info("CoordinatorTest.extract authors from raw papers into author table()  resetTime = $resetTime")
 
         val parseTime = measureTimeMillis {
-            coordinator.buildAuthorTable(2000000)
+            authorRepo.buildAuthorTableInParallel(2000000)
         }
         log.info("CoordinatorTest.build author table from raw author table()  parseTime = $parseTime")
 
@@ -92,7 +93,6 @@ class MainCoordinatorTestLiveData {
         val totalAuthors = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
         println("totalAuthors = $totalAuthors")
         assertEquals(444875, totalAuthors)
-
     }
 
 //    @Test

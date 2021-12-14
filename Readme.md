@@ -52,8 +52,9 @@ These primary functions can be triggered via Websocket connection & text command
    1. extract semantic scholar authors
 4. Build Author table by refining Raw Author table by removing duplicates, initials only, unidentifiable 
    1. for each Raw Author
-      1. check if 'duplicate check' has already been run
-5. Build First Names table from Author table (by removing duplicates, unidentifiable)
+      1. 'duplicateCheck' indicates if record has been processed yet
+5. Build First Names table from WoS Author table (by removing duplicates, unidentifiable)
+   1. add to First Names table from Semantic Scholar Author table
 6. Build Gender Table from First Names table using www.gender-api.com 
 7. Build a Gendered Author table by applying gender data from API
 8. 

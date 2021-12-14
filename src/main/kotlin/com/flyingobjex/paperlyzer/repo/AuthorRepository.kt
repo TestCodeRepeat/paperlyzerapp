@@ -1,7 +1,7 @@
 package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.control.AuthorTableStats
+import com.flyingobjex.paperlyzer.control.GenderedAuthorTableStats
 import com.flyingobjex.paperlyzer.entity.*
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.CoAuthorProcessStats
@@ -9,6 +9,28 @@ import com.flyingobjex.paperlyzer.process.StemSshAuthorProcessStats
 import com.mongodb.client.result.UpdateResult
 import org.litote.kmongo.*
 import java.util.logging.Logger
+
+data class AuthorTableStats(
+    val rawAuthorsUpdated: Long,
+    val rawAuthorsPending: Long,
+    val totalAuthors: Long,
+    val initialsOnly: Long,
+    val noFirstName: Long,
+    val na: Long,
+    val assignableNames: Long,
+){
+    override fun toString(): String = "" +
+        "================================================================\n" +
+        "================================================================\n" +
+        "   :::: Author Table Stats :::: \n" +
+        "rawAuthorsUpdated = $rawAuthorsUpdated \n" +
+        "rawAuthorsPending = $rawAuthorsPending \n" +
+        "totalAuthors = $totalAuthors \n" +
+        "initialsOnly = $initialsOnly \n" +
+        "assignableNames = $assignableNames \n" +
+        "================================================================\n " +
+        "================================================================\n "
+}
 
 class AuthorRepository(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
@@ -107,7 +129,7 @@ class AuthorRepository(val mongo: Mongo) {
         val batch = mongo.rawAuthors.find(
             and(
                 Author::duplicateCheck eq false,
-                Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED
+//                Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED
             )
         ).limit(batchSize).toList()
 
@@ -191,7 +213,7 @@ class AuthorRepository(val mongo: Mongo) {
         }
     }
 
-    fun statsGenderedAuthorsTable(): AuthorTableStats {
+    fun statsGenderedAuthorsTable(): GenderedAuthorTableStats {
         val totalAuthors = mongo.genderedAuthors.countDocuments()
         val noAssignment = mongo.genderedAuthors.find(
             or(
@@ -211,7 +233,7 @@ class AuthorRepository(val mongo: Mongo) {
             )
         ).count()
 
-        return AuthorTableStats(
+        return GenderedAuthorTableStats(
             totalAuthors = totalAuthors,
             totalFemaleAuthors = totalFemaleNames,
             totalMaleAuthors = totalMaleNames,
@@ -248,19 +270,18 @@ class AuthorRepository(val mongo: Mongo) {
         }
     }
 
-
     /** Author Table Stats */
-    fun getAuhtorTableStats(): Long {
-        val rawAuthorsUpdated = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq true)
-        println("rawAuthorsUpdated = $rawAuthorsUpdated")
+    fun getAuthorTableStats(): AuthorTableStats {
 
-        val rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false)
-        println("rawAuthorsUpdated = $rawAuthorsPending")
-
-        val totalAuthors = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
-        println("totalAuthors = $totalAuthors")
-
-        return totalAuthors
+        return AuthorTableStats(
+            rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false),
+            rawAuthorsUpdated = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq true),
+            totalAuthors = mongo.authors.countDocuments(),
+            initialsOnly = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.INITIALS),
+            noFirstName = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NOFIRSTNAME),
+            na = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NA),
+            assignableNames = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
+        )
     }
 
     /** General Accessors */
@@ -292,7 +313,7 @@ class AuthorRepository(val mongo: Mongo) {
                 setValue(Author::averageGenderRatioOfPapers, author.averageGenderRatioOfPapers),
                 setValue(Author::genderRatioOfAllCoAuthors, author.genderRatioOfAllCoAuthors),
 
-            )
+                )
         )
     }
 
@@ -306,13 +327,13 @@ class AuthorRepository(val mongo: Mongo) {
 
     fun resetRawAuthors() {
         mongo.rawAuthors.updateMany(
-            Author::duplicateCheck eq true,
+            Author::duplicateCheck ne false,
             setValue(Author::duplicateCheck, false)
         )
     }
 
-    fun clearRawData(){
-        log.info("AuthorRepository.clearRawData()  DATA CLEARING !!!  dropping Raw Author & Raw Paper Details" )
+    fun clearRawData() {
+        log.info("AuthorRepository.clearRawData()  DATA CLEARING !!!  dropping Raw Author & Raw Paper Details")
         mongo.rawAuthors.drop()
         mongo.rawPaperFullDetails.drop()
     }
@@ -339,3 +360,5 @@ fun Author.applyFirstLastYearsPublished(): Pair<Int, Int> {
     this.lastYearPublished = last
     return Pair(first, last)
 }
+
+

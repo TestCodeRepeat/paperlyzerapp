@@ -49,7 +49,7 @@ Dec 13
 
   - Current Authors Table stats
       ~ 445,000 Authors with first/last names
-      ~
+      ~ 102,000 WoS Authors with Initials Only
   - Previous stats from ::: May 28, 2021 :::
         Author Table :: ~5min to parse from raw author table
         * Each paper parsed and assigned to authors with matching First & Last name

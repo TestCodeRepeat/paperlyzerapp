@@ -25,7 +25,7 @@ data class YearsPublishedResult(val _id: String, val papers: List<String>)
 
 data class AuthorYearsPublised(val yearsPublishedCountByYear: HashMap<Int, Int>? = null)
 
-data class AuthorTableStats(
+data class GenderedAuthorTableStats(
     val totalAuthors: Long,
     val totalWithNoAssignedGender: Int,
     val totalFemaleAuthors: Int,
@@ -72,7 +72,7 @@ class GlobalStats(
 
     companion object {
         fun toStats(
-            genderedAuthorsTable: AuthorTableStats,
+            genderedAuthorsTable: GenderedAuthorTableStats,
             totalFirstNames: Int,
             journalTableStats: JournalTableStats
         ): GlobalStats {
@@ -160,7 +160,7 @@ class StatsController(val mongo: Mongo) {
     }
 
     fun authorTableStats(){
-        
+
     }
 
     /** Disciplines */
@@ -256,7 +256,7 @@ class StatsController(val mongo: Mongo) {
         return mongo.firstNameTable.countDocuments().toInt()
     }
 
-    fun statsGenderedAuthorsTable(): AuthorTableStats {
+    fun statsGenderedAuthorsTable(): GenderedAuthorTableStats {
         return authorRepo.statsGenderedAuthorsTable()
     }
 

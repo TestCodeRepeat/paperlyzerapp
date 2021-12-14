@@ -7,10 +7,10 @@ import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
 import com.flyingobjex.paperlyzer.entity.hasTwoDots
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
+import io.kotest.matchers.shouldBe
 import org.junit.Test
 import org.litote.kmongo.div
 import org.litote.kmongo.eq
-import java.util.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
 import kotlin.test.assertEquals
@@ -25,36 +25,38 @@ class BuildAuthorTableTest {
     private val samplePath = "../tbl_cli_sample.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
 
-    //        @Test
+    @Test
+    fun `get author table stats`() {
+        val stats = authorRepo.getAuthorTableStats()
+        log.info("BuildAuthorTableTest.get author table stats()  stats = ${stats}" )
+        stats.totalAuthors shouldBe 489324
+    }
+
+    //    @Test
+    fun `reset author table`() {
+        log.info("BuildAuthorTableTest.reset author table()  START")
+        val resetTime = measureTimeMillis {
+            coordinator.resetForAuthorTable()
+        }
+
+        log.info("BuildAuthorTableTest.reset author table()  resetTime = ${resetTime}")
+        log.info("BuildAuthorTableTest.reset author table()   authorRepo.getAuthorTableStats() = ${authorRepo.getAuthorTableStats()}")
+    }
+
+    //    @Test
     fun `build author table from raw author table`() {
         val resetTime = measureTimeMillis {
             coordinator.resetForAuthorTable()
         }
         log.info("CoordinatorTest.extract authors from raw papers into author table()  resetTime = $resetTime")
         val parseTime = measureTimeMillis {
-            authorRepo.buildAuthorTableInParallel(10000)
+            authorRepo.buildAuthorTableInParallel(2000000)
         }
         log.info("CoordinatorTest.build author table from raw author table()  parseTime = $parseTime")
 
-        val res = authorRepo.getAuhtorTableStats()
-        assertEquals(9311, res)
-    }
-
-    //    @Test
-    fun `should build author table from raw authors`() {
-        val batchSize = 2000000
-        println("${Date()} clearAuthors()")
-        mongo.clearAuthors()
-        println("${Date()} resetRawAuthors()")
-        authorRepo.resetRawAuthors()
-        println("${Date()} authorTableRepo.buildAuthorTableInParallel()")
-        mongo.resetIndexes()
-        println("${Date()} dbLive.resetIndexes()")
-        authorRepo.buildAuthorTableInParallel(batchSize)
-        println("${Date()} :: done ")
-        val totalAuthors = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
-        println("totalAuthors = $totalAuthors")
-
+        val res = authorRepo.getAuthorTableStats()
+        assertEquals(444881, res.totalAuthors)
+        // different results for
     }
 
 
