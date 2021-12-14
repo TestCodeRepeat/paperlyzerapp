@@ -20,16 +20,20 @@ object StringUtils {
 
     fun aliasesToName(aliases: List<String>): String = aliases.maxByOrNull { it.length } ?: ""
 
-    fun aliasesToLongestFirstName(aliases: List<String>): String? {
-        val res = aliases
+    fun aliasToLongestLastName(aliases: List<String>): String? =
+        aliases.map {
+            it.split(" ")
+        }.maxByOrNull {
+            it.lastOrNull()?.length ?: 0
+        }?.lastOrNull()
+
+
+    fun aliasesToLongestFirstName(aliases: List<String>): String? =
+        aliases
             .map {
                 it.split(" ")
-            }
-            .sortedByDescending {
-                it.getOrNull(0)?.length
-            }
+            }.maxByOrNull {
+                it.firstOrNull()?.length ?: 0
+            }?.firstOrNull()
 
-        log.info("StringUtils.aliasesToLongestFirstName()  res = ${res}" )
-        return res.firstOrNull()?.firstOrNull()
-    }
 }
