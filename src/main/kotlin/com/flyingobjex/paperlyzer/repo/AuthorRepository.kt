@@ -1,13 +1,9 @@
 package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.control.GenderedAuthorTableStats
 import com.flyingobjex.paperlyzer.entity.*
-import com.flyingobjex.paperlyzer.parser.DisciplineType
-import com.flyingobjex.paperlyzer.process.StemSshAuthorProcessStats
-import com.mongodb.client.result.UpdateResult
-import org.litote.kmongo.*
 import java.util.logging.Logger
+import org.litote.kmongo.*
 
 data class AuthorTableStats(
     val rawAuthorsUpdated: Long,
@@ -36,17 +32,6 @@ data class AuthorTableStats(
 
 class AuthorRepository(val mongo: Mongo) {
     val log: Logger = Logger.getAnonymousLogger()
-
-    /** Author STEM / SSH -  */
-
-    fun getUnprocessedAuthorsByAuthorReport(batchSize: Int): List<Author> =
-        mongo.genderedAuthors.aggregate<Author>(
-            match(Author::authorReportUnprocessed eq true),
-            limit(batchSize)
-        ).toList()
-
-    fun unprocessedAuthorsByAuthorReportCount() =
-        mongo.genderedAuthors.countDocuments(Author::authorReportUnprocessed eq true)
 
     /** Semantic Scholar  */
     fun getSsUnprocessedAuthors(batchSize: Int): List<Author> {
@@ -140,18 +125,6 @@ class AuthorRepository(val mongo: Mongo) {
         mongo.rawAuthors.insertMany(authors)
     }
 
-    fun updateAuthorUnprocessedForAuthorReport(author: Author): UpdateResult =
-        mongo.genderedAuthors.updateOne(
-            Author::_id eq author._id,
-            setValue(Author::authorReportUnprocessed, false)
-        )
-
-    fun resetAuthorReport(): UpdateResult =
-        mongo.genderedAuthors.updateMany(
-            Author::authorReportUnprocessed ne true,
-            setValue(Author::authorReportUnprocessed, true)
-        )
-
     fun updateGenderedAuthor(author: Author) = mongo.genderedAuthors.updateOne(author)
 
     fun resetRawAuthors() {
@@ -166,8 +139,6 @@ class AuthorRepository(val mongo: Mongo) {
         mongo.rawAuthors.drop()
         mongo.rawPaperFullDetails.drop()
     }
-
-
 
 }
 

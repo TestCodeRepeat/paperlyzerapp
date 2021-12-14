@@ -8,6 +8,7 @@ import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.IProcess
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.ReportRepository
+import com.flyingobjex.paperlyzer.usecase.AuthorReportUseCase
 import io.ktor.http.cio.websocket.*
 import java.util.logging.Logger
 import kotlin.streams.asSequence
@@ -41,8 +42,8 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
 
     val log: Logger = Logger.getAnonymousLogger()
 
-    private val authorRepo = AuthorRepository(mongo)
     private val reportRepo = ReportRepository(mongo)
+    private val authorReportUseCase = AuthorReportUseCase(mongo)
 
     override fun init() {
         log.info("AuthorReportProcess.init()  ")
@@ -51,7 +52,7 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
     override fun name(): String = "Author Report Process"
 
     override fun runProcess() {
-        val unprocessed = authorRepo.getUnprocessedAuthorsByAuthorReport(API_BATCH_SIZE)
+        val unprocessed = authorReportUseCase.getUnprocessedAuthorsByAuthorReport(API_BATCH_SIZE)
 
         unprocessed.parallelStream().asSequence().forEach { author ->
             val years = author.toYearsPublished()
@@ -79,14 +80,14 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
                 )
             )
 
-            authorRepo.updateAuthorUnprocessedForAuthorReport(author)
+            authorReportUseCase.updateAuthorUnprocessedForAuthorReport(author)
         }
     }
 
     override fun shouldContinueProcess(): Boolean {
         var shouldContinue: Boolean
         val time = measureTimeMillis {
-            val unprocessedCount = authorRepo.unprocessedAuthorsByAuthorReportCount()
+            val unprocessedCount = authorReportUseCase.unprocessedAuthorsByAuthorReportCount()
             log.info("AuthorReportProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
             shouldContinue = unprocessedCount > UNPROCESSED_RECORDS_GOAL
         }
@@ -106,8 +107,8 @@ class AuthorReportProcess(val mongo: Mongo) : IProcess {
     override fun cancelJobs() {}
 
     override fun reset() {
-        log.info("AuthorReportProcess.reset()  process = ${name()}" )
-        authorRepo.resetAuthorReport()
+        log.info("AuthorReportProcess.reset()  process = ${name()}")
+        authorReportUseCase.resetAuthorReport()
         reportRepo.resetAuthorReport()
     }
 

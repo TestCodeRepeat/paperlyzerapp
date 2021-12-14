@@ -88,7 +88,9 @@ data class SemanticScholarAuthor(
     val papers: List<SsPaperSummary>? = null,
     val firstName: String = "uninitialized",
     val lastName: String = "uninitialized",
-    val firstNameProcessed: Boolean? = null
+    val middleName: String = "uninitialized",
+    val firstNameProcessed: Boolean? = null,
+    val _id: String? = null
 )
 
 @Serializable

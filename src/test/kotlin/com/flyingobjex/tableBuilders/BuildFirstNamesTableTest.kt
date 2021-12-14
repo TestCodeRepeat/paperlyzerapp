@@ -4,12 +4,9 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.usecase.FirstNamesUseCase
-import io.kotest.mpp.timeInMillis
 import java.util.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
-import org.intellij.lang.annotations.JdkConstants
-import org.junit.Test
 
 class BuildFirstNamesTableTest {
 
@@ -35,7 +32,7 @@ class BuildFirstNamesTableTest {
         mongo.clearFirstNameTable()
         println("${Date()} repo.buildFirstNameTable()")
         val time = measureTimeMillis {
-            firstNamesUseCase.buildFirstNameTable(500000)
+            firstNamesUseCase.buildFirstNameTableFromWosAuthors(500000)
             println("done")
         }
 

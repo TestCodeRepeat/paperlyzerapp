@@ -68,6 +68,9 @@ class Mongo(useLiveDatabase: Boolean = false) {
     private fun initIndexes() {
 
         ssAuthors.ensureIndex(SemanticScholarAuthor::authorId)
+        ssAuthors.ensureIndex(SemanticScholarAuthor::firstName)
+        ssAuthors.ensureIndex(SemanticScholarAuthor::lastName)
+        ssAuthors.ensureIndex(SemanticScholarAuthor::firstNameProcessed)
 
         ssPapers.ensureIndex(SemanticScholarPaper::authors / SsAuthorDetails::authorId)
         ssPapers.ensureIndex(SemanticScholarPaper::title)
