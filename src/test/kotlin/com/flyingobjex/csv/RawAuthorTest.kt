@@ -39,12 +39,14 @@ class RawAuthorTest {
     fun `should get last name from bylines`(){
         getLastName("Ricklefs, RE") shouldBe "Ricklefs"
         getLastName("Legendre, S A") shouldBe "Legendre"
+        getLastName("Draney, Michael L.") shouldBe "Draney"
     }
 
     @Test
     fun `should get first name from bylines`(){
         getFirstName("Ricklefs, RE") shouldBe "RE"
         getFirstName("Legendre, S A") shouldBe "S"
+        getFirstName("Michael") shouldBe "Michael"
     }
 
     @Test
