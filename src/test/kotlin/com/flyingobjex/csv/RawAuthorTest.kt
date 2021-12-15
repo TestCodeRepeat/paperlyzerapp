@@ -3,6 +3,8 @@ package com.flyingobjex.csv
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.entity.PaperMetatdata
 import com.flyingobjex.paperlyzer.parser.CSVParser
+import com.flyingobjex.paperlyzer.parser.CSVParser.getFirstName
+import com.flyingobjex.paperlyzer.parser.CSVParser.getLastName
 import io.kotest.matchers.shouldBe
 import java.util.logging.Logger
 import org.junit.Test
@@ -32,6 +34,19 @@ class RawAuthorTest {
     val C = "v. Jhering, Hermann"
     val D = "Ricklefs, RE/Buffetaut, E/Hallam, A/Hsu, K/Jablonski, D/Kauffman, EG/Legendre, S/Martin, P/Mclaren, DJ/Myers, N/Traverse, A"
 
+
+    @Test
+    fun `should get last name from bylines`(){
+        getLastName("Ricklefs, RE") shouldBe "Ricklefs"
+        getLastName("Legendre, S A") shouldBe "Legendre"
+    }
+
+    @Test
+    fun `should get first name from bylines`(){
+        getFirstName("Ricklefs, RE") shouldBe "RE"
+        getFirstName("Legendre, S A") shouldBe "S"
+    }
+
     @Test
     fun `should match names from author line D`(){
         val authors = CSVParser.authorsCellToAuthors(D, paperMetaData)
@@ -45,7 +60,7 @@ class RawAuthorTest {
         authors[5].lastName shouldBe "Kauffman"
     }
 
-//    @Test
+    @Test
     fun `should match names from author line B`(){
         val authors = CSVParser.authorsCellToAuthors(B, paperMetaData)
         authors[0].firstName shouldBe "Sini"

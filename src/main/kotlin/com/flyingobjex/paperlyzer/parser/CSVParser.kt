@@ -95,11 +95,32 @@ object CSVParser {
         )
     }
 
+    fun getFirstName(byline: String): String? {
+        val fullNameSplit = byline.split(",").map { it.trim() }
+        fullNameSplit.lastOrNull()?.let { firstNames ->
+            if (firstNames.contains(" ")) {
+                val firstName = firstNames.split(" ").firstOrNull()
+                if (firstName != null) return firstName
+            } else {
+                return firstNames.trim()
+            }
+        }
+        return null
+    }
+
+    fun getLastName(byline: String): String? = byline.split(",").map { it.trim() }.firstOrNull()
+
     fun authorsCellToAuthors(authorsString: String, metadata: PaperMetatdata): List<Author> {
         val splitAuthors = authorsString.split("/")
         return splitAuthors.map { untrimmedName ->
             val rawName = untrimmedName.trim()
-            if (rawName.contains(",")) {
+
+            if (rawName.contains(",")) { // Process name from string
+
+                val fullNameSplit = rawName.split(",")
+                val fullName = "${fullNameSplit.lastOrNull()}"
+
+
                 val splitName = rawName.split(",")
                 val lastName = splitName[0].trim()
                 val initials = middleInitialFromLastName(lastName)
@@ -132,7 +153,7 @@ object CSVParser {
                     orcIDString = orcid?.id,
                 )
 
-            } else {
+            } else { // Else get names from Orc Id
 
                 val orcid = metadata.orcidForNames(rawName.trim(), "")
                 return@map Author(
