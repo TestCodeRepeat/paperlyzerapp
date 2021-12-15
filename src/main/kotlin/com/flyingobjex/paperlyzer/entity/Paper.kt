@@ -137,10 +137,10 @@ private fun String.clean(): String {
         .toLowerCase()
 }
 
-fun PaperMetatdata.orcidForNames(lastNameRaw: String, firstNameRaw: String): OrcID? {
+fun PaperMetatdata.orcidForNames(lastNameRaw: String?, firstNameRaw: String?): OrcID? {
     if (ordIds == null || ordIds.isEmpty()) return null
-    val lastName = lastNameRaw.clean()
-    val firstName = firstNameRaw.clean()
+    val lastName = lastNameRaw?.clean()
+    val firstName = firstNameRaw?.clean()
 
     return ordIds.firstOrNull {
         lastName == it.lastName.clean() &&

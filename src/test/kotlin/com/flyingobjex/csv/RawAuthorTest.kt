@@ -3,8 +3,10 @@ package com.flyingobjex.csv
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.entity.PaperMetatdata
 import com.flyingobjex.paperlyzer.parser.CSVParser
+import com.flyingobjex.paperlyzer.parser.CSVParser.bylineToNames
 import com.flyingobjex.paperlyzer.parser.CSVParser.getFirstName
 import com.flyingobjex.paperlyzer.parser.CSVParser.getLastName
+import com.flyingobjex.paperlyzer.parser.CSVParser.getMiddleNames
 import io.kotest.matchers.shouldBe
 import java.util.logging.Logger
 import org.junit.Test
@@ -32,21 +34,13 @@ class RawAuthorTest {
     val B = "Seppala, Sini/Henriques, Sergio/Draney, Michael L./Foord, Stefan/Gibbons, Alastair T./Gomez, Luz A./Kariko, Sarah/Malumbres-Olarte, Jagoba/Milne, Marc/" +
         "Vink, Cor J./Cardoso, Pedro"
     val C = "v. Jhering, Hermann"
+
     val D = "Ricklefs, RE/Buffetaut, E/Hallam, A/Hsu, K/Jablonski, D/Kauffman, EG/Legendre, S/Martin, P/Mclaren, DJ/Myers, N/Traverse, A"
 
-
-    @Test
-    fun `should get last name from bylines`(){
-        getLastName("Ricklefs, RE") shouldBe "Ricklefs"
-        getLastName("Legendre, S A") shouldBe "Legendre"
-        getLastName("Draney, Michael L.") shouldBe "Draney"
-    }
-
-    @Test
-    fun `should get first name from bylines`(){
-        getFirstName("Ricklefs, RE") shouldBe "RE"
-        getFirstName("Legendre, S A") shouldBe "S"
-        getFirstName("Michael") shouldBe "Michael"
+//    @Test
+    fun `should parse full byline`(){
+        val names = bylineToNames(D)
+        names.size shouldBe 11
     }
 
     @Test
@@ -86,7 +80,7 @@ class RawAuthorTest {
         authors[9].lastName shouldBe "Vink"
     }
 
-//    @Test
+    @Test
     fun `should match names from author line`(){
         val authors = CSVParser.authorsCellToAuthors(A, paperMetaData)
         authors[0].firstName shouldBe "Jennifer"
@@ -102,16 +96,16 @@ class RawAuthorTest {
         authors[2].lastName shouldBe "Doblin"
     }
 
-//    @Test
+    @Test
     fun `should parse middle initial with last name`(){
         val authors = CSVParser.authorsCellToAuthors(C, paperMetaData)
         val author = authors[0]
-        author.lastName shouldBe "Jhering"
-        author.middleName shouldBe "v."
+        author.lastName shouldBe "v. Jhering"
+        author.middleName shouldBe null
         author.firstName shouldBe "Hermann"
     }
 
-//    @Test
+    @Test
     fun `should parse author line`(){
         val authors = CSVParser.authorsCellToAuthors(A, paperMetaData)
         authors.size shouldBe 3

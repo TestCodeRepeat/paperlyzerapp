@@ -3,6 +3,7 @@ package com.flyingobjex.paperlyzer.parser
 import com.flyingobjex.paperlyzer.entity.*
 import com.flyingobjex.paperlyzer.repo.isAbbreviation
 import com.flyingobjex.paperlyzer.parser.LineParser.cleanOrcId
+import com.flyingobjex.paperlyzer.util.Name
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import java.io.File
 
@@ -108,66 +109,97 @@ object CSVParser {
         return null
     }
 
-    fun getLastName(byline: String): String? = byline.split(",").map { it.trim() }.firstOrNull()
-
-    fun authorsCellToAuthors(authorsString: String, metadata: PaperMetatdata): List<Author> {
-        val splitAuthors = authorsString.split("/")
-        return splitAuthors.map { untrimmedName ->
-            val rawName = untrimmedName.trim()
-
-            if (rawName.contains(",")) { // Process name from string
-
-                val fullNameSplit = rawName.split(",")
-                val fullName = "${fullNameSplit.lastOrNull()}"
-
-
-                val splitName = rawName.split(",")
-                val lastName = splitName[0].trim()
-                val initials = middleInitialFromLastName(lastName)
-
-                val firstMiddleNames = splitName.getOrNull(1)?.trim() ?: "X"
-                val firstName = if (firstMiddleNames.contains(" ")) {
-                    firstMiddleNames.split(" ")[0]
-                } else {
-                    firstMiddleNames
-                }
-                val middleNamesCombinedAfterSplit =
-                    listOf(firstMiddleNames.split(" ").getOrNull(1), firstMiddleNames.split(" ").getOrNull(2))
-                        .filterNotNull()
-                val joinedToString = middleNamesCombinedAfterSplit.joinToString(" ")
-
-                val middleNameFromInitials = initials?.first
-                val middleName =
-                    middleNameFromInitials ?: if (middleNamesCombinedAfterSplit.isNotEmpty()) joinedToString else null
-
-                val firstNameIsAbbreviated = (isAbbreviation(firstMiddleNames))
-                val orcid = metadata.orcidForNames(lastName, firstName)
-
-                Author(
-                    initials?.second ?: lastName,
-                    if (firstNameIsAbbreviated) orcid?.firstName else firstName,
-                    middleName,
-                    if (firstNameIsAbbreviated) Gender.initials else Gender.unassigned,
-                    mutableListOf(metadata),
-                    orcID = orcid,
-                    orcIDString = orcid?.id,
-                )
-
-            } else { // Else get names from Orc Id
-
-                val orcid = metadata.orcidForNames(rawName.trim(), "")
-                return@map Author(
-                    rawName,
-                    orcid?.firstName,
-                    null,
-                    Gender.nofirstname,
-                    mutableListOf(metadata),
-                    orcID = orcid,
-                    orcIDString = orcid?.id
-
-                )
+    fun getMiddleNames(byline: String): String? {
+        val fullNameSplit = byline.split(",").map { it.trim() }
+        fullNameSplit.lastOrNull()?.let { firstNames ->
+            val firstNamesSplit = firstNames.split(" ")
+            if (firstNamesSplit.size > 1) {
+                val middleNames = firstNamesSplit.subList(1, firstNamesSplit.size)
+                return middleNames.joinToString(" ")
             }
         }
+        return null
+    }
+
+    fun getLastName(byline: String): String? {
+        if (byline.contains(",")) {
+            return byline.split(",").map { it.trim() }.firstOrNull()
+        } else {
+            return byline.split(" ").map { it.trim() }.lastOrNull()
+        }
+    }
+
+    fun bylineToNames(fullByline: String): List<Name> {
+        val byLines = fullByline.split("/")
+        val names = byLines.map { byline ->
+            Name(
+                getFirstName(byline),
+                getMiddleNames(byline),
+                getLastName(byline),
+            )
+        }
+        return names
+    }
+
+    fun authorsCellToAuthors(authorsString: String, metadata: PaperMetatdata): List<Author> {
+        val authorNames = bylineToNames(authorsString)
+
+        return authorNames.map { name ->
+            val firstNameIsAbbreviated = (isAbbreviation(name.firstName ?: ""))
+            val orcid = metadata.orcidForNames(name.lastName, name.firstName)
+            val calcFirstname =
+                if (firstNameIsAbbreviated && orcid?.firstName != null) orcid?.firstName else name.firstName
+            val calcGender = if (firstNameIsAbbreviated) Gender.initials else Gender.unassigned
+            Author(
+                name.lastName ?: "NA",
+                calcFirstname,
+                name.middleNames,
+                calcGender,
+                mutableListOf(metadata),
+                orcID = orcid,
+                orcIDString = orcid?.id,
+            )
+        }
+
+//
+//        val splitAuthors = authorsString.split("/")
+//        return splitAuthors.map { untrimmedName ->
+//            val byline = untrimmedName.trim()
+//
+//            if (byline.contains(",")) { // Process name from string
+//
+//                val firstName = getFirstName(byline)
+//                val middleName = getMiddleNames(byline)
+//                val lastName = getLastName(byline) ?: ""
+//
+//                val firstNameIsAbbreviated = (isAbbreviation(firstName ?: ""))
+//                val orcid = metadata.orcidForNames(lastName, firstName)
+//
+//                Author(
+//                    lastName,
+//                    if (firstNameIsAbbreviated) orcid?.firstName else firstName,
+//                    middleName,
+//                    if (firstNameIsAbbreviated) Gender.initials else Gender.unassigned,
+//                    mutableListOf(metadata),
+//                    orcID = orcid,
+//                    orcIDString = orcid?.id,
+//                )
+//
+//            } else { // Else get names from Orc Id
+//
+//                val orcid = metadata.orcidForNames(byline.trim(), "")
+//                return@map Author(
+//                    byline,
+//                    orcid?.firstName,
+//                    null,
+//                    Gender.nofirstname,
+//                    mutableListOf(metadata),
+//                    orcID = orcid,
+//                    orcIDString = orcid?.id
+//
+//                )
+//            }
+//        }
     }
 
     private fun middleInitialFromLastName(lastName: String): Pair<String, String>? {

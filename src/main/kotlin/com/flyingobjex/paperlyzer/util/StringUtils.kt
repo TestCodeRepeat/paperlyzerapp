@@ -3,7 +3,7 @@ package com.flyingobjex.paperlyzer.util
 import java.util.logging.Logger
 
 
-data class Name(val firstName: String?, val middleName: String?, val lastName: String?)
+data class Name(val firstName: String?, val middleNames: String?, val lastName: String?)
 
 object StringUtils {
     val log: Logger = Logger.getAnonymousLogger()

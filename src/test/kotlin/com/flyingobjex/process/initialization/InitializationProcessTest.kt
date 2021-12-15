@@ -4,6 +4,7 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.process.InitializationProcess
 import io.kotest.matchers.shouldNotBe
 import java.util.logging.Logger
+import org.junit.Test
 
 class InitializationProcessTest {
 
