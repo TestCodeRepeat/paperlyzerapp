@@ -11,7 +11,6 @@ import com.flyingobjex.paperlyzer.repo.SemanticScholarAuthorRepo
 import io.ktor.http.cio.websocket.*
 import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -21,7 +20,7 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
 
     val authorRepo = SemanticScholarAuthorRepo(mongo)
     val api = SemanticScholarAPI(SEMANTIC_SCHOLAR_API_KEY)
-    var duplicatAuthorIdCount = 0
+    var duplicateAuthorIdCount = 0
     var currentUnprocessedCount = 0
 
     override fun init() {
@@ -44,8 +43,8 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
             wosPaper.ssAuthors?.parallelStream()?.forEach { ssAuthorData ->
                 ssAuthorData.authorId?.let { authorId ->
                     if (authorRepo.ssAuthorAlreadyExists(authorId)) {
-                        duplicatAuthorIdCount++
-                        println("SsApiAuthorDetailsProcess.kt :: Ss Author Already Exists! :: $duplicatAuthorIdCount :: UNPROCESSED COUNT = $currentUnprocessedCount")
+                        duplicateAuthorIdCount++
+                        println("SsApiAuthorDetailsProcess.kt :: Ss Author Already Exists! :: $duplicateAuthorIdCount :: UNPROCESSED COUNT = $currentUnprocessedCount")
                     } else {
                         runBlocking {
                             launch(IO) {
@@ -82,14 +81,14 @@ class SsApiAuthorDetailsProcess(val mongo: Mongo) : IProcess {
         val stats = authorRepo.getSsApiAuthorDetailsStats().toString()
         println(
             "SsApiAuthorDetailsProcess.kt :: printStats() :: stats \n" +
-                "!!!! DUPLICATE ID COUNT = $duplicatAuthorIdCount \n" +
+                "!!!! DUPLICATE ID COUNT = $duplicateAuthorIdCount \n" +
                 " $stats"
         )
         runBlocking {
             outgoing?.send(
                 Frame.Text(
                     stats +
-                        "\"!!!! DUPLICATE ID COUNT = $duplicatAuthorIdCount \\n\" +" +
+                        "\"!!!! DUPLICATE ID COUNT = $duplicateAuthorIdCount \\n\" +" +
                         "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 )
             )

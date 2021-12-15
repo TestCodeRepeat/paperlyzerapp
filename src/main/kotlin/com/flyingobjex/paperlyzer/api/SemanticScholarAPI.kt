@@ -36,7 +36,7 @@ class SemanticScholarAPI(semanticScholarApiKey: String) {
 
     suspend fun authorById(authorId: String): SemanticScholarAuthor? {
         val authorUrl =
-            "https://api.semanticscholar.org/graph/v1/author/$authorId?fields=aliases,papers,papers.year,papers.citationCount,papers.influentialCitationCount,hIndex,papers.fieldsOfStudy,papers.title"
+            "https://api.semanticscholar.org/graph/v1/author/$authorId?fields=aliases,papers,papers.year,papers.citationCount,papers.influentialCitationCount,hIndex,papers.fieldsOfStudy,papers.title,name"
 
         try {
             apiFetchCount += 1

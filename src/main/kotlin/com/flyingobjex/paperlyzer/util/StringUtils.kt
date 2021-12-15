@@ -8,16 +8,6 @@ data class Name(val firstName: String?, val middleName: String?, val lastName: S
 object StringUtils {
     val log: Logger = Logger.getAnonymousLogger()
 
-    fun splitToFirstLastNames(name: String): Name {
-        val split = name.split(" ")
-        val first = split.firstOrNull()
-        val last = split.lastOrNull()
-        val m = split.getOrNull(1)
-        val middle = if (m == last) null else m
-        return Name(first, middle, last)
-
-    }
-
     fun aliasesToName(aliases: List<String>): String = aliases.maxByOrNull { it.length } ?: ""
 
     fun aliasToLongestMiddleName(aliases: List<String>): String? =
@@ -27,16 +17,12 @@ object StringUtils {
             }
             .map {
                 if (it.size > 2) {
-                    val start = 1
-                    val end = it.size - 1
-                    val middles = it.subList(start, end)
-                    return@map middles.joinToString(" ")
+                    return@map it.subList(1, it.size - 1).joinToString(" ")
                 } else {
                     null
                 }
             }
             .maxByOrNull { it?.length ?: 0 }
-
 
     fun aliasToLongestLastName(aliases: List<String>): String? =
         aliases.map {
@@ -53,5 +39,4 @@ object StringUtils {
             }.maxByOrNull {
                 it.firstOrNull()?.length ?: 0
             }?.firstOrNull()
-
 }

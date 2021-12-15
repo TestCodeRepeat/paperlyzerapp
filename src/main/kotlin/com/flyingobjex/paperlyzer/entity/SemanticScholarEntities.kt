@@ -1,6 +1,7 @@
 package com.flyingobjex.paperlyzer.entity
 
 import kotlinx.serialization.Serializable
+import org.litote.kmongo.Id
 
 
 @Serializable
@@ -86,11 +87,12 @@ data class SemanticScholarAuthor(
     val authorId: String? = null,
     val hIndex: Int? = null,
     val papers: List<SsPaperSummary>? = null,
+    val name: String,
     val firstName: String = "uninitialized",
     val lastName: String = "uninitialized",
     val middleName: String = "uninitialized",
     val firstNameProcessed: Boolean? = null,
-    val _id: String? = null
+    var _id: Id<SemanticScholarAuthor>? = null,
 )
 
 @Serializable

@@ -7,9 +7,9 @@ import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
 import com.flyingobjex.paperlyzer.entity.SemanticScholarAuthor
 import com.flyingobjex.paperlyzer.repo.FirstName
 import com.flyingobjex.paperlyzer.repo.isAbbreviation
-import com.flyingobjex.paperlyzer.util.StringUtils
-import com.flyingobjex.paperlyzer.util.StringUtils.aliasesToName
-import com.flyingobjex.paperlyzer.util.StringUtils.splitToFirstLastNames
+import com.flyingobjex.paperlyzer.util.StringUtils.aliasToLongestLastName
+import com.flyingobjex.paperlyzer.util.StringUtils.aliasToLongestMiddleName
+import com.flyingobjex.paperlyzer.util.StringUtils.aliasesToLongestFirstName
 import java.util.logging.Logger
 import org.litote.kmongo.*
 
@@ -27,15 +27,20 @@ class FirstNamesUseCase(val mongo: Mongo) {
 
         batch.parallelStream().forEach { targetAuthor ->
 
-            val name = splitToFirstLastNames(aliasesToName(targetAuthor.aliases ?: emptyList()))
-            mongo.ssAuthors.updateOne(
-                SemanticScholarAuthor::_id eq targetAuthor._id,
-                listOf(
-                    setValue(SemanticScholarAuthor::firstName, name.firstName),
-                    setValue(SemanticScholarAuthor::middleName, name.middleName),
-                    setValue(SemanticScholarAuthor::lastName, name.lastName),
+            targetAuthor.aliases?.let { aliases ->
+                val firstName = aliasesToLongestFirstName(aliases)
+                val middleName = aliasToLongestMiddleName(aliases)
+                val lastName = aliasToLongestLastName(aliases)
+
+                mongo.ssAuthors.updateOne(
+                    SemanticScholarAuthor::_id eq targetAuthor._id,
+                    listOf(
+                        setValue(SemanticScholarAuthor::firstName, firstName),
+                        setValue(SemanticScholarAuthor::middleName, middleName),
+                        setValue(SemanticScholarAuthor::lastName, lastName),
+                    )
                 )
-            )
+            }
 
         }
     }

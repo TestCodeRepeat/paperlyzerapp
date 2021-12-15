@@ -27,7 +27,7 @@ class SsApiAuthorDetailsProcessTest {
         )
     }
 
-//    @Test
+    @Test
     fun `process should run for 1000 records`() {
         app.process.type() shouldBe ProcessType.SsApiAuthor
         app.manuallySetUnprocessedRecordsGoal(TOTAL_WOS_PAPERS - 1000)
