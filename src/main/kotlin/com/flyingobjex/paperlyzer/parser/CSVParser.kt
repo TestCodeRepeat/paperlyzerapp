@@ -148,8 +148,9 @@ object CSVParser {
             val firstNameIsAbbreviated = (isAbbreviation(name.firstName ?: ""))
             val orcid = metadata.orcidForNames(name.lastName, name.firstName)
             val calcFirstname =
-                if (firstNameIsAbbreviated && orcid?.firstName != null) orcid?.firstName else name.firstName
+                if (firstNameIsAbbreviated && orcid?.firstName != null) orcid.firstName else name.firstName
             val calcGender = if (firstNameIsAbbreviated) Gender.initials else Gender.unassigned
+
             Author(
                 name.lastName ?: "NA",
                 calcFirstname,

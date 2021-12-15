@@ -15,7 +15,7 @@ class InitializationProcessTest {
 
     val process: InitializationProcess = InitializationProcess(mongo)
 
-//    @Test
+    @Test
     fun `should run process with full file`(){
         process.reset()
         process.tsvFilePath = livePath
