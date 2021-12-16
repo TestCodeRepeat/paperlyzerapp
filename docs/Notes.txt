@@ -47,10 +47,26 @@ ws://localhost:8080/allthethings
 Dec 13
 - Build Author Table -
 
+  - Build Author Table
+    - AuthorTableUseCase() ~5 mins
+
   - Current Authors Table stats
       ~ 445,000 Authors with first/last names
       ~ 102,000 WoS Authors with Initials Only
       ~  rawAuthorsUpdated = 1,734,039
+
+      before update:: ================================================================
+         :::: Author Table Stats ::::
+      rawAuthorsUpdated = 0
+      rawAuthorsPending = 1734039
+      totalAuthors = 562110
+      initialsOnly = 102582
+      noFirstName = 14647
+      na = 0
+      assignableNames = 444881
+      Authors Table combined total = 562110
+      ================================================================
+       ================================================================
 
   :: WoS Author Table ::
     ~ 12m30s :: build time from Raw Author Table

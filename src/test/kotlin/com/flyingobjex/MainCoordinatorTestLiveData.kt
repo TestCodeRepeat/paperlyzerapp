@@ -8,8 +8,8 @@ import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.usecase.AuthorTableUseCase
 import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
-import com.flyingobjex.paperlyzer.usecase.StemSshUseCase
 import org.litote.kmongo.div
 import org.litote.kmongo.eq
 import java.util.*
@@ -28,6 +28,8 @@ class MainCoordinatorTestLiveData {
 
     private val authorRepo = AuthorRepository(mongo)
     private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
+    private val authorTableUseCase = AuthorTableUseCase(mongo)
+
 
 //    @Test
     fun `apply genders to authors in paper`() {
@@ -78,7 +80,7 @@ class MainCoordinatorTestLiveData {
 //    @Test
     fun `build author table from raw author table`() {
         val resetTime = measureTimeMillis {
-            coordinator.resetForAuthorTable()
+            authorTableUseCase.resetForAuthorTable()
         }
         log.info("CoordinatorTest.extract authors from raw papers into author table()  resetTime = $resetTime")
 

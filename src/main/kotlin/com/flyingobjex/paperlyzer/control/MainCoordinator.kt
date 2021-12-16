@@ -91,14 +91,14 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
 //        authorRepo.buildAuthorTableInParallel(batchSize)
 //    }
 
-    fun resetForAuthorTable() {
-        println("${Date()} clearAuthors()")
-        mongo.clearAuthors()
-        println("${Date()} resetRawAuthors()")
-        authorRepo.resetRawAuthors()
-        mongo.resetIndexes()
-
-    }
+//    fun resetForAuthorTable() {
+//        println("${Date()} clearAuthors()")
+//        mongo.clearAuthors()
+//        println("${Date()} resetRawAuthors()")
+//        authorRepo.resetRawAuthors()
+//        mongo.resetIndexes()
+//
+//    }
 
     /** Raw Author Table */
     fun runParseRawAuthorTableFromRawPapers(): List<Author> {
