@@ -7,6 +7,7 @@ import com.flyingobjex.paperlyzer.usecase.FirstNamesUseCase
 import java.util.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
+import org.junit.Test
 
 class BuildFirstNamesTableTest {
 
@@ -26,13 +27,13 @@ class BuildFirstNamesTableTest {
     }
 
 
-    //    @Test
+    @Test
     fun `should build first name table from WoS Authors table`() {
         println("${Date()} dbLive.clearFirstNameTable()")
         mongo.clearFirstNameTable()
         println("${Date()} repo.buildFirstNameTable()")
         val time = measureTimeMillis {
-            firstNamesUseCase.buildFirstNameTableFromWosAuthors(500000)
+            firstNamesUseCase.buildFirstNameTableFromWosAuthors(700000)
             println("done")
         }
 

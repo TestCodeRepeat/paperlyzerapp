@@ -6,6 +6,7 @@ import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.entity.GenderedNameDetails
+import java.util.*
 import org.litote.kmongo.*
 
 class GenderedAuthorUseCase(val mongo: Mongo) {
@@ -65,6 +66,13 @@ class GenderedAuthorUseCase(val mongo: Mongo) {
             totalMaleAuthors = totalMaleNames,
             totalWithNoAssignedGender = noAssignment
         )
+    }
+
+    fun resetBuildGenderedAuthors() {
+        mongo.clearGenderedAuthorsTable()
+        println("GenderedAuthorUseCase.kt :: resetBuildGenderedAuthors :: clearGenderedAuthorsTable()")
+        mongo.resetIndexes()
+        println("GenderedAuthorUseCase.kt :: resetBuildGenderedAuthors :: mongo.resetIndexes()")
     }
 
 }

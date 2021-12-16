@@ -56,8 +56,9 @@ These primary functions can be triggered via Websocket connection & text command
       1. 'duplicateCheck' indicates if record has been processed yet
 4. Build First Names table from WoS Author table (by removing duplicates, unidentifiable)
    1. add to First Names table from Semantic Scholar Author table
-5. Build Gender Table from First Names table using www.gender-api.com 
+5. Build Gender Table from First Names table using www.gender-api.com
 6. Build a Gendered Author table by applying gender data from API
+   1. 
 7. 
 
 

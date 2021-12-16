@@ -81,25 +81,6 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
         mongo.resetIndexes()
     }
 
-    /** Gendered Author Table */
-    fun buildGenderedAuthorsTable(batchSize: Int) {
-        genderedAuthorUseCase.buildGenderedAuthorsTable(batchSize)
-    }
-
-//    /** Author Table */
-//    fun buildAuthorTable(batchSize: Int) {
-//        authorRepo.buildAuthorTableInParallel(batchSize)
-//    }
-
-//    fun resetForAuthorTable() {
-//        println("${Date()} clearAuthors()")
-//        mongo.clearAuthors()
-//        println("${Date()} resetRawAuthors()")
-//        authorRepo.resetRawAuthors()
-//        mongo.resetIndexes()
-//
-//    }
-
     /** Raw Author Table */
     fun runParseRawAuthorTableFromRawPapers(): List<Author> {
         val authorsFromPaperTable = wosRepo.getAllRawAuthors()

@@ -56,6 +56,9 @@ Dec 13
       ~  rawAuthorsUpdated = 1,734,039
 
       after update:: ================================================================
+          :::: First Names Table Stats ::::
+                ~78,000 first names from WoS
+
           :::: Author Table Stats ::::
           rawAuthorsUpdated = 1734039
           rawAuthorsPending = 0
@@ -66,7 +69,11 @@ Dec 13
           assignableNames = 448691
           Authors Table combined total = 659197
 
+
       before update:: ================================================================
+          :::: First Names Table Stats ::::
+          ~77,000 first names
+
           :::: Author Table Stats ::::
           rawAuthorsUpdated = 0
           rawAuthorsPending = 1734039

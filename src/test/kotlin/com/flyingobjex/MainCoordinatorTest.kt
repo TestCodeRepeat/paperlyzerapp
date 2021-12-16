@@ -5,6 +5,7 @@ import com.flyingobjex.paperlyzer.control.MainCoordinator
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
+import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import org.junit.Test
 import java.util.*
@@ -22,6 +23,7 @@ class MainCoordinatorTest {
     private val stats = StatsController(mongo)
     private val paperRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
+
 
     init {
         setMongoDbLogsToErrorOnly()
@@ -54,17 +56,6 @@ class MainCoordinatorTest {
         coordinator.buildJournalTable()
         val stats = stats.statsJournalTable()
         assertEquals(3157, stats.totalJournals)
-    }
-
-    //    @Test
-    fun `should copy author to new table & assign gender`() {
-        println("${Date()} dbLive.clearGenderedAuthorsTable()")
-        mongo.clearGenderedAuthorsTable()
-        println("${Date()} dbLive.resetIndexes()")
-        mongo.resetIndexes()
-        println("${Date()} repo.buildGenderedAuthorsTable()")
-        coordinator.buildGenderedAuthorsTable(500000)
-        println("${Date()} done -- should copy author to new table & assign gender")
     }
 
 

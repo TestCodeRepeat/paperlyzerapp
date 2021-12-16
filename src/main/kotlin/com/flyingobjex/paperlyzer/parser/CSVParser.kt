@@ -161,46 +161,6 @@ object CSVParser {
                 orcIDString = orcid?.id,
             )
         }
-
-//
-//        val splitAuthors = authorsString.split("/")
-//        return splitAuthors.map { untrimmedName ->
-//            val byline = untrimmedName.trim()
-//
-//            if (byline.contains(",")) { // Process name from string
-//
-//                val firstName = getFirstName(byline)
-//                val middleName = getMiddleNames(byline)
-//                val lastName = getLastName(byline) ?: ""
-//
-//                val firstNameIsAbbreviated = (isAbbreviation(firstName ?: ""))
-//                val orcid = metadata.orcidForNames(lastName, firstName)
-//
-//                Author(
-//                    lastName,
-//                    if (firstNameIsAbbreviated) orcid?.firstName else firstName,
-//                    middleName,
-//                    if (firstNameIsAbbreviated) Gender.initials else Gender.unassigned,
-//                    mutableListOf(metadata),
-//                    orcID = orcid,
-//                    orcIDString = orcid?.id,
-//                )
-//
-//            } else { // Else get names from Orc Id
-//
-//                val orcid = metadata.orcidForNames(byline.trim(), "")
-//                return@map Author(
-//                    byline,
-//                    orcid?.firstName,
-//                    null,
-//                    Gender.nofirstname,
-//                    mutableListOf(metadata),
-//                    orcID = orcid,
-//                    orcIDString = orcid?.id
-//
-//                )
-//            }
-//        }
     }
 
     private fun middleInitialFromLastName(lastName: String): Pair<String, String>? {
