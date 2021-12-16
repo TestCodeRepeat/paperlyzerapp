@@ -4,7 +4,7 @@ import com.flyingobjex.paperlyzer.api.GenderApi
 import com.flyingobjex.paperlyzer.api.GenderApiRequest
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.api.GENDER_API_KEY
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.entity.GenderedNameDetails
 import org.litote.kmongo.*
 
@@ -66,7 +66,7 @@ class GenderRepo(val mongo: Mongo) {
 
             GenderedNameDetails(
                 apiResponse.first_name.toString(),
-                GenderIdentitiy.toType(apiResponse.gender.toString()),
+                GenderIdentity.toType(apiResponse.gender.toString()),
                 apiResponse.probability ?: 0.0,
                 apiResponse,
                 firstNamesBatch[index]

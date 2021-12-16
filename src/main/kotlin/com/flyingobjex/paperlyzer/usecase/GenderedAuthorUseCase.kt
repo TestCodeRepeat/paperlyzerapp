@@ -4,7 +4,7 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.GenderedAuthorTableStats
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.entity.GenderedNameDetails
 import org.litote.kmongo.*
 
@@ -13,15 +13,15 @@ class GenderedAuthorUseCase(val mongo: Mongo) {
     fun getGenderedAuthors(querySize: Int): List<Author> =
         mongo.genderedAuthors.find(
             or(
-                Author::gender / Gender::gender eq GenderIdentitiy.MALE,
-                Author::gender / Gender::gender eq GenderIdentitiy.FEMALE,
+                Author::gender / Gender::gender eq GenderIdentity.MALE,
+                Author::gender / Gender::gender eq GenderIdentity.FEMALE,
             )
         ).limit(querySize).toList()
 
     fun buildGenderedAuthorsTable(batchSize: Int) {
         val batch: List<Author> = mongo.authors.find(
             and(
-                Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED,
+                Author::gender / Gender::gender eq GenderIdentity.UNASSIGNED,
             )
         ).limit(batchSize).toList()
 
@@ -43,19 +43,19 @@ class GenderedAuthorUseCase(val mongo: Mongo) {
         val totalAuthors = mongo.genderedAuthors.countDocuments()
         val noAssignment = mongo.genderedAuthors.find(
             or(
-                Author::genderIdt eq GenderIdentitiy.UNASSIGNED,
-                Author::genderIdt eq GenderIdentitiy.NOFIRSTNAME,
-                Author::genderIdt eq GenderIdentitiy.INITIALS,
+                Author::genderIdt eq GenderIdentity.UNASSIGNED,
+                Author::genderIdt eq GenderIdentity.NOFIRSTNAME,
+                Author::genderIdt eq GenderIdentity.INITIALS,
             )
         ).count()
         val totalFemaleNames = mongo.genderedAuthors.find(
             or(
-                Author::genderIdt eq GenderIdentitiy.FEMALE
+                Author::genderIdt eq GenderIdentity.FEMALE
             )
         ).count()
         val totalMaleNames = mongo.genderedAuthors.find(
             or(
-                Author::genderIdt eq GenderIdentitiy.MALE
+                Author::genderIdt eq GenderIdentity.MALE
             )
         ).count()
 

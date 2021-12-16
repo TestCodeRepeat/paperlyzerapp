@@ -12,11 +12,11 @@ import org.litote.kmongo.Id
  * INITIALS - uses initials for first name
  * NA - not possible to derive any information
  */
-enum class GenderIdentitiy {
+enum class GenderIdentity {
     FEMALE, MALE, NOFIRSTNAME, INITIALS, UNASSIGNED, NA;
 
     companion object {
-        fun toType(value: String): GenderIdentitiy {
+        fun toType(value: String): GenderIdentity {
             return when (value) {
                 "female" -> FEMALE
                 "male" -> MALE
@@ -52,7 +52,7 @@ data class Author(
     var paperCount: Int = 1,
     val orcID: OrcID? = null,
     val orcIDString: String? = null,
-    var genderIdt: GenderIdentitiy? = null,
+    var genderIdt: GenderIdentity? = null,
     var probabilityStr: Double? = null,
     var firstYearPublished: Int? = null,
     var lastYearPublished: Int? = null,
@@ -78,13 +78,13 @@ data class Author(
 
 @Serializable
 data class Gender(
-    var gender: GenderIdentitiy,
+    var gender: GenderIdentity,
     var probability: Double
 ) {
     companion object {
-        val unassigned = Gender(GenderIdentitiy.UNASSIGNED, 0.0)
-        val nofirstname = Gender(GenderIdentitiy.NOFIRSTNAME, 0.0)
-        val initials = Gender(GenderIdentitiy.INITIALS, 0.0)
+        val unassigned = Gender(GenderIdentity.UNASSIGNED, 0.0)
+        val nofirstname = Gender(GenderIdentity.NOFIRSTNAME, 0.0)
+        val initials = Gender(GenderIdentity.INITIALS, 0.0)
     }
 }
 
@@ -99,7 +99,7 @@ data class OrcID(
 @Serializable
 data class GenderedNameDetails(
     val firstName: String,
-    val genderIdentity: GenderIdentitiy,
+    val genderIdentity: GenderIdentity,
     val probability: Double = -1.0,
     val apiResponse: GenderApiResponse,
     val apiRequest: GenderApiRequest,

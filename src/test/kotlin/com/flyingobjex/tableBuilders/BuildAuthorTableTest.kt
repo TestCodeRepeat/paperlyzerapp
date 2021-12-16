@@ -4,7 +4,7 @@ import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.MainCoordinator
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.entity.hasTwoDots
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.usecase.AuthorTableUseCase
@@ -28,7 +28,7 @@ class BuildAuthorTableTest {
 
     private val authorTableUseCase = AuthorTableUseCase(mongo)
 
-    //    @Test
+    @Test
     fun `get author table stats`() {
         val stats = authorRepo.getAuthorTableStats()
         log.info("BuildAuthorTableTest.get author table stats()  stats = ${stats}")
@@ -46,7 +46,7 @@ class BuildAuthorTableTest {
         log.info("BuildAuthorTableTest.reset author table()   authorRepo.getAuthorTableStats() = ${authorRepo.getAuthorTableStats()}")
     }
 
-    @Test
+    //    @Test
     fun `build author table from raw author table`() {
         val resetTime = measureTimeMillis {
             authorTableUseCase.resetForAuthorTable()
@@ -62,17 +62,17 @@ class BuildAuthorTableTest {
         val parseTimeA = measureTimeMillis {
             authorTableUseCase.buildAuthorTableFromRawAuthorTable(300000)
         }
-        log.info("CoordinatorTest.build author table from raw author table()  parseTime = $parseTimeA")
+        log.info("CoordinatorTest.build author table from raw author table()  parseTimeA = $parseTimeA")
 
         val parseTimeB = measureTimeMillis {
             authorTableUseCase.buildAuthorTableFromRawAuthorTable(600000)
         }
-        log.info("CoordinatorTest.build author table from raw author table()  parseTime = $parseTimeB")
+        log.info("CoordinatorTest.build author table from raw author table()  parseTimeB = $parseTimeB")
 
         val parseTimeC = measureTimeMillis {
             authorTableUseCase.buildAuthorTableFromRawAuthorTable(900000)
         }
-        log.info("CoordinatorTest.build author table from raw author table()  parseTime = $parseTimeC")
+        log.info("CoordinatorTest.build author table from raw author table()  parseTimeC = $parseTimeC")
 
 
         val res = authorRepo.getAuthorTableStats()
@@ -83,10 +83,10 @@ class BuildAuthorTableTest {
 
     //    @Test
     fun `count number of potentially assignable genders`() {
-        val unassigned = mongo.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
-        val initialsOnly = mongo.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.INITIALS)
+        val unassigned = mongo.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.UNASSIGNED)
+        val initialsOnly = mongo.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.INITIALS)
         val undetermined =
-            mongo.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NOFIRSTNAME)
+            mongo.rawAuthors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.NOFIRSTNAME)
         println("initialsOnly = $initialsOnly")
         println("undetermined = $undetermined")
         println()

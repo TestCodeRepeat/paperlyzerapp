@@ -1,6 +1,6 @@
 package com.flyingobjex.paperlyzer.process.reports
 
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import kotlinx.serialization.Serializable
 
@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class AuthorReportLine(
     val firstName: String,
     val lastName: String,
-    val gender: GenderIdentitiy,
+    val gender: GenderIdentity,
     val genderProbability: Double,
     val totalPapers: Int,
     val totalAsFirstAuthor: Int,

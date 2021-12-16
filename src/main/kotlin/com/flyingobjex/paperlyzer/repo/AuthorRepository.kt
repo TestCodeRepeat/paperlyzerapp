@@ -113,10 +113,10 @@ class AuthorRepository(val mongo: Mongo) {
             rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false),
             rawAuthorsUpdated = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq true),
             totalAuthors = mongo.authors.countDocuments(),
-            initialsOnly = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.INITIALS),
-            noFirstName = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NOFIRSTNAME),
-            na = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.NA),
-            assignableNames = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
+            initialsOnly = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.INITIALS),
+            noFirstName = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.NOFIRSTNAME),
+            na = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.NA),
+            assignableNames = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.UNASSIGNED)
         )
     }
 

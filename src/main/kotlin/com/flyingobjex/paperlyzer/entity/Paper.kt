@@ -43,9 +43,9 @@ data class PaperMetatdata(
     val doi: String,
     val topics: List<String>,
     val originalAuthors: String,
-    val authorGenders: List<GenderIdentitiy>? = null,
-    val authorGenderTypes: List<GenderIdentitiy>? = null,
-    val firstAuthorGender: GenderIdentitiy? = null,
+    val authorGenders: List<GenderIdentity>? = null,
+    val authorGenderTypes: List<GenderIdentity>? = null,
+    val firstAuthorGender: GenderIdentity? = null,
     val _id: String? = null,
 )
 

@@ -5,7 +5,7 @@ import com.flyingobjex.paperlyzer.control.MainCoordinator
 import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.usecase.AuthorTableUseCase
@@ -95,7 +95,7 @@ class MainCoordinatorTestLiveData {
         val rawAuthorsPending = mongo.rawAuthors.countDocuments(Author::duplicateCheck eq false)
         println("rawAuthorsUpdated = $rawAuthorsPending")
 
-        val totalAuthors = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED)
+        val totalAuthors = mongo.authors.countDocuments(Author::gender / Gender::gender eq GenderIdentity.UNASSIGNED)
         println("totalAuthors = $totalAuthors")
         assertEquals(444875, totalAuthors)
     }

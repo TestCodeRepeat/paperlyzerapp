@@ -3,14 +3,10 @@ package com.flyingobjex
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.MainCoordinator
 import com.flyingobjex.paperlyzer.control.StatsController
-import com.flyingobjex.paperlyzer.entity.Author
-import com.flyingobjex.paperlyzer.entity.Gender
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import org.junit.Test
-import org.litote.kmongo.*
 import java.util.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis

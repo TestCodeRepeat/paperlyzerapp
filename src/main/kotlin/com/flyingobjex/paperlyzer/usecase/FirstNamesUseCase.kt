@@ -3,7 +3,7 @@ package com.flyingobjex.paperlyzer.usecase
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
-import com.flyingobjex.paperlyzer.entity.GenderIdentitiy
+import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.entity.SemanticScholarAuthor
 import com.flyingobjex.paperlyzer.repo.FirstName
 import com.flyingobjex.paperlyzer.repo.isAbbreviation
@@ -88,7 +88,7 @@ class FirstNamesUseCase(val mongo: Mongo) {
     fun buildFirstNameTableFromWosAuthors(batchSize: Int) {
         val batch: List<Author> = mongo.authors.find(
             and(
-                Author::gender / Gender::gender eq GenderIdentitiy.UNASSIGNED,
+                Author::gender / Gender::gender eq GenderIdentity.UNASSIGNED,
             )
         ).limit(batchSize).toList()
 

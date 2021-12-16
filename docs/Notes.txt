@@ -55,18 +55,31 @@ Dec 13
       ~ 102,000 WoS Authors with Initials Only
       ~  rawAuthorsUpdated = 1,734,039
 
+      after update:: ================================================================
+          :::: Author Table Stats ::::
+          rawAuthorsUpdated = 1734039
+          rawAuthorsPending = 0
+          totalAuthors = 659197
+          initialsOnly = 210506
+          noFirstName = 0
+          na = 0
+          assignableNames = 448691
+          Authors Table combined total = 659197
+
       before update:: ================================================================
-         :::: Author Table Stats ::::
-      rawAuthorsUpdated = 0
-      rawAuthorsPending = 1734039
-      totalAuthors = 562110
-      initialsOnly = 102582
-      noFirstName = 14647
-      na = 0
-      assignableNames = 444881
-      Authors Table combined total = 562110
+          :::: Author Table Stats ::::
+          rawAuthorsUpdated = 0
+          rawAuthorsPending = 1734039
+          totalAuthors = 562110
+          initialsOnly = 102582
+          noFirstName = 14647
+          na = 0
+          assignableNames = 444881
+          Authors Table combined total = 562110
       ================================================================
        ================================================================
+
+   after update
 
   :: WoS Author Table ::
     ~ 12m30s :: build time from Raw Author Table

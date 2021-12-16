@@ -259,7 +259,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
     fun applyGenderToPaperAuthors(papers: List<WosPaper>) {
         papers.parallelStream().forEach { paper ->
-            val viableAuthors = paper.authors.filter { it.gender.gender == GenderIdentitiy.UNASSIGNED }
+            val viableAuthors = paper.authors.filter { it.gender.gender == GenderIdentity.UNASSIGNED }
 
             val allGenderShortkeys = toShortKeys(paper.authors)
             val withoutFirstAuthor =
@@ -275,7 +275,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
                 paper.authors.forEach { author ->
                     val match = matchGender(author.firstName, matches)
                     author.genderIdt = match?.genderIdentity
-                    author.gender = Gender(match?.genderIdentity ?: GenderIdentitiy.NA, match?.probability ?: 0.0)
+                    author.gender = Gender(match?.genderIdentity ?: GenderIdentity.NA, match?.probability ?: 0.0)
                 }
                 paper.authorGendersShortKey = allGenderShortkeys
 
@@ -286,7 +286,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
                 paper.totalAuthors = totalAuthors
                 val identifiableAuthors = paper.authors
                     .filter {
-                        it.gender.gender == GenderIdentitiy.MALE || it.gender.gender == GenderIdentitiy.FEMALE
+                        it.gender.gender == GenderIdentity.MALE || it.gender.gender == GenderIdentity.FEMALE
                     }
                     .size
                 paper.totalIdentifiableAuthors = identifiableAuthors
