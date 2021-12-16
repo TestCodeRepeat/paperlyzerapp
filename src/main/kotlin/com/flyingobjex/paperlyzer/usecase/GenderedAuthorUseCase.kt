@@ -20,11 +20,15 @@ class GenderedAuthorUseCase(val mongo: Mongo) {
         ).limit(querySize).toList()
 
     fun buildGenderedAuthorsTable(batchSize: Int) {
+        println("GenderedAuthorUseCase.kt :: buildGenderedAuthorsTable() :: intended batchSize = $batchSize")
+
         val batch: List<Author> = mongo.authors.find(
             and(
                 Author::gender / Gender::gender eq GenderIdentity.UNASSIGNED,
             )
         ).limit(batchSize).toList()
+
+        println("GenderedAuthorUseCase.kt :: buildGenderedAuthorsTable() :: actual batch.size = ${batch.size}")
 
         batch.parallelStream().forEach { targetAuthor ->
             mongo.genderedNameDetails.findOne(

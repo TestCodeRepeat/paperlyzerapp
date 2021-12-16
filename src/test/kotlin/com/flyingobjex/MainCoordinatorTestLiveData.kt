@@ -30,7 +30,6 @@ class MainCoordinatorTestLiveData {
     private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
     private val authorTableUseCase = AuthorTableUseCase(mongo)
 
-
 //    @Test
     fun `apply genders to authors in paper`() {
         val resetTime = measureTimeMillis {
@@ -61,21 +60,6 @@ class MainCoordinatorTestLiveData {
         assertEquals(22273, stats.totalJournals)
     }
 
-
-    //    @Test
-    fun `build gendered authors table`() {
-        println("${Date()} dbLive.clearGenderedAuthorsTable()")
-        mongo.clearGenderedAuthorsTable()
-        println("${Date()} mongo.resetIndexes()")
-        mongo.resetIndexes()
-        println("${Date()} repo.buildGenderedAuthorsTable()")
-        coordinator.buildGenderedAuthorsTable(500)
-        println("${Date()} done -- should copy author to new table & assign gender")
-
-        val res = genderedAuthorUseCase.statsGenderedAuthorsTable()
-        assertEquals(82802, res.totalAuthors)
-        assertEquals(35234, res.totalWithNoAssignedGender)
-    }
 
 //    @Test
     fun `build author table from raw author table`() {

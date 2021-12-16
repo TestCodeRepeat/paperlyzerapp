@@ -56,6 +56,12 @@ Dec 13
       ~  rawAuthorsUpdated = 1,734,039
 
       after update:: ================================================================
+          :::: Gendered Author Table Stats ::::
+            ~ totalAuthors: 414096
+            ~ totalWithNoAssignedGender: 1855
+            ~ totalFemaleAuthors: 131951
+            ~ totalMaleAuthors: 280290
+
           :::: First Names Table Stats ::::
                 ~78,000 first names from WoS
 
@@ -71,6 +77,12 @@ Dec 13
 
 
       before update:: ================================================================
+          :::: Gendered Authors Table ::::
+            ~ 252,000 unique authors
+            ~ 230,000 authors with distinguishable m/f names
+            - 155,000 MALE authors
+            - 75,000 FEMALE authors
+
           :::: First Names Table Stats ::::
           ~77,000 first names
 

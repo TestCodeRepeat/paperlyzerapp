@@ -259,6 +259,7 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
     fun applyGenderToPaperAuthors(papers: List<WosPaper>) {
         papers.parallelStream().forEach { paper ->
+
             val viableAuthors = paper.authors.filter { it.gender.gender == GenderIdentity.UNASSIGNED }
 
             val allGenderShortkeys = toShortKeys(paper.authors)
