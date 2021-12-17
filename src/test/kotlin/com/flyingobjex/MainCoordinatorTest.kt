@@ -6,6 +6,7 @@ import com.flyingobjex.paperlyzer.control.StatsController
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
+import com.flyingobjex.paperlyzer.usecase.GenderedPaperUseCase
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import org.junit.Test
 import java.util.*
@@ -23,6 +24,7 @@ class MainCoordinatorTest {
     private val stats = StatsController(mongo)
     private val paperRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
+    private val genderedPaperUseCase = GenderedPaperUseCase(mongo)
 
 
     init {
@@ -32,7 +34,7 @@ class MainCoordinatorTest {
     //    @Test
     fun `get papers with authors projection`() {
         val resetTime = measureTimeMillis {
-            paperRepo.resetPaperTableGenderInfo()
+            genderedPaperUseCase.resetGenderedPaperTable()
         }
         log.info("CoordinatorTest.apply gender to authors in papers()  resetTime = ${resetTime}")
         val res = paperRepo.getPapersWithAuthors(100)

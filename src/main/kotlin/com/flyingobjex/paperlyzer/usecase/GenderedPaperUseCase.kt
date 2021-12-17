@@ -9,10 +9,7 @@ import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.repo.matchGender
 import com.flyingobjex.paperlyzer.repo.toShortKeys
 import kotlin.system.measureTimeMillis
-import org.litote.kmongo.`in`
-import org.litote.kmongo.eq
-import org.litote.kmongo.ne
-import org.litote.kmongo.setValue
+import org.litote.kmongo.*
 
 class GenderedPaperUseCase(val mongo: Mongo) {
 
@@ -44,57 +41,85 @@ class GenderedPaperUseCase(val mongo: Mongo) {
     /** Paper Table */
     fun applyGendersToPaperTable(batchSize: Int) {
 
-        val papers: List<WosPaper> = wosRepo.getPapersWithAuthors(batchSize)
-        papers.parallelStream().forEach { paper ->
+        // Get unprocessed raw
+        val unprocessed = mongo.rawPaperFullDetails.aggregate<WosPaper>(
+            match(
+                or(
+                    WosPaper::processed eq false,
+                    WosPaper::processed eq null
+                )
+            )
+        ).take(batchSize).toList()
 
-            val viableAuthors = paper.authors.filter { it.gender.gender == GenderIdentity.UNASSIGNED }
+        val papers = unprocessed
+//        val papers: List<WosPaper> = wosRepo.getPapersWithAuthors(batchSize)
 
-            val allGenderShortkeys = toShortKeys(paper.authors)
-            val withoutFirstAuthor =
-                if (allGenderShortkeys.length > 1)
-                    allGenderShortkeys.subSequence(1, allGenderShortkeys.length - 1)
-                else "-"
+        papers.parallelStream().forEach { rawPaper ->
+
+            val viableAuthors = rawPaper.authors.filter { it.gender.gender == GenderIdentity.UNASSIGNED }
 
             if (viableAuthors.isNotEmpty()) {
+
                 val matches = mongo.genderedNameDetails.find(
-                    GenderedNameDetails::firstName `in` paper.authors.mapNotNull { it.firstName },
+                    GenderedNameDetails::firstName `in` rawPaper.authors.mapNotNull { it.firstName },
                 ).toList()
 
-                paper.authors.forEach { author ->
+                val genderedAuthors = rawPaper.authors.map { author ->
                     val match = matchGender(author.firstName, matches)
-                    author.genderIdt = match?.genderIdentity
-                    author.gender = Gender(match?.genderIdentity ?: GenderIdentity.NA, match?.probability ?: 0.0)
+                    val gender = Gender(match?.genderIdentity ?: GenderIdentity.NA, match?.probability ?: 0.0)
+                    author.copy(gender = gender, genderIdt = gender.gender)
                 }
-                paper.authorGendersShortKey = allGenderShortkeys
 
-                paper.firstAuthorGender = paper.authors.firstOrNull()?.gender?.gender?.toShortKey()
-                paper.withoutFirstAuthorGender = withoutFirstAuthor.toString()
+                val allGenderShortkeys = toShortKeys(genderedAuthors)
+                val withoutFirstAuthor =
+                    if (allGenderShortkeys.length > 1)
+                        allGenderShortkeys.subSequence(1, allGenderShortkeys.length - 1)
+                    else "-"
 
-                val totalAuthors = paper.authors.size
-                paper.totalAuthors = totalAuthors
-                val identifiableAuthors = paper.authors
+                val firstAuthorGender = genderedAuthors.firstOrNull()?.gender?.gender?.toShortKey()
+                val withoutFirstAuthorGender = withoutFirstAuthor.toString()
+                val totalAuthors = genderedAuthors.size
+
+                val identifiableAuthors = genderedAuthors
                     .filter {
                         it.gender.gender == GenderIdentity.MALE || it.gender.gender == GenderIdentity.FEMALE
                     }
                     .size
-                paper.totalIdentifiableAuthors = identifiableAuthors
+
                 val genderCompletenessScore = identifiableAuthors.toDouble() / totalAuthors.toDouble()
-                paper.genderCompletenessScore = genderCompletenessScore
 
                 if (genderCompletenessScore == 1.0) {
-                    paper.genderCompletenessScore
+                    rawPaper.genderCompletenessScore
                 }
 
-                mongo.genderedPapers.insertOne(paper)
+                val updatedPaper = rawPaper.copy(
+                    authors = genderedAuthors,
+                    authorGendersShortKey = allGenderShortkeys,
+                    firstAuthorGender = firstAuthorGender,
+                    withoutFirstAuthorGender = withoutFirstAuthorGender,
+                    totalAuthors = totalAuthors,
+                    totalIdentifiableAuthors = identifiableAuthors,
+                    genderCompletenessScore = genderCompletenessScore
+                )
+
+//                paper.authorGendersShortKey = allGenderShortkeys
+//                paper.firstAuthorGender = paper.authors.firstOrNull()?.gender?.gender?.toShortKey()
+//                paper.withoutFirstAuthorGender = withoutFirstAuthor.toString()
+//                paper.totalAuthors = totalAuthors
+//                paper.totalIdentifiableAuthors = identifiableAuthors
+//                paper.genderCompletenessScore = genderCompletenessScore
+
+
+                mongo.genderedPapers.insertOne(updatedPaper)
                 mongo.rawPaperFullDetails.updateOne(
-                    WosPaper::_id eq paper._id,
+                    WosPaper::_id eq rawPaper._id,
                     setValue(WosPaper::processed, true)
                 )
 
             } else {
-                mongo.genderedPapers.insertOne(paper)
+                mongo.genderedPapers.insertOne(rawPaper)
                 mongo.rawPaperFullDetails.updateOne(
-                    WosPaper::_id eq paper._id,
+                    WosPaper::_id eq rawPaper._id,
                     setValue(WosPaper::processed, true)
                 )
             }

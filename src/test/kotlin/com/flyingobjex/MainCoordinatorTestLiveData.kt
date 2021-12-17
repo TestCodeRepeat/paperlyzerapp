@@ -35,7 +35,7 @@ class MainCoordinatorTestLiveData {
     //    @Test
     fun `apply genders to authors in paper`() {
         val resetTime = measureTimeMillis {
-            paperRepo.resetPaperTableGenderInfo()
+            genderedPaperUseCase.resetGenderedPaperTable()
         }
         log.info("CoordinatorTestLiveData.apply genders to authors in paper()  resetTime = ${resetTime}")
 
