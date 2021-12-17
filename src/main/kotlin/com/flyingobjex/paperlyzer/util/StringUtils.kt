@@ -8,6 +8,16 @@ data class Name(val firstName: String?, val middleNames: String?, val lastName: 
 object StringUtils {
     val log: Logger = Logger.getAnonymousLogger()
 
+    fun isAlphanumeric(chars: String): Boolean {
+        for (c in chars)
+        {
+            if (c !in 'A'..'Z' && c !in 'a'..'z') {
+                return false
+            }
+        }
+        return true
+    }
+
     fun aliasesToName(aliases: List<String>): String = aliases.maxByOrNull { it.length } ?: ""
 
     fun aliasToLongestMiddleName(aliases: List<String>): String? =

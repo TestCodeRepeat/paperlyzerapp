@@ -1,7 +1,7 @@
 package com.flyingobjex.builders
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import org.junit.Test
@@ -17,7 +17,7 @@ class BuildCSVReportTest {
     private val paperRepo = WoSPaperRepository(mongo)
     private val dbLive = Mongo(true)
     private val repo = AuthorRepository(dbLive)
-    private val stats = StatsController(mongo)
+    private val stats = Stats(mongo)
 
     @Test
     fun `update report in database`(){

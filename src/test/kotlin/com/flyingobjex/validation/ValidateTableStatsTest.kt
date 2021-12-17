@@ -2,7 +2,7 @@ package com.flyingobjex.validation
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.MainCoordinator
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
 import org.junit.Test
@@ -17,7 +17,7 @@ class ValidateTableStatsTest {
     private val samplePath = "../tbl_cli_sample.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
     private val paperRepo = WoSPaperRepository(mongo)
-    private val stats = StatsController(mongo)
+    private val stats = Stats(mongo)
     private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
 
     @Test

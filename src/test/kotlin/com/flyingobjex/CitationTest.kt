@@ -3,7 +3,7 @@ package com.flyingobjex
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
 import com.flyingobjex.paperlyzer.control.MainCoordinator
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.entity.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
@@ -23,7 +23,7 @@ class CitationTest {
     private val mongo = Mongo(false)
     private val samplePath = "../tbl_cli_sample.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
-    private val stats = StatsController(mongo)
+    private val stats = Stats(mongo)
     private val wosRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
     private val ssRepo = SemanticScholarPaperRepository(mongo)

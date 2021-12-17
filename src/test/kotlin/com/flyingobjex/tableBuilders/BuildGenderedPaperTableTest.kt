@@ -1,6 +1,7 @@
 package com.flyingobjex.tableBuilders
 
 import com.flyingobjex.paperlyzer.Mongo
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.usecase.GenderedPaperUseCase
 import java.util.*
 import java.util.logging.Logger
@@ -13,9 +14,15 @@ class BuildGenderedPaperTableTest {
     private val mongo = Mongo(false)
 
     private val genderedPaperUseCase = GenderedPaperUseCase(mongo)
+    private val stats = Stats(mongo)
 
 
-    //    @Test
+    @Test
+    fun `should print gendered stats`(){
+        val res = stats.runGlobalStatsReport()
+        println("BuildGenderedPaperTableTest.kt :: should print gendered stats() :: res = ${res}")
+    }
+//        @Test
     fun `build gendered papers table`() {
         val resetTime = measureTimeMillis {
             genderedPaperUseCase.resetGenderedPaperTable()
@@ -37,7 +44,7 @@ class BuildGenderedPaperTableTest {
 
     }
 
-    @Test
+//    @Test
     fun `should generate a small batch of gendered papers`() {
         val resetTime = measureTimeMillis {
             genderedPaperUseCase.resetGenderedPaperTable()

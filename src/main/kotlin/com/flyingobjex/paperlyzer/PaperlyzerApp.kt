@@ -1,6 +1,6 @@
 package com.flyingobjex.paperlyzer
 
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.domain.topics
 import com.flyingobjex.paperlyzer.parser.SJRModel
 import com.flyingobjex.paperlyzer.parser.TopicMatcher
@@ -206,7 +206,7 @@ class PaperlyzerApp(val mongo: Mongo) {
     }
 
     fun report(): File {
-        val stats = StatsController(mongo)
+        val stats = Stats(mongo)
         return stats.runGenderedPaperReport()
     }
 

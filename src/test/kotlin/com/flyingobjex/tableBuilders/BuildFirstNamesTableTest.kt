@@ -1,7 +1,7 @@
 package com.flyingobjex.tableBuilders
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.usecase.FirstNamesUseCase
 import java.util.*
@@ -15,7 +15,7 @@ class BuildFirstNamesTableTest {
     private val testName = "Chang Xinyu"
     private val mongo = Mongo(true)
     private val repo = AuthorRepository(mongo)
-    private val statsController = StatsController(mongo)
+    private val statsController = Stats(mongo)
     private val firstNamesUseCase = FirstNamesUseCase(mongo)
 
     //    @Test

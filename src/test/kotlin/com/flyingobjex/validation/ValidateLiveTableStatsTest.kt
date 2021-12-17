@@ -1,7 +1,7 @@
 package com.flyingobjex.validation
 
 import com.flyingobjex.paperlyzer.Mongo
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
 import org.junit.Test
 import java.util.logging.Logger
@@ -13,7 +13,7 @@ class ValidateLiveTableStatsTest {
     val log: Logger = Logger.getAnonymousLogger()
     private val mongo = Mongo(true)
     private val samplePath = "../tbl_cli_full.tsv"
-    private val stats = StatsController(mongo)
+    private val stats = Stats(mongo)
     private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
 
 //    @Test

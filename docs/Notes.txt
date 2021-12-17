@@ -44,6 +44,21 @@ ws://localhost:8080/allthethings
   - Gender ratio
 ===============
 
+Dec 17
+  ~ 500 authors with first name Md.
+      - could take middle name instead in this edge case
+  - Wrong first name for "Arturo Mendoza-Nieto, J./Duan, Yuhua/Pfeiffer, Heriberto"
+
+  :::: Gendered Paper Table ::::
+    ~ 1min 48sec - build time
+    ~ 399,000 gendered papers
+
+        Total Authors: 414,096
+        Authors w/ Gender: 263,902
+        Authors (ambiguous): 1,855
+        Total Female Authors: 131,951
+        Total Male Authors: 280,290
+
 Dec 13
 - Build Author Table -
 

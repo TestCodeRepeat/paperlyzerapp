@@ -2,6 +2,7 @@ package com.flyingobjex.paperlyzer.repo
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.entity.*
+import com.flyingobjex.paperlyzer.util.StringUtils.isAlphanumeric
 import java.util.logging.Logger
 import org.litote.kmongo.*
 
@@ -143,7 +144,12 @@ class AuthorRepository(val mongo: Mongo) {
 }
 
 fun isAbbreviation(value: String): Boolean {
+    when(value){
+        "Md" -> return false
+        "Md." -> return false
+    }
     if (value.length == 2 &&
+        isAlphanumeric(value) &&
         value.getOrNull(0)?.isUpperCase() == true &&
         value.getOrNull(1)?.isLowerCase() == true
     ) {

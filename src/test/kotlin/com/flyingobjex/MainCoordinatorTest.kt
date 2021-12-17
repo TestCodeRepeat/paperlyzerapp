@@ -2,14 +2,12 @@ package com.flyingobjex
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.MainCoordinator
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
-import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
 import com.flyingobjex.paperlyzer.usecase.GenderedPaperUseCase
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import org.junit.Test
-import java.util.*
 import java.util.logging.Logger
 import kotlin.system.measureTimeMillis
 import kotlin.test.assertEquals
@@ -21,7 +19,7 @@ class MainCoordinatorTest {
     private val samplePath = "../tbl_cli_sample.tsv"
     private val livePath = "../tbl_cli_full.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
-    private val stats = StatsController(mongo)
+    private val stats = Stats(mongo)
     private val paperRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
     private val genderedPaperUseCase = GenderedPaperUseCase(mongo)

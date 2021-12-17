@@ -4,7 +4,7 @@ import com.flyingobjex.paperlyzer.API_BATCH_SIZE
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.UNPROCESSED_RECORDS_GOAL
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.process.IProcess
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
@@ -42,7 +42,7 @@ class PaperReportProcess(
 
     val log: Logger = Logger.getAnonymousLogger()
     private val wosRepo = WoSPaperRepository(mongo)
-    private val stats = StatsController(mongo)
+    private val stats = Stats(mongo)
 
     override fun reset() {
         log.info("PaperReportProcess.reset()  ")

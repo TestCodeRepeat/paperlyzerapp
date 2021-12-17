@@ -63,12 +63,17 @@ class GlobalStats(
 
     override fun toString(): String {
         return """
-            Total Authors: ${totalAuthors.read()}
+            ================================================
+            ==== Gendered Paper & Gendered Author Stats ====
+            ================================================
+            Total Gendered Authors: ${totalAuthors.read()}
             Authors w/ Gender: ${(totalFemaleNames + totalFemaleNames).read()}
             Authors (ambiguous): ${(totalAuthors - totalFemaleNames - totalMaleNames).read()}
             Total Female Authors: ${totalFemaleNames.read()}
             Total Male Authors: ${totalMaleNames.read()}
             Total Journals: ${totalJournals.read()}
+            ================================================
+            ================================================
         """.trimIndent()
     }
 
@@ -90,7 +95,7 @@ class GlobalStats(
     }
 }
 
-class StatsController(val mongo: Mongo) {
+class Stats(val mongo: Mongo) {
 
     val log: Logger = Logger.getAnonymousLogger()
 

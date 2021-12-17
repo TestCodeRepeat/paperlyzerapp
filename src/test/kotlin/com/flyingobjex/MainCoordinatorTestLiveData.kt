@@ -2,7 +2,7 @@ package com.flyingobjex
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.control.MainCoordinator
-import com.flyingobjex.paperlyzer.control.StatsController
+import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentity
@@ -25,7 +25,7 @@ class MainCoordinatorTestLiveData {
     private val samplePath = "../tbl_cli_full.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
     private val paperRepo = WoSPaperRepository(mongo)
-    private val stats = StatsController(mongo)
+    private val stats = Stats(mongo)
 
     private val authorRepo = AuthorRepository(mongo)
     private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
