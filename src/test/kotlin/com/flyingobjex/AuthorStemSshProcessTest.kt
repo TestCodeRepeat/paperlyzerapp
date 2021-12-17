@@ -32,7 +32,7 @@ I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1
  *
  * */
 
-class AuthorStemSshTest {
+class AuthorStemSshProcessTest {
 
     val mongo = Mongo(true)
     private val authorRepo = AuthorRepository(mongo)

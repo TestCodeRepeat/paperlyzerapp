@@ -35,8 +35,7 @@ class CoAuthorsProcessTest {
 
     @Test
     fun `app should run coauthor proces`() {
-        val processType = app.process.type()
-        verifyProcessType(processType, ProcessType.CoAuthor)
+        verifyProcessType(app.process.type(), ProcessType.CoAuthor)
         app.process.printStats()
         app.process.reset()
         app.process.printStats()

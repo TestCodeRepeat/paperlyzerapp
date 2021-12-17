@@ -58,7 +58,6 @@ fun getAssociatedPaper(papers: List<WosPaperWithAuthors>, doi: String) =
  *  Wos Paper Collection
  *  Author Collection
  * */
-@DelicateCoroutinesApi
 class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     val log: Logger = Logger.getAnonymousLogger()
@@ -74,7 +73,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
         log.info("CoAuthorProcess.runProcess()  :: batchSize = $batchSize")
-        var unprocessed = emptyList<Author>()
+        var unprocessed: List<Author>
         val time = measureTimeMillis {
             unprocessed = coAuthorUseCase.getUnprocessedAuthorsByCoAuthors(batchSize)
         }
@@ -104,7 +103,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
             val associatedPapers =
                 author.papers?.mapNotNull { getAssociatedPaper(allAssociatedPapers, it.doi) } ?: emptyList()
             val totalPapers = associatedPapers.size
-            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors ?: 0 }
+            val totalAllAuthors = associatedPapers.sumOf { it.totalAuthors }
             val totalPapersAsFirstAuthor =
                 firstAuthorCount(associatedPapers, author.lastName, author.firstName.toString())
             val totalCoAuthors = totalAllAuthors - totalPapers
@@ -138,7 +137,7 @@ class CoAuthorProcess(val mongo: Mongo) : IProcess {
     }
 
     override fun shouldContinueProcess(): Boolean {
-        var shouldContinue = false
+        var shouldContinue: Boolean
         val time = measureTimeMillis {
             val unprocessedCount = coAuthorUseCase.unprocessedCoAuthorsCount()
             log.info("CoAuthorProcess.shouldContinueProcess()  unprocessedCount = $unprocessedCount")
