@@ -11,18 +11,8 @@ import org.junit.Test
 
 class PaperReportProcessTest {
     private val mongo = Mongo(false)
-    private val wosRepo = WoSPaperRepository(mongo)
-
-    private val samplePath = "../../topics.tsv"
-    private val topics = CSVTopicParser.csvFileToTopicList(samplePath)
-    private val testTopicA = "Metallurgy & Metallurgical Engineering"
-    private val testTopicB = "Geochemistry & Geophysics"
-
-    private val format = Json { prettyPrint = true }
-    private val matcher = TopicMatcher(topics)
-
-    private val app = PaperlyzerApp(mongo)
     private val process = PaperReportProcess(mongo)
+    private val app = PaperlyzerApp(mongo, process)
 
     @Test
     fun `should start running processes`(){

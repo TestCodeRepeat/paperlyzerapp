@@ -40,6 +40,8 @@ class PaperReportProcess(
     val mongo: Mongo,
 ) : IProcess {
 
+    /** API_BATCH_SIZE = 50,000 (optimal size) */
+
     val log: Logger = Logger.getAnonymousLogger()
     private val wosRepo = WoSPaperRepository(mongo)
     private val stats = Stats(mongo)
