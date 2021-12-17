@@ -66,8 +66,8 @@ These primary functions can be triggered via Websocket connection & text command
 7. Use Gendered Authors and Raw Papers to build Gendered Papers Table
    1. Build table
 8. Apply Semantic Scholar Citations to Gendered Papers
-9. Apply Stem/Ssh Discipline to Gendered Papers ~5min
-10. Apply Stem/Ssh Discipline to Gendered Authors
+9. Apply Stem/Ssh Discipline to Gendered Papers  ~5min
+10. Apply Stem/Ssh Discipline to Gendered Authors ~2min 30sec
 11. Apply SJR score & H Index to Gendered Papers ~8min
 12. Run CoAuthor process to add Co Author & gender ratio from Gendered Papers table ~3min 30sec 
     1. CoAuthor process generates data for each author:

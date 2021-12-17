@@ -33,7 +33,7 @@ class CoAuthorsProcessTest {
         process.printStats()
     }
 
-    @Test
+//    @Test
     fun `app should run coauthor proces`() {
         verifyProcessType(app.process.type(), ProcessType.CoAuthor)
         app.process.printStats()

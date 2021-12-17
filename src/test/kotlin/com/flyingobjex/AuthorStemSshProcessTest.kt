@@ -35,14 +35,14 @@ I defined the intervals as such: STEM = 0 to .45, M = .45 to .55, SSH = .55 to 1
 class AuthorStemSshProcessTest {
 
     val mongo = Mongo(true)
-    private val authorRepo = AuthorRepository(mongo)
-    private val paperRepo = WoSPaperRepository(mongo)
     private val stemSshUseCase = StemSshUseCase(mongo)
-
     private val authorStemProcess = AuthorStemSshProcess(mongo)
-    val app = PaperlyzerApp(mongo)
+    val app = PaperlyzerApp(mongo, authorStemProcess)
 
-    fun getStemSshPapers(): List<WosPaper> {
+    /**
+     * API_BATCH_SIZE = 50,000 (Optimal size)
+     * */
+    private fun getStemSshPapers(): List<WosPaper> {
         val ssh = mongo.genderedPapers.aggregate<WosPaper>(
             match(WosPaper::discipline eq DisciplineType.SSH),
             limit(10)
@@ -55,20 +55,22 @@ class AuthorStemSshProcessTest {
         return ssh + stem
     }
 
-    @Test
-    fun `app should run process three times and stop`() {
-        app.process?.printStats()
-        app.process?.reset()
-        app.process?.printStats()
+//    @Test
+    fun `app should run process and stop`() {
+        app.process.printStats()
+        app.process.reset()
+        app.process.printStats()
 
         app.runProcess()
+
+        app.process.printStats()
 
         mongo.genderedAuthors
             .countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED) shouldBeLessThan 420000
     }
 
 
-    @Test
+//    @Test
     fun `should check for unprocessed before continuing`() {
         authorStemProcess.reset()
         authorStemProcess.runProcess()
@@ -79,7 +81,7 @@ class AuthorStemSshProcessTest {
             .countDocuments(Author::discipline eq DisciplineType.UNINITIALIZED) shouldBe 423470L
     }
 
-    @Test
+//    @Test
     fun `should calculate a mix of SSH and STEM papers`() {
 
         val papers = getStemSshPapers()
