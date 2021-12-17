@@ -57,9 +57,9 @@ class AuthorStemSshTest {
 
     @Test
     fun `app should run process three times and stop`() {
-        app.process.printStats()
-        app.process.reset()
-        app.process.printStats()
+        app.process?.printStats()
+        app.process?.reset()
+        app.process?.printStats()
 
         app.runProcess()
 

@@ -64,8 +64,9 @@ These primary functions can be triggered via Websocket connection & text command
    1. Gender Name Details Table contains first names along with gender data applied from the API
 6. Build a Gendered Author table by applying gender data from API
 7. Use Gendered Authors and Raw Papers to build Gendered Papers Table
-   1. GenderedPaperUseCase()
-8. Run CoAuthor process to add Co Author & gender ratio 
+   1. Build table
+   2. 
+8. Run CoAuthor process to add Co Author & gender ratio from Gendered Papers table 
    1. CoAuthor process generates data for each author:
    totalPapers, averageCoAuthors, firstAuthorCount, averageGenderRatioOfPapers, genderRatioOfAllCoAuthors
 9. 

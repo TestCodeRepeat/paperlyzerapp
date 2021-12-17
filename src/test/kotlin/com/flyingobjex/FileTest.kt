@@ -24,7 +24,7 @@ class FileTest {
             handleRequest(HttpMethod.Get, "/static/topics.tsv").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 println("FileTest.kt :: should load a file from server() :: response = " + response.content)
-                app.initProcess(ProcessType.Discipline)
+                app.overrideProcessWith(ProcessType.Discipline)
             }
         }
     }

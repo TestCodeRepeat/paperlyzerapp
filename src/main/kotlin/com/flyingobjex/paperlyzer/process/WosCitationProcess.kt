@@ -40,7 +40,7 @@ data class WosCitationStats(
  * This process takes each WoS paper and applies the
  * citation count data from Semantic Scholar
  * */
-class WosCitationProcess(val mongo: Mongo, logMessage: (value: String) -> Unit) : IProcess {
+class WosCitationProcess(val mongo: Mongo) : IProcess {
 
     val log: Logger = Logger.getAnonymousLogger()
     private val wosRepo = WoSPaperRepository(mongo)

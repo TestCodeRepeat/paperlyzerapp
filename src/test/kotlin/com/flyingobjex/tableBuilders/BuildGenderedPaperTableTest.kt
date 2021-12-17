@@ -16,13 +16,13 @@ class BuildGenderedPaperTableTest {
     private val genderedPaperUseCase = GenderedPaperUseCase(mongo)
     private val stats = Stats(mongo)
 
-
-    @Test
-    fun `should print gendered stats`(){
+//    @Test
+    fun `should print gendered stats`() {
         val res = stats.runGlobalStatsReport()
         println("BuildGenderedPaperTableTest.kt :: should print gendered stats() :: res = ${res}")
     }
-//        @Test
+
+    @Test
     fun `build gendered papers table`() {
         val resetTime = measureTimeMillis {
             genderedPaperUseCase.resetGenderedPaperTable()
@@ -42,9 +42,12 @@ class BuildGenderedPaperTableTest {
         log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 3333")
         genderedPaperUseCase.applyGendersToPaperTable(batchSize)
 
+        val st = stats.runGlobalStatsReport()
+        println("BuildGenderedPaperTableTest.kt :: should print gendered stats() :: res = ${st}")
+
     }
 
-//    @Test
+    //    @Test
     fun `should generate a small batch of gendered papers`() {
         val resetTime = measureTimeMillis {
             genderedPaperUseCase.resetGenderedPaperTable()

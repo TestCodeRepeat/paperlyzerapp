@@ -1,15 +1,18 @@
-package com.flyingobjex
+package com.flyingobjex.process
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.control.MainCoordinator
 import com.flyingobjex.paperlyzer.control.Stats
 import com.flyingobjex.paperlyzer.entity.SemanticScholarPaper
 import com.flyingobjex.paperlyzer.entity.WosPaper
+import com.flyingobjex.paperlyzer.process.WosCitationProcess
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
+import io.kotest.matchers.shouldBe
 import java.util.logging.Logger
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -18,16 +21,17 @@ import org.junit.Test
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 
-class CitationTest {
+class CitationProcessTest {
     val log: Logger = Logger.getAnonymousLogger()
     private val mongo = Mongo(false)
     private val samplePath = "../tbl_cli_sample.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
+    private val citationProcess = WosCitationProcess(mongo)
     private val stats = Stats(mongo)
     private val wosRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
     private val ssRepo = SemanticScholarPaperRepository(mongo)
-    private val app = PaperlyzerApp(mongo)
+    private val app = PaperlyzerApp(mongo, citationProcess)
 
     private val doiWos = "10.1016/j.baae.2017.07.002"
     private val doiSSc = "10.1016/J.BAAE.2017.07.002"
@@ -61,8 +65,9 @@ class CitationTest {
     @Test
     fun `app should start citation process`() {
         wosRepo.resetCitationProcessed()
+        app.process?.type() shouldBe ProcessType.Citation
         app.runProcess()
-        app.process.printStats()
+        app.process?.printStats()
         log.info("CitationTest.app should start citation process()  DONE !!!")
     }
 

@@ -41,7 +41,7 @@ fun Application.configureSockets() {
             for (frame in incoming) {
                 when (frame) {
                     is Frame.Ping -> {
-                        log.info("Sockets.configureSockets()  PING = ${app.process.name()}" )
+                        log.info("Sockets.configureSockets()  PING = ${app.process?.name()}" )
                     }
                     is Frame.Text -> {
                         val text = frame.readText()
@@ -50,14 +50,14 @@ fun Application.configureSockets() {
                         outgoing.send(Frame.Text("Response: $response"))
                         if (text.equals("bye", ignoreCase = true)) {
                             println("Sockets.kt :: ByE !!  CLOSING !!!! CANCELLING JOBS !!!!! CLOSING§ :: ")
-                            app.process.cancelJobs()
+                            app.process?.cancelJobs()
                             close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
                         }
                     }
                     is Frame.Close -> {
                         println("Sockets.kt :: CLOSING !!!! CANCELLING JOBS !!!!! CLOSING§ :: ")
-                        app.process.printStats(outgoing)
-                        app.process.cancelJobs()
+                        app.process?.printStats(outgoing)
+                        app.process?.cancelJobs()
                     }
                 }
             }

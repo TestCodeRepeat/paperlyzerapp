@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.ExperimentalSerializationApi
 
 var API_BATCH_SIZE = System.getenv("API_BATCH_SIZE").toString().toInt()
 var UNPROCESSED_RECORDS_GOAL = System.getenv("UNPROCESSED_RECORDS_GOAL").toString().toInt()
@@ -30,14 +31,16 @@ enum class ProcessType {
 
 const val BUILD_VERSION = 3
 
-class PaperlyzerApp(val mongo: Mongo) {
+@OptIn(ExperimentalSerializationApi::class)
+class PaperlyzerApp(val mongo: Mongo, theProcess:IProcess? = null) {
 
+    var process = theProcess ?: throw Error("!!!! No Process Attached !!!!!")
     var port: String = "na"
     val log: Logger = Logger.getAnonymousLogger()
     var matcher = TopicMatcher(topics)
     var hIndexModel = SJRModel()
 
-    lateinit var process: IProcess
+//    lateinit var process: IProcess
 
     /** batchSize: # of concurrent API calls */
     var numConcurrentApiCalls: Int = API_BATCH_SIZE
@@ -60,8 +63,6 @@ class PaperlyzerApp(val mongo: Mongo) {
 
         forceCancel = false
         numConcurrentApiCalls = API_BATCH_SIZE
-
-        initProcess(ProcessType.CoAuthor)
 
         log.info("PaperlyzerApp. Process Name ::  :::::::::::::::::::")
         log.info("PaperlyzerApp. Process Name ::  ${process.name()}")
@@ -98,10 +99,10 @@ class PaperlyzerApp(val mongo: Mongo) {
 
     fun url(): String = "$BASE_URL/"
 
-    fun initProcess(type: ProcessType) {
+    fun overrideProcessWith(type: ProcessType) {
         matcher = TopicMatcher(topics)
         process = when (type) {
-            ProcessType.Citation -> WosCitationProcess(mongo, ::logMessage)
+            ProcessType.Citation -> WosCitationProcess(mongo)
             ProcessType.Discipline -> DisciplineProcess(mongo, matcher)
             ProcessType.WoSToSs -> WosToSsProcess(mongo, ::logMessage)
             ProcessType.PaperReport -> PaperReportProcess(mongo)
@@ -117,6 +118,13 @@ class PaperlyzerApp(val mongo: Mongo) {
     }
 
     fun start() {
+        if (process == null){
+            log.info("PaperlyzerApp.start()  !!!!!!!!! NO PROCESS SET !!!!!!!!!!!!")
+            log.info("PaperlyzerApp.start()  !!!!!!!!! NO PROCESS SET !!!!!!!!!!!!")
+            log.info("PaperlyzerApp.start()  !!!!!!!!! NO PROCESS SET !!!!!!!!!!!!")
+            log.info("PaperlyzerApp.start()  !!!!!!!!! NO PROCESS SET !!!!!!!!!!!!")
+            log.info("PaperlyzerApp.start()  !!!!!!!!! NO PROCESS SET !!!!!!!!!!!!")
+        }
         log.info("PaperlyzerApp.start()  ")
         forceCancel = false
         runProcess()
@@ -136,7 +144,7 @@ class PaperlyzerApp(val mongo: Mongo) {
         }
 
         println("PaperlyzerApp.kt :: PaperlyzerApp :: runProcess :: time = $time \n")
-        if (!forceCancel && process.shouldContinueProcess()) {
+        if (!forceCancel && process.shouldContinueProcess() == true) {
             println("PaperlyzerApp.kt :: runProcess() :: +++ SHOULD CONTINUE +++  ")
             runProcess()
         } else {
