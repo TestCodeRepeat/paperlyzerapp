@@ -71,9 +71,10 @@ class GenderedPaperUseCase(val mongo: Mongo) {
                 }
 
                 val allGenderShortkeys = toShortKeys(genderedAuthors)
+
                 val withoutFirstAuthor =
                     if (allGenderShortkeys.length > 1)
-                        allGenderShortkeys.subSequence(1, allGenderShortkeys.length - 1)
+                        allGenderShortkeys.subSequence(1, allGenderShortkeys.length)
                     else "-"
 
                 val firstAuthorGender = genderedAuthors.firstOrNull()?.gender?.gender?.toShortKey()

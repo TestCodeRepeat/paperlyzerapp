@@ -13,7 +13,7 @@ data class AuthorTableStats(
     val noFirstName: Long,
     val na: Long,
     val assignableNames: Long,
-){
+) {
     override fun toString(): String = "" +
         "================================================================\n" +
         "================================================================\n" +
@@ -143,6 +143,12 @@ class AuthorRepository(val mongo: Mongo) {
 }
 
 fun isAbbreviation(value: String): Boolean {
+    if (value.length == 2 &&
+        value.getOrNull(0)?.isUpperCase() == true &&
+        value.getOrNull(1)?.isLowerCase() == true
+    ) {
+        return false
+    }
     return (value.length <= 2 ||
         (value.contains(".") && value.length <= 2) ||
         (hasTwoDots(value) && value.length < 6) ||

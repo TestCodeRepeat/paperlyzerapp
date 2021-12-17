@@ -37,6 +37,7 @@ class RawAuthorTest {
 
     val D = "Ricklefs, RE/Buffetaut, E/Hallam, A/Hsu, K/Jablonski, D/Kauffman, EG/Legendre, S/Martin, P/Mclaren, DJ/Myers, N/Traverse, A"
 
+    val E = "Abouali, Mohammad/Nejadhashemi, A. Pouyan/Daneshvar, Fariborz/Herman, Matthew R./Adhikari, Umesh/Calappi, Timothy J./Selegean, James P."
     @Test
     fun `should parse full byline`(){
         val names = bylineToNames(D)
