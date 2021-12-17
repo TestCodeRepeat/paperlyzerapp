@@ -67,6 +67,7 @@ data class Author(
     val discipline: DisciplineType? = null,
     val averageGenderRatioOfPapers: Double? = null,
     val genderRatioOfAllCoAuthors: Double? = null,
+    var yearsPublished:String? = null,
     var _id: Id<Author>? = null,
 ) {
 
@@ -75,6 +76,21 @@ data class Author(
     fun publishedTitles(): List<String> = papers?.map { it.title } ?: emptyList()
     fun publishedShortTitles(): List<String> = papers?.map { it.shortTitle } ?: emptyList()
 }
+
+fun Author.hasNullPublishedYear(): Boolean {
+    return (firstYearPublished != null && firstYearPublished ?: 0 == 0) || (lastYearPublished != null && lastYearPublished ?: 0 == 0)
+}
+
+fun Author.applyFirstLastYearsPublished(): Pair<Int, Int> {
+    val sorted = toYearsPublishedAsInt().sorted()
+    val first = sorted.firstOrNull() ?: 0
+    val last = sorted.lastOrNull() ?: 0
+    this.firstYearPublished = first
+    this.lastYearPublished = last
+    this.yearsPublished = sorted.joinToString(",")
+    return Pair(first, last)
+}
+
 
 @Serializable
 data class Gender(

@@ -14,7 +14,7 @@ This deployed application can be controlled via websocket commands.
 
 ### Websocket Commands
 `ws://localhost:8080/allthethings`
-
+  
 `stats` `start` `stop` `reset`
 
 Once running either locally or in the cloud, trigger processes by connecting via Web
@@ -29,7 +29,10 @@ e.g. given a batch of 50 papers, and a `UNPROCESSED_RECORDS_GOAL` of 40, the pro
 when the number of `UNPROCESSED_RECORDS_GOAL` is below 40.  If set to 0, it will run process until all target records
 have been marked as 'processed'.
 
-### Processes
+### IProcess
+A "IProcess" is used for any long-living process that is likely best run in the cloud,
+processes that take hours or days to complete.
+
 Each process follow this convention:
 ```
 interface IProcess {
@@ -54,13 +57,18 @@ These primary functions can be triggered via Websocket connection & text command
 3. Build Author table by refining Raw Author table by removing duplicates, initials only, unidentifiable 
    1. for each Raw Author
       1. 'duplicateCheck' indicates if record has been processed yet
+      2. apply years published from 
 4. Build First Names table from WoS Author table (by removing duplicates, unidentifiable)
    1. add to First Names table from Semantic Scholar Author table
 5. Build Gender Name Details / Gender Table from First Names table using www.gender-api.com
    1. Gender Name Details Table contains first names along with gender data applied from the API
-7. Build a Gendered Author table by applying gender data from API
-   1. 
-8. 
+6. Build a Gendered Author table by applying gender data from API
+7. Use Gendered Authors and Raw Papers to build Gendered Papers Table
+   1. GenderedPaperUseCase()
+8. Run CoAuthor process to add Co Author & gender ratio 
+   1. CoAuthor process generates data for each author:
+   totalPapers, averageCoAuthors, firstAuthorCount, averageGenderRatioOfPapers, genderRatioOfAllCoAuthors
+9. 
 
 
 

@@ -150,17 +150,4 @@ fun isAbbreviation(value: String): Boolean {
         )
 }
 
-fun Author.hasNullPublishedYear(): Boolean {
-    return (firstYearPublished != null && firstYearPublished ?: 0 == 0) || (lastYearPublished != null && lastYearPublished ?: 0 == 0)
-}
-
-fun Author.applyFirstLastYearsPublished(): Pair<Int, Int> {
-    val sorted = toYearsPublishedAsInt().sorted()
-    val first = sorted.firstOrNull() ?: 0
-    val last = sorted.lastOrNull() ?: 0
-    this.firstYearPublished = first
-    this.lastYearPublished = last
-    return Pair(first, last)
-}
-
 

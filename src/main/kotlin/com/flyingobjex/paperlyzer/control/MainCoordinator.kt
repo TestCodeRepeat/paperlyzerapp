@@ -10,6 +10,7 @@ import com.flyingobjex.paperlyzer.repo.JournalTableRepo
 import com.flyingobjex.paperlyzer.repo.SemanticScholarPaperRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
+import com.flyingobjex.paperlyzer.usecase.GenderedPaperUseCase
 import java.util.*
 import java.util.logging.Logger
 import org.slf4j.LoggerFactory
@@ -20,7 +21,6 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
     private val authorRepo = AuthorRepository(mongo)
     private val journalRepo = JournalTableRepo(mongo)
     private val ssPaperRepo = SemanticScholarPaperRepository(mongo)
-    private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
 
     val initProcess: InitializationProcess = InitializationProcess(mongo)
 
@@ -63,12 +63,7 @@ class MainCoordinator(val mongo: Mongo, val tsvFilePath: String) {
     }
 
 
-    /** Paper Table */
-    fun applyGendersToPaperTable(batchSize: Int) {
-        val papers: List<WosPaper> = wosRepo.getPapersWithAuthors(batchSize)
-        val res = wosRepo.applyGenderToPaperAuthors(papers)
-        print(res)
-    }
+
 
     /** Journal Table */
     fun buildJournalTable() {

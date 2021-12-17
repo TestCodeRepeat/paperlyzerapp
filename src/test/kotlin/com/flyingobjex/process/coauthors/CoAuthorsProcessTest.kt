@@ -24,15 +24,29 @@ fun verifyProcessType(appProcessType: ProcessType, type: ProcessType) {
 
 class CoAuthorsProcessTest {
     private val mongo = Mongo(false)
-    private val wosRepo = WoSPaperRepository(mongo)
-    private val authorRepo = AuthorRepository(mongo)
-
 
     private val process = CoAuthorProcess(mongo)
     private val app = PaperlyzerApp(mongo)
 
 
-//    @Test
+    //    @Test
+    fun `should reset and print stats for coauthor process`() {
+        process.reset()
+        process.printStats()
+    }
+
+    @Test
+    fun `app should run coauthor proces`() {
+        val processType = app.process.type()
+        verifyProcessType(processType, ProcessType.CoAuthor)
+        app.process.printStats()
+        app.process.reset()
+        app.process.printStats()
+        app.start()
+        app.process.printStats()
+    }
+
+    //    @Test
     fun `should calculate average gender ratio of papers`() {
         val papers = mongo.genderedPapers.aggregate<WosPaper>(
             match(WosPaper::authors ne null),
@@ -45,17 +59,6 @@ class CoAuthorsProcessTest {
         val res = averageGenderRatio(papers)
         res!! shouldBeGreaterThan 0.0
         res shouldBeLessThan 1.0
-    }
-
-        @Test
-    fun `app should run coauthor proces`() {
-        val processType = app.process.type()
-        verifyProcessType(processType, ProcessType.CoAuthor)
-        app.process.printStats()
-        app.process.reset()
-        app.process.printStats()
-        app.start()
-        app.process.printStats()
     }
 
     //    @Test

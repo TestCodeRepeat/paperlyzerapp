@@ -62,7 +62,6 @@ fun getAssociatedPaper(papers: List<WosPaperWithAuthors>, doi: String) =
 class CoAuthorProcess(val mongo: Mongo) : IProcess {
 
     val log: Logger = Logger.getAnonymousLogger()
-    private val authorRepo = AuthorRepository(mongo)
     private val wosRepo = WoSPaperRepository(mongo)
     private val coAuthorUseCase = CoAuthorUseCase(mongo)
 

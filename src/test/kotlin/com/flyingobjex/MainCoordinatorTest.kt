@@ -30,16 +30,6 @@ class MainCoordinatorTest {
     }
 
     //    @Test
-    fun `apply genders to authors in paper`() {
-        val resetTime = measureTimeMillis {
-            paperRepo.resetPaperTableGenderInfo()
-        }
-
-        val res = coordinator.applyGendersToPaperTable(100)
-        print(res)
-    }
-
-    //    @Test
     fun `get papers with authors projection`() {
         val resetTime = measureTimeMillis {
             paperRepo.resetPaperTableGenderInfo()

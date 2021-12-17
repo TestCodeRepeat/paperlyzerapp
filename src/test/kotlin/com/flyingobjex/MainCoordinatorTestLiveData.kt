@@ -10,6 +10,7 @@ import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.usecase.AuthorTableUseCase
 import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
+import com.flyingobjex.paperlyzer.usecase.GenderedPaperUseCase
 import org.litote.kmongo.div
 import org.litote.kmongo.eq
 import java.util.*
@@ -28,32 +29,33 @@ class MainCoordinatorTestLiveData {
 
     private val authorRepo = AuthorRepository(mongo)
     private val genderedAuthorUseCase = GenderedAuthorUseCase(mongo)
+    private val genderedPaperUseCase = GenderedPaperUseCase(mongo)
     private val authorTableUseCase = AuthorTableUseCase(mongo)
 
-//    @Test
+    //    @Test
     fun `apply genders to authors in paper`() {
         val resetTime = measureTimeMillis {
             paperRepo.resetPaperTableGenderInfo()
         }
-        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  resetTime = ${resetTime}" )
+        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  resetTime = ${resetTime}")
 
         val batchSize = 100000
-        val res = coordinator.applyGendersToPaperTable(batchSize)
+        val res = genderedPaperUseCase.applyGendersToPaperTable(batchSize)
         print(res)
 
-        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 0000" )
-        coordinator.applyGendersToPaperTable(batchSize)
-        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 1111" )
-        coordinator.applyGendersToPaperTable(batchSize)
-        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 2222" )
-        coordinator.applyGendersToPaperTable(batchSize)
-        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 3333" )
-        coordinator.applyGendersToPaperTable(batchSize)
+        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 0000")
+        genderedPaperUseCase.applyGendersToPaperTable(batchSize)
+        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 1111")
+        genderedPaperUseCase.applyGendersToPaperTable(batchSize)
+        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 2222")
+        genderedPaperUseCase.applyGendersToPaperTable(batchSize)
+        log.info("CoordinatorTestLiveData.apply genders to authors in paper()  Date() = ${Date()} 3333")
+        genderedPaperUseCase.applyGendersToPaperTable(batchSize)
 
     }
 
-//        @Test
-    fun `build a raw journal table`(){
+    //        @Test
+    fun `build a raw journal table`() {
         coordinator.resetJournalTable()
         coordinator.buildJournalTable()
         val stats = stats.statsJournalTable()
@@ -61,7 +63,7 @@ class MainCoordinatorTestLiveData {
     }
 
 
-//    @Test
+    //    @Test
     fun `build author table from raw author table`() {
         val resetTime = measureTimeMillis {
             authorTableUseCase.resetForAuthorTable()
@@ -84,7 +86,7 @@ class MainCoordinatorTestLiveData {
         assertEquals(444875, totalAuthors)
     }
 
-//    @Test
+    //    @Test
     fun `LIVE DATA !!! extract authors from raw papers into author table`() {
         val resetTime = measureTimeMillis {
             coordinator.resetForBuildRawAuthorTable()
@@ -98,7 +100,7 @@ class MainCoordinatorTestLiveData {
         log.info("CoordinatorTest.extract authors from raw papers into author table()  parseTime = $parseTime")
     }
 
-//    @Test
+    //    @Test
     fun `LIVE DATA !!! parse initial csv file into paper table`() {
         val clearTime = measureTimeMillis {
             paperRepo.clearRawPapers()
