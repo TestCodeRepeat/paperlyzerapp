@@ -33,8 +33,8 @@ class DisciplineProcessTest {
     private val format = Json { prettyPrint = false }
     private val matcher = TopicMatcher(topics)
 
-    private val app = PaperlyzerApp(mongo)
     private val process = DisciplineProcess(mongo, matcher)
+    private val app = PaperlyzerApp(mongo, process)
 
 
     //    @Test
@@ -52,16 +52,16 @@ class DisciplineProcessTest {
     }
 
 
-    //    @Test
+//    @Test
     fun `app should start Discipline process`() {
-        wosRepo.quickResetDisciplineProcessed()
         setMongoDbLogsToErrorOnly()
-        val r1 = app.start()
+        wosRepo.resetDisciplineProcessed()
+        app.start()
         app.process.printStats()
         println("DisciplineTest.kt :: app should start Discipline process :: DONE!")
     }
 
-//    @Test
+    //    @Test
     fun `should start process to apply disciplines to all papers`() {
         wosRepo.resetDisciplineProcessed()
 
@@ -73,18 +73,18 @@ class DisciplineProcessTest {
         println("DisciplineTest.kt :: should start process to apply disciplines to all papers :: ")
     }
 
-//    @Test
+    //    @Test
     fun `process should print stats`() {
         app.process.printStats()
     }
 
-//    @Test
+    //    @Test
     fun `should count unprocessed papers`() {
         val res = mongo.genderedPapers.countDocuments(WosPaper::discipline eq null).toInt()
         assertTrue(res > 300000)
     }
 
-//    @Test
+    //    @Test
     fun `should apply disciplines and matching criteria to WoSPaper`() {
         wosRepo.resetDisciplineProcessed()
         setMongoDbLogsToErrorOnly()
@@ -96,7 +96,7 @@ class DisciplineProcessTest {
 
     }
 
-    @Test
+//    @Test
     fun `should map a paper to a list of PLTopics`() {
         val paper = format.decodeFromString<WosPaper>(testPaper)
         val matchingCriteriaForTopics = matcher.criteriaForTopics(paper.topics)

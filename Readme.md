@@ -65,11 +65,13 @@ These primary functions can be triggered via Websocket connection & text command
 6. Build a Gendered Author table by applying gender data from API
 7. Use Gendered Authors and Raw Papers to build Gendered Papers Table
    1. Build table
-   2. 
-8. Run CoAuthor process to add Co Author & gender ratio from Gendered Papers table 
-   1. CoAuthor process generates data for each author:
-   totalPapers, averageCoAuthors, firstAuthorCount, averageGenderRatioOfPapers, genderRatioOfAllCoAuthors
-9. 
+8. Apply Semantic Scholar Citations to Gendered Papers
+9. Apply Stem/Ssh Discipline to Gendered Papers ~5min
+10. Apply SJR score & H Index to Gendered Papers ~8min
+11. Run CoAuthor process to add Co Author & gender ratio from Gendered Papers table 
+    1. CoAuthor process generates data for each author:
+    totalPapers, averageCoAuthors, firstAuthorCount, averageGenderRatioOfPapers, genderRatioOfAllCoAuthors
+12. 
 
 
 Find most 100 most common first names

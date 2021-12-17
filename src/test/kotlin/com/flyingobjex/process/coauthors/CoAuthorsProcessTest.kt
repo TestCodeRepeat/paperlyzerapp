@@ -5,8 +5,6 @@ import com.flyingobjex.paperlyzer.PaperlyzerApp
 import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.process.CoAuthorProcess
-import com.flyingobjex.paperlyzer.repo.AuthorRepository
-import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.util.GenderUtils.allPapersAreGenderComplete
 import com.flyingobjex.paperlyzer.util.GenderUtils.averageGenderRatio
 import io.kotest.matchers.doubles.shouldBeGreaterThan
@@ -26,7 +24,7 @@ class CoAuthorsProcessTest {
     private val mongo = Mongo(false)
 
     private val process = CoAuthorProcess(mongo)
-    private val app = PaperlyzerApp(mongo)
+    private val app = PaperlyzerApp(mongo, process)
 
 
     //    @Test

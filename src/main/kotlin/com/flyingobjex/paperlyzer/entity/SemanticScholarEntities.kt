@@ -92,8 +92,12 @@ data class SemanticScholarAuthor(
     val lastName: String = "uninitialized",
     val middleName: String = "uninitialized",
     val firstNameProcessed: Boolean? = null,
+    val externalIds: ExternalIds? = null,
     var _id: Id<SemanticScholarAuthor>? = null,
 )
+
+@Serializable
+data class ExternalIds(val ORCID: String)
 
 @Serializable
 data class SsPaperSummary(

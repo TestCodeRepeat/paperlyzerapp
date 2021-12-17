@@ -5,5 +5,6 @@ import ch.qos.logback.classic.Logger
 import org.slf4j.LoggerFactory
 
 fun setMongoDbLogsToErrorOnly() {
+    println("SystemUtil.kt :: setMongoDbLogsToErrorOnly :: ")
     (LoggerFactory.getLogger("org.mongodb.driver") as Logger).level = Level.ERROR
 }

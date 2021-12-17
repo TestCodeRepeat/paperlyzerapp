@@ -26,11 +26,12 @@ class CitationProcessTest {
     private val mongo = Mongo(false)
     private val samplePath = "../tbl_cli_sample.tsv"
     private val coordinator = MainCoordinator(mongo, samplePath)
-    private val citationProcess = WosCitationProcess(mongo)
     private val stats = Stats(mongo)
     private val wosRepo = WoSPaperRepository(mongo)
     private val authorRepo = AuthorRepository(mongo)
     private val ssRepo = SemanticScholarPaperRepository(mongo)
+
+    private val citationProcess = WosCitationProcess(mongo)
     private val app = PaperlyzerApp(mongo, citationProcess)
 
     private val doiWos = "10.1016/j.baae.2017.07.002"
@@ -45,7 +46,7 @@ class CitationProcessTest {
         setMongoDbLogsToErrorOnly()
     }
 
-    @Test
+//    @Test
     fun `mongo should match on case-insensitive matches`() {
         setMongoDbLogsToErrorOnly()
 
@@ -62,12 +63,12 @@ class CitationProcessTest {
 
     }
 
-    @Test
+//    @Test
     fun `app should start citation process`() {
         wosRepo.resetCitationProcessed()
-        app.process?.type() shouldBe ProcessType.Citation
+        app.process.type() shouldBe ProcessType.Citation
         app.runProcess()
-        app.process?.printStats()
+        app.process.printStats()
         log.info("CitationTest.app should start citation process()  DONE !!!")
     }
 

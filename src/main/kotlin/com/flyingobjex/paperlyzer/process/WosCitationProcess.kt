@@ -46,6 +46,10 @@ class WosCitationProcess(val mongo: Mongo) : IProcess {
     private val wosRepo = WoSPaperRepository(mongo)
     private val ssPaperRepo = SemanticScholarPaperRepository(mongo)
 
+    override fun init() {
+
+    }
+
     override fun runProcess() {
         val batchSize = API_BATCH_SIZE
         log.info("WosCitationProcess.runProcess()  0000 :: batchSize = $batchSize")
@@ -90,9 +94,5 @@ class WosCitationProcess(val mongo: Mongo) : IProcess {
 
     override fun name(): String {
         return "Wos Citation Process"
-    }
-
-    override fun init() {
-
     }
 }

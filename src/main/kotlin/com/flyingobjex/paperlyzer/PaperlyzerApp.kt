@@ -35,12 +35,10 @@ const val BUILD_VERSION = 3
 class PaperlyzerApp(val mongo: Mongo, theProcess:IProcess? = null) {
 
     var process = theProcess ?: throw Error("!!!! No Process Attached !!!!!")
-    var port: String = "na"
     val log: Logger = Logger.getAnonymousLogger()
-    var matcher = TopicMatcher(topics)
-    var hIndexModel = SJRModel()
 
-//    lateinit var process: IProcess
+    private var port: String = "na"
+    private var matcher = TopicMatcher(topics)
 
     /** batchSize: # of concurrent API calls */
     var numConcurrentApiCalls: Int = API_BATCH_SIZE

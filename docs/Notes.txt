@@ -59,6 +59,15 @@ Dec 17
         Total Female Authors: 131,951
         Total Male Authors: 280,290
 
+  :::: Citation Process ::::
+    Match Citations from associated Semantic Scholar paper on record
+      results-
+      totalProcessedWosPapers: 345462
+      totalUnprocessedWosPapers: 0
+      totalFailedWosPapers: 54431
+      totalWosPapers: 399893
+      totalSsPapers: 345426
+
 Dec 13
 - Build Author Table -
 
@@ -71,6 +80,10 @@ Dec 13
       ~  rawAuthorsUpdated = 1,734,039
 
       after update:: ================================================================
+
+          :::: STEM/SSH Discipline Process ::::
+
+
           :::: Gendered Author Table Stats ::::
             ~ totalAuthors: 414096
             ~ totalWithNoAssignedGender: 1855
