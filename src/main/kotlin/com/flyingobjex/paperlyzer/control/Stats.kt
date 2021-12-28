@@ -10,12 +10,12 @@ import com.flyingobjex.paperlyzer.process.reports.AuthorReportLine
 import com.flyingobjex.paperlyzer.process.reports.PaperReportLine
 import com.flyingobjex.paperlyzer.repo.AuthorRepository
 import com.flyingobjex.paperlyzer.repo.JournalTableRepo
-import com.flyingobjex.paperlyzer.repo.toShortKeys
 import com.flyingobjex.paperlyzer.usecase.GenderedAuthorUseCase
 import com.flyingobjex.paperlyzer.usecase.StemSshUseCase
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutFirst
 import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutLast
 import com.flyingobjex.paperlyzer.util.GenderUtils.toGenderRatio
+import com.flyingobjex.paperlyzer.util.GenderUtils.toShortKeys
 import java.io.File
 import java.text.NumberFormat
 import java.util.*
@@ -125,11 +125,16 @@ class Stats(val mongo: Mongo) {
         )
     }
 
-    fun papersToReportLines(papers: List<WosPaper>): List<PaperReportLine> = papers.map {
+    fun papersToReportLines(papers: List<WosPaper>): List<PaperReportLine> = papers.map { it ->
 
         val genderRatio = toGenderRatio(toShortKeys(it.authors), it.authors.size)
-        val genderRatioWithoutFirst = toGenderRatio(toShortKeys(withoutFirst(it.authors)), it.authors.size)
-        val genderRatioWithoutLast = toGenderRatio(toShortKeys(withoutLast(it.authors)), it.authors.size)
+        val woFirst = withoutFirst(it.authors)
+        val woLast = withoutLast(it.authors)
+        log.info("Stats.papersToReportLines()  id = ${it._id}")
+        log.info("Stats.papersToReportLines()  woFirst = $woFirst" )
+        log.info("Stats.papersToReportLines()  woLast = $woLast" )
+        val genderRatioWithoutFirst = toGenderRatio(toShortKeys(woFirst), woFirst.size)
+        val genderRatioWithoutLast = toGenderRatio(toShortKeys(woLast), woLast.size)
 
         val lastAuthorGender = toShortKeys(it.authors).last().toString()
 
@@ -153,7 +158,7 @@ class Stats(val mongo: Mongo) {
             genderRatio = genderRatio,
             genderRatioWithoutFirst = genderRatioWithoutFirst,
             genderRatioWithoutLast = genderRatioWithoutLast,
-            genderRatioOfCoAuthors = genderRatioWithoutFirst,
+//            genderRatioOfCoAuthors = genderRatioWithoutFirst,
             totalAuthors = it.totalAuthors ?: -5,
             totalCoAuthors = (it.totalAuthors ?: -5) - 1,
             totalIdentifiableAuthors = it.totalIdentifiableAuthors ?: -5,
@@ -167,6 +172,7 @@ class Stats(val mongo: Mongo) {
             hIndex = it.hIndex ?: -5,
         )
     }
+
 
     /** Disciplines */
 //    fun resetDisciplinesReport() {

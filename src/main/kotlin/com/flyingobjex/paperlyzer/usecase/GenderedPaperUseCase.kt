@@ -7,7 +7,7 @@ import com.flyingobjex.paperlyzer.entity.GenderedNameDetails
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.repo.matchGender
-import com.flyingobjex.paperlyzer.repo.toShortKeys
+import com.flyingobjex.paperlyzer.util.GenderUtils.toShortKeys
 import kotlin.system.measureTimeMillis
 import org.litote.kmongo.*
 

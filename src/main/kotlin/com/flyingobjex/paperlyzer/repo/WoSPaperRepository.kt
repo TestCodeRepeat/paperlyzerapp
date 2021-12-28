@@ -383,5 +383,3 @@ class WoSPaperRepository(val mongo: Mongo, val logMessage: ((message: String) ->
 
 data class WosPaperReduced(val doi: String)
 
-fun toShortKeys(authors: List<Author>): String =
-    authors.joinToString("") { it.genderIdt?.toShortKey() ?: "X" }

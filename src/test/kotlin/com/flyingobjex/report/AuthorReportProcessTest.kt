@@ -2,16 +2,17 @@ package com.flyingobjex.report
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
-import com.flyingobjex.paperlyzer.process.reports.PaperReportProcess
+import com.flyingobjex.paperlyzer.process.reports.AuthorReportProcess
 import org.junit.Test
 
-class PaperReportProcessTest {
+class AuthorReportProcessTest {
+
     private val mongo = Mongo(false)
-    private val process = PaperReportProcess(mongo)
+    private val process = AuthorReportProcess(mongo)
     private val app = PaperlyzerApp(mongo, process)
 
     @Test
-    fun `should start running processes`(){
+    fun `should run Author Report process`() {
         println("ReportProcessTest.kt :: should start running processes :: 0000")
         app.process.reset()
         println("ReportProcessTest.kt :: should start running processes :: 1111")
@@ -21,9 +22,8 @@ class PaperReportProcessTest {
         println("ReportProcessTest.kt :: should start running processes :: DONE")
     }
 
-
-//    @Test
-    fun `should reset and report process once`(){
+    //    @Test
+    fun `should reset and report process once`() {
         process.reset()
         process.runProcess()
     }

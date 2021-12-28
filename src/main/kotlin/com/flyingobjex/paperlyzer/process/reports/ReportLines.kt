@@ -46,7 +46,7 @@ data class PaperReportLine(
     var genderRatio: Double,
     var genderRatioWithoutFirst: Double,
     var genderRatioWithoutLast: Double,
-    var genderRatioOfCoAuthors: Double,
+//    var genderRatioOfCoAuthors: Double,
     var totalAuthors: Int,
     var totalCoAuthors: Int,
     var totalIdentifiableAuthors: Int,

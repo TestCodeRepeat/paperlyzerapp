@@ -2,7 +2,8 @@ package com.flyingobjex.paperlyzer.util
 
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.IWosPaperWithAuthors
-import com.flyingobjex.paperlyzer.repo.toShortKeys
+import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutFirst
+import com.flyingobjex.paperlyzer.util.CollectionUtils.Companion.withoutLast
 
 
 object GenderUtils {
@@ -38,6 +39,10 @@ object GenderUtils {
     }
 
     fun toGenderRatio(shortKeys: String, numAuthors: Int): Double {
+        if (numAuthors != shortKeys.length) {
+            throw Exception("Gender Ratio Error -- Source Keys . Size does not match Number of Authors !!!\n" +
+                "shortKeys.length = ${shortKeys.length} :: numAuthors = $numAuthors")
+        }
         val res = shortKeys.sumOf {
             val res = when (it.toString()) {
                 "M" -> 1
@@ -47,7 +52,16 @@ object GenderUtils {
             res
         }.toDouble() / numAuthors.toDouble()
 
-        return if (res >= 0) res else -5.0
+        return if (res >= 0) res else -55.5555555555
     }
+
+//    fun genderRatioWithoutFirst(authors: List<Author>) =
+//        toGenderRatio(toShortKeys(withoutFirst(authors)), authors.size - 1)
+
+//    fun genderRatioWithoutLast(authors: List<Author>) =
+//        toGenderRatio(toShortKeys(withoutLast(authors)), authors.size - 1)
+
+    fun toShortKeys(authors: List<Author>): String =
+        authors.joinToString("") { it.genderIdt?.toShortKey() ?: "X" }
 
 }

@@ -5,7 +5,8 @@ class CollectionUtils {
     companion object {
         fun <T> withoutFirst(authors: List<T>): List<T> {
             return if (authors.size > 1) {
-                authors.subList(1, authors.size - 1)
+                val sub = authors.subList(1, authors.size)
+                sub
             } else {
                 emptyList()
             }

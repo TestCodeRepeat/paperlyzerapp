@@ -17,7 +17,7 @@ class SJRProcessTest {
     private val process = SJRProcess(mongo)
     private val app = PaperlyzerApp(mongo, process)
 
-//    @Test
+    @Test
     fun `app should run sjr process`(){
         app.process.type() shouldBe ProcessType.SJR
         app.process.reset()

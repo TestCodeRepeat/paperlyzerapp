@@ -37,6 +37,7 @@ enum class GenderIdentity {
             INITIALS -> "Z"
             UNASSIGNED -> "X"
             NA -> "X"
+            else -> "X"
         }
     }
 }

@@ -44,6 +44,12 @@ ws://localhost:8080/allthethings
   - Gender ratio
 ===============
 
+
+Dec 27
+  !! BUG => look again at genderRatioWithoutLast calculation
+    - test MM, FF, MF ratios
+
+
 Dec 17
   ~ 500 authors with first name Md.
       - could take middle name instead in this edge case
