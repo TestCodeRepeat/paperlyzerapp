@@ -23,6 +23,12 @@ ws://localhost:8080/allthethings
 ===========================
 ===========================
 
+Mar 24
+- make journal names all uppercase
+- add review policy data in-memory at startup
+- add Review Policy to each paper
+
+
 28k papers with 1 author
 48k papers with 2 authors
 53k papers with 3 authors
