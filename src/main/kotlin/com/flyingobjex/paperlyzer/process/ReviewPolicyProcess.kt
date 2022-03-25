@@ -23,7 +23,7 @@ class ReviewPolicyProcess(val mongo: Mongo):IProcess {
         log.info("CoAuthorProcess.runProcess()  :: batchSize = $batchSize")
         var unprocessed: List<Author>
         val time = measureTimeMillis {
-            unprocessed = coAuthorUseCase.getUnprocessedAuthorsByCoAuthors(batchSize)
+//            unprocessed = coAuthorUseCase.getUnprocessedAuthorsByCoAuthors(batchSize)
         }
 
 
