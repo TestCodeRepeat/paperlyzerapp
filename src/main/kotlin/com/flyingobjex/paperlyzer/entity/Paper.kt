@@ -129,6 +129,7 @@ data class WosPaper(
     val ssPaperAuthorCount: Int? = null,
     val authorCountDifference: Int? = null,
     override val _id: String? = null,
+    val policy: ReviewPolicy? = null,
 ) : IWosPaperWithStemSsh, IWosPaperWithAuthors
 
 private fun String.clean(): String {
