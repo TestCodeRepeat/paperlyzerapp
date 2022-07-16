@@ -6,18 +6,11 @@ import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.Gender
 import com.flyingobjex.paperlyzer.entity.GenderIdentity
 import com.flyingobjex.paperlyzer.entity.GenderedNameDetails
-import java.util.*
 import org.litote.kmongo.*
 
-class GenderedAuthorUseCase(val mongo: Mongo) {
+const val GENDER_PROBABILITY_THRESHOLD: Double = 0.60
 
-    fun getGenderedAuthors(querySize: Int): List<Author> =
-        mongo.genderedAuthors.find(
-            or(
-                Author::gender / Gender::gender eq GenderIdentity.MALE,
-                Author::gender / Gender::gender eq GenderIdentity.FEMALE,
-            )
-        ).limit(querySize).toList()
+class GenderedAuthorUseCase(val mongo: Mongo) {
 
     fun buildGenderedAuthorsTable(batchSize: Int) {
         println("GenderedAuthorUseCase.kt :: buildGenderedAuthorsTable() :: intended batchSize = $batchSize")
@@ -35,11 +28,14 @@ class GenderedAuthorUseCase(val mongo: Mongo) {
                 GenderedNameDetails::firstName eq targetAuthor.firstName
             )
                 ?.let { matchingGender ->
-                    targetAuthor.gender.gender = matchingGender.genderIdentity
-                    targetAuthor.gender.probability = matchingGender.probability
-                    targetAuthor.genderIdt = matchingGender.genderIdentity
-                    targetAuthor.probabilityStr = matchingGender.probability
-                    mongo.genderedAuthors.insertOne(targetAuthor)
+
+                    if (matchingGender.probability > GENDER_PROBABILITY_THRESHOLD) {
+                        targetAuthor.gender.gender = matchingGender.genderIdentity
+                        targetAuthor.gender.probability = matchingGender.probability
+                        targetAuthor.genderIdt = matchingGender.genderIdentity
+                        targetAuthor.probabilityStr = matchingGender.probability
+                        mongo.genderedAuthors.insertOne(targetAuthor)
+                    }
                 }
         }
     }
@@ -79,4 +75,11 @@ class GenderedAuthorUseCase(val mongo: Mongo) {
         println("GenderedAuthorUseCase.kt :: resetBuildGenderedAuthors :: mongo.resetIndexes()")
     }
 
+    fun getGenderedAuthors(querySize: Int): List<Author> =
+        mongo.genderedAuthors.find(
+            or(
+                Author::gender / Gender::gender eq GenderIdentity.MALE,
+                Author::gender / Gender::gender eq GenderIdentity.FEMALE,
+            )
+        ).limit(querySize).toList()
 }

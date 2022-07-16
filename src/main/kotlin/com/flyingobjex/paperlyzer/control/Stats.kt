@@ -3,6 +3,7 @@ package com.flyingobjex.paperlyzer.control
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.PaperMetatdata
+import com.flyingobjex.paperlyzer.entity.ReviewPolicy
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.CSVHelper
 import com.flyingobjex.paperlyzer.parser.DisciplineType
@@ -130,9 +131,6 @@ class Stats(val mongo: Mongo) {
         val genderRatio = toGenderRatio(toShortKeys(it.authors), it.authors.size)
         val woFirst = withoutFirst(it.authors)
         val woLast = withoutLast(it.authors)
-        log.info("Stats.papersToReportLines()  id = ${it._id}")
-        log.info("Stats.papersToReportLines()  woFirst = $woFirst" )
-        log.info("Stats.papersToReportLines()  woLast = $woLast" )
         val genderRatioWithoutFirst = toGenderRatio(toShortKeys(woFirst), woFirst.size)
         val genderRatioWithoutLast = toGenderRatio(toShortKeys(woLast), woLast.size)
 
@@ -170,6 +168,7 @@ class Stats(val mongo: Mongo) {
             originalTopics = it.topics.joinToString("; "),
             sjrRank = it.sjrRank ?: -5,
             hIndex = it.hIndex ?: -5,
+            policy = it.policy ?: ReviewPolicy.NA
         )
     }
 

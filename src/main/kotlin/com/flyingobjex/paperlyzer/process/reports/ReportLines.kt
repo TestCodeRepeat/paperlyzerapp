@@ -1,6 +1,7 @@
 package com.flyingobjex.paperlyzer.process.reports
 
 import com.flyingobjex.paperlyzer.entity.GenderIdentity
+import com.flyingobjex.paperlyzer.entity.ReviewPolicy
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import kotlinx.serialization.Serializable
 
@@ -41,7 +42,7 @@ data class PaperReportLine(
     var firstAuthorGender: String,
     var lastAuthorGender: String,
     var genderCompletenessScore: Double,
-    var genders:String,
+    var genders: String,
     var genderCount: Long,
     var genderRatio: Double,
     var genderRatioWithoutFirst: Double,
@@ -57,4 +58,5 @@ data class PaperReportLine(
     val discTopic: String?,
     val sjrRank: Int,
     val hIndex: Int,
+    val policy: ReviewPolicy,
 )

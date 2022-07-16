@@ -1,14 +1,13 @@
-package com.flyingobjex
+package com.flyingobjex.process.discipline
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.entity.Author
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.DisciplineType
 import com.flyingobjex.paperlyzer.process.AuthorStemSshProcess
 import com.flyingobjex.paperlyzer.process.DisciplineUtils
-import com.flyingobjex.paperlyzer.repo.AuthorRepository
-import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.usecase.StemSshUseCase
 import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldBe
@@ -55,8 +54,9 @@ class AuthorStemSshProcessTest {
         return ssh + stem
     }
 
-//    @Test
-    fun `app should run process and stop`() {
+    @Test
+    fun `app should run ste process and stop`() {
+        app.process.type() shouldBe ProcessType.StemSsh
         app.process.printStats()
         app.process.reset()
         app.process.printStats()

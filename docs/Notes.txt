@@ -23,6 +23,10 @@ ws://localhost:8080/allthethings
 ===========================
 ===========================
 
+June 7
+Each paper in the dataset Semantic Scholar
+
+
 Mar 24
 - make journal names all uppercase
 - add review policy data in-memory at startup

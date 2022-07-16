@@ -62,14 +62,14 @@ These primary functions can be triggered via Websocket connection & text command
    1. add to First Names table from Semantic Scholar Author table
 5. Build Gender Name Details / Gender Table from First Names table using www.gender-api.com
    1. Gender Name Details Table contains first names along with gender data applied from the API
-6. Build a Gendered Author table by applying gender data from API
-7. Use Gendered Authors and Raw Papers to build Gendered Papers Table
-   1. Build table
-8. Apply Semantic Scholar Citations to Gendered Papers
-9. Apply Stem/Ssh Discipline to Gendered Papers  ~5min
-10. Apply Stem/Ssh Discipline to Gendered Authors ~2min 30sec
-11. Apply SJR score & H Index to Gendered Papers ~8min
-12. Run CoAuthor process to add Co Author & gender ratio from Gendered Papers table ~3min 30sec 
+
+6. Build a Gendered Author table by applying gender data from API :: BuildGenderedAuthorTableTest * 
+7. Use Gendered Authors and Raw Papers to build Gendered Papers Table :: BuildGenderedPaperTableTest *
+8. Apply Semantic Scholar Citations to Gendered Papers :: CitationsProcess ::  API_BATCH_SIZE=100000;UNPROCESSED_RECORDS_GOAL=0
+9. Apply Stem/Ssh Discipline to Gendered Papers  ~5min :: run Discipline Process :: API_BATCH_SIZE=100000;UNPROCESSED_RECORDS_GOAL=0
+10. Apply Stem/Ssh Discipline to Gendered Authors ~2min 30sec :: run AuthorStemSshProcess :: API_BATCH_SIZE=50000;UNPROCESSED_RECORDS_GOAL=0;BATCH_SIZE=50000
+11. Apply SJR score & H Index to Gendered Papers ~8min :: SJRProcess :: API_BATCH_SIZE=100000;UNPROCESSED_RECORDS_GOAL=0
+12. Run CoAuthor process to add Co Author & gender ratio from Gendered Papers table ~3min 30sec :: CoAuthorProcess :: API_BATCH_SIZE=10000;UNPROCESSED_RECORDS_GOAL=0
     1. CoAuthor process generates data for each author:
     totalPapers, averageCoAuthors, firstAuthorCount, averageGenderRatioOfPapers, genderRatioOfAllCoAuthors
 13. 

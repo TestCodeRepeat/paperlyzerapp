@@ -72,7 +72,7 @@ data class WosPaperWithCoAuthors(
 @Serializable
 data class WosPaperWithStemSsh(
     override val shortTitle: String,
-    override val discipline: DisciplineType,
+    override val discipline: DisciplineType? = null,
     override val _id: String? = null,
 ) : IWosPaperWithStemSsh
 
@@ -114,7 +114,7 @@ data class WosPaper(
     var ssFailed: Boolean? = null,
     var citationsProcessed: Boolean? = null,
     override var discipline: DisciplineType? = null,
-    var score: Int? = null,
+    var score: Int? = null, // Discipline Score
     var matchingCriteria: List<MatchingCriteria>? = null,
     var topStem: MatchingCriteria? = null,
     var topSSH: MatchingCriteria? = null,

@@ -27,13 +27,7 @@ class CoAuthorsProcessTest {
     private val app = PaperlyzerApp(mongo, process)
 
 
-    //    @Test
-    fun `should reset and print stats for coauthor process`() {
-        process.reset()
-        process.printStats()
-    }
-
-//    @Test
+    @Test
     fun `app should run coauthor proces`() {
         verifyProcessType(app.process.type(), ProcessType.CoAuthor)
         app.process.printStats()
@@ -41,6 +35,12 @@ class CoAuthorsProcessTest {
         app.process.printStats()
         app.start()
         app.process.printStats()
+    }
+
+    //    @Test
+    fun `should reset and print stats for coauthor process`() {
+        process.reset()
+        process.printStats()
     }
 
     //    @Test

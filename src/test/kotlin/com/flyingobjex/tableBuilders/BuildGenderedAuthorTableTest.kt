@@ -26,24 +26,6 @@ class BuildGenderedAuthorTableTest {
         }
         log.info("BuildGenderedAuthorTableTest.should copy author to new table & assign gender() first  = ${first}" )
 
-
-//        val second = measureTimeMillis {
-//            genderedAuthorUseCase.buildGenderedAuthorsTable(150000)
-//        }
-//        log.info("BuildGenderedAuthorTableTest.should copy author to new table & assign gender() second  = ${second}" )
-//
-//        val third = measureTimeMillis {
-//            genderedAuthorUseCase.buildGenderedAuthorsTable(350000)
-//        }
-//        log.info("BuildGenderedAuthorTableTest.should copy author to new table & assign gender() third  = ${third}" )
-//
-//
-//
-//        val last = measureTimeMillis {
-//            genderedAuthorUseCase.buildGenderedAuthorsTable(600000)
-//        }
-//        log.info("BuildGenderedAuthorTableTest.should copy author to new table & assign gender() last  = ${last}" )
-
         val res = genderedAuthorUseCase.statsGenderedAuthorsTable()
         println("BuildGenderedAuthorTableTest.kt :: STATS = $res")
     }

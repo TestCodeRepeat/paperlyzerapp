@@ -74,7 +74,7 @@ class DisciplineProcess(
     }
 
     override fun runProcess() {
-        val batchSize = API_BATCH_SIZE
+        val batchSize = 10000
         log.info("WosCitationProcess.runProcess()  0000 :: batchSize = $batchSize")
         var unprocessed = emptyList<WosPaper>()
         val time = measureTimeMillis {

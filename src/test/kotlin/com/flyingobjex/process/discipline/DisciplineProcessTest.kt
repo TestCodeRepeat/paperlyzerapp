@@ -2,6 +2,7 @@ package com.flyingobjex.process.discipline
 
 import com.flyingobjex.paperlyzer.Mongo
 import com.flyingobjex.paperlyzer.PaperlyzerApp
+import com.flyingobjex.paperlyzer.ProcessType
 import com.flyingobjex.paperlyzer.entity.WosPaper
 import com.flyingobjex.paperlyzer.parser.CSVTopicParser
 import com.flyingobjex.paperlyzer.parser.PLTopic
@@ -10,6 +11,7 @@ import com.flyingobjex.paperlyzer.process.DisciplineProcess
 import com.flyingobjex.paperlyzer.repo.WoSPaperRepository
 import com.flyingobjex.paperlyzer.util.setMongoDbLogsToErrorOnly
 import data.testPaper
+import io.kotest.matchers.shouldBe
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -51,10 +53,10 @@ class DisciplineProcessTest {
         setMongoDbLogsToErrorOnly()
     }
 
-
-//    @Test
-    fun `app should start Discipline process`() {
+    @Test
+    fun `app should run Discipline process`() {
         setMongoDbLogsToErrorOnly()
+        app.process.type() shouldBe ProcessType.Discipline
         wosRepo.resetDisciplineProcessed()
         app.start()
         app.process.printStats()
@@ -72,6 +74,7 @@ class DisciplineProcessTest {
 
         println("DisciplineTest.kt :: should start process to apply disciplines to all papers :: ")
     }
+
 
     //    @Test
     fun `process should print stats`() {
@@ -96,7 +99,7 @@ class DisciplineProcessTest {
 
     }
 
-//    @Test
+    //    @Test
     fun `should map a paper to a list of PLTopics`() {
         val paper = format.decodeFromString<WosPaper>(testPaper)
         val matchingCriteriaForTopics = matcher.criteriaForTopics(paper.topics)
@@ -104,14 +107,14 @@ class DisciplineProcessTest {
         println("DisciplineTest.kt :: should map a paper to a list of PLTopics :: ")
     }
 
-    @Test
+    //    @Test
     fun `it should return matching criteria for two terms`() {
         val res = matcher.matchToTopic(testTopicA, PLTopic.blank().copy(name = "Metallurgy"), 0)
         assertTrue(res.oneKeyword)
         println("DisciplineTest.kt :: should map a paper to a list of PLTopics :: ")
     }
 
-    @Test
+    //    @Test
     fun `should import topic csv`() {
         val topics = CSVTopicParser.csvFileToTopicList(samplePath)
         File("topics.json").writeText(format.encodeToString(topics))

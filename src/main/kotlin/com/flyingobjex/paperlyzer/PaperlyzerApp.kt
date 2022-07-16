@@ -32,7 +32,7 @@ enum class ProcessType {
 const val BUILD_VERSION = 3
 
 @OptIn(ExperimentalSerializationApi::class)
-class PaperlyzerApp(val mongo: Mongo, theProcess:IProcess? = null) {
+class PaperlyzerApp(val mongo: Mongo, val theProcess:IProcess? = null) {
 
     var process = theProcess ?: throw Error("!!!! No Process Attached !!!!!")
     val log: Logger = Logger.getAnonymousLogger()

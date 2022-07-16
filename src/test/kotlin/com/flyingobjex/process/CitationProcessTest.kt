@@ -63,7 +63,7 @@ class CitationProcessTest {
 
     }
 
-//    @Test
+    @Test
     fun `app should start citation process`() {
         wosRepo.resetCitationProcessed()
         app.process.type() shouldBe ProcessType.Citation
